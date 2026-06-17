@@ -1,0 +1,2644 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step 3 — An Sao Phụ</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:sans-serif;background:#f5f0e8;padding:16px;color:#222}
+h1{font-size:1.1rem;margin-bottom:16px;color:#7a4a10}
+.card{background:white;border:1px solid #ddd;border-radius:8px;padding:16px;margin-bottom:14px}
+.card h2{font-size:.78rem;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+label{display:block;font-size:.8rem;color:#666;margin-bottom:3px;margin-top:10px}
+label:first-of-type{margin-top:0}
+select,input{width:100%;padding:7px 9px;border:1px solid #ccc;border-radius:5px;font-size:.83rem}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.main-btn{width:100%;padding:11px;margin-top:14px;background:#7a4a10;color:white;border:none;border-radius:7px;font-size:.95rem;font-weight:bold;cursor:pointer}
+.main-btn:hover{background:#5a3000}
+.summary{display:none}.summary.show{display:block}
+.sum-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.si{background:#fffbe6;border:1px solid #e0c070;border-radius:6px;padding:8px 10px}
+.si .lb{font-size:.68rem;color:#999;margin-bottom:2px}
+.si .vl{font-size:.95rem;font-weight:bold;color:#7a2000}
+.si.bl .vl{color:#004a8a}
+.si.gr .vl{color:#1a6020;font-size:.78rem}
+.laso-wrap{overflow-x:auto}
+/* Grid: không dùng aspect-ratio, để ô tự co giãn theo nội dung */
+.laso-grid{display:grid;grid-template-columns:repeat(4,1fr);border:2px solid #c9913a;border-radius:6px;overflow:hidden;min-width:480px}
+.cung{border:1px solid #e0c880;padding:5px 6px;background:#fffef8;display:flex;flex-direction:column}
+.cung.menh{background:#fff8e6;border-color:#c9913a}
+.cung.than{background:#eef6ff;border-color:#4a80c0}
+.cung.center{grid-column:2/4;grid-row:2/4;background:#fdf8f0;align-items:center;justify-content:center;text-align:center;border:1px solid #e0c880;padding:12px;min-height:80px}
+.ch{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2px}
+.cb{font-size:.62rem;font-weight:700;color:#888}
+.cn{font-size:.6rem;font-weight:700;color:#4a7a30;text-align:right}
+.ct{font-size:.52rem;font-weight:700;color:#c9913a;display:block}
+/* Tab lớp Natal / Lưu */
+.layer-tabs{display:flex;gap:0;margin-bottom:3px}
+.ltab{font-size:.52rem;padding:1px 5px;border:1px solid #ccc;background:#f0f0f0;color:#666;cursor:pointer;user-select:none}
+.ltab:first-child{border-radius:3px 0 0 3px}
+.ltab:last-child{border-radius:0 3px 3px 0;border-left:none}
+.ltab.active{background:#7a4a10;color:white;border-color:#7a4a10}
+.ltab.active-luu{background:#1a4a7a;color:white;border-color:#1a4a7a}
+.layer-natal,.layer-luu{display:none}
+.layer-natal.show,.layer-luu.show{display:block}
+/* Sao badges */
+.star-wrap{display:flex;flex-wrap:wrap;gap:2px;margin-top:1px}
+.star{font-size:.56rem;padding:1px 4px;border-radius:3px;font-weight:600;white-space:nowrap;line-height:1.5}
+.s-main{background:#ede0ff;color:#4a0090;border:1px solid #c0a0e8}
+.s-sub{background:#e0f0e0;color:#1a6020;border:1px solid #90c890}
+.s-hoa{background:#fff0c0;color:#806000;border:1px solid #d0a020}
+.s-luu{background:#ddeeff;color:#1a3a6a;border:1px solid #88bbdd}
+.s-luu-sat{background:#ffe8e8;color:#8a1a1a;border:1px solid #dd8888}
+.s-luu-hoa{background:#ffeedd;color:#7a3010;border:1px solid #ddaa77}
+.s-dv-hoa{background:#f0e0ff;color:#5a2080;border:1px solid #bb99dd}
+/* Trường Sinh label */
+.ts-label{font-size:.52rem;color:#c03020;font-weight:700;margin-top:2px;border-top:1px dashed #e0b0a0;padding-top:1px}
+.can-label{font-size:.58rem;color:#4a3080;font-weight:700;margin-left:3px}
+/* Tuần / Triệt overlay */
+.tuan-bar{height:3px;background:#5a3b7a;border-radius:1px;margin-bottom:1px}
+.triet-bar{height:3px;background:#b33030;border-radius:1px;margin-bottom:1px}
+.overlay-badge{font-size:.5rem;font-weight:700;padding:0 3px;border-radius:2px;display:inline-block;margin-bottom:1px}
+.ob-tuan{background:#ede0ff;color:#5a3b7a}
+.ob-triet{background:#ffe0e0;color:#b33030}
+.c-title{font-family:serif;font-size:.9rem;font-weight:bold;color:#3a2000;margin-bottom:5px}
+.c-info{font-size:.68rem;color:#555;line-height:1.9}
+.cuc-b{display:inline-block;background:#c9913a;color:white;padding:1px 8px;border-radius:8px;font-size:.65rem;font-weight:700}
+.dbg-sec{margin-top:12px}
+.dbg-btn{background:#1a1a1a;color:#4cff4c;border:1px solid #4cff4c;padding:4px 12px;border-radius:4px;cursor:pointer;font-size:.7rem}
+.dbg-box{display:none;background:#111;color:#4cff4c;border-radius:5px;padding:12px;margin-top:8px;font-family:monospace;font-size:.7rem;line-height:1.65;white-space:pre-wrap;max-height:400px;overflow-y:auto}
+.dbg-box.show{display:block}
+</style>
+</head>
+<body>
+<h1>☯ Tử Vi — Luận Giải</h1>
+
+<!-- BƯỚC 1: chọn chủ đề + câu hỏi -->
+<div class="card" id="step1-card">
+  <h2>Bước 1 — Chọn vấn đề cần xem</h2>
+  <div id="topic-buttons" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px"></div>
+  <div id="question-form"></div>
+  <button class="main-btn" id="btn-next" onclick="goToStep2()" style="display:none">Tiếp →</button>
+</div>
+
+<!-- BƯỚC 2: nhập lá số (ẩn ban đầu) -->
+<div class="card" id="step2-card" style="display:none">
+  <h2>Bước 2 — Nhập thông tin lá số</h2>
+  <label>Ngày sinh dương lịch</label>
+  <input type="date" id="dob" value="1995-07-03">
+  <div class="row2">
+    <div>
+      <label>Giờ sinh</label>
+      <select id="hour">
+        <option value="11">Tý  (23h–1h)</option>
+        <option value="12">Sửu (1h–3h)</option>
+        <option value="1">Dần (3h–5h)</option>
+        <option value="2">Mão (5h–7h)</option>
+        <option value="3">Thìn (7h–9h)</option>
+        <option value="4">Tỵ  (9h–11h)</option>
+        <option value="5" selected>Ngọ (11h–13h)</option>
+        <option value="6">Mùi (13h–15h)</option>
+        <option value="7">Thân (15h–17h)</option>
+        <option value="8">Dậu (17h–19h)</option>
+        <option value="9">Tuất (19h–21h)</option>
+        <option value="10">Hợi (21h–23h)</option>
+      </select>
+    </div>
+    <div>
+      <label>Giới tính</label>
+      <select id="gender">
+        <option value="male">Nam</option>
+        <option value="female" selected>Nữ</option>
+      </select>
+    </div>
+  </div>
+  <div style="margin-top:12px;padding-top:10px;border-top:1px solid #eee">
+    <label style="display:block;font-size:.78rem;color:#666;margin-bottom:4px;font-weight:500">Ngày xét hạn (dương lịch)</label>
+    <input type="date" id="target-date" value="2026-07-15" style="width:100%;padding:7px 9px;border:1px solid #ccc;border-radius:5px;font-size:.83rem;margin-bottom:4px" oninput="updateTargetLunar()">
+    <div id="target-lunar-display" style="font-size:.72rem;color:#888;margin-bottom:6px;padding:4px 8px;background:#f9f6ee;border-radius:4px">—</div>
+    <label style="display:block;font-size:.75rem;color:#666;margin-bottom:3px">Giờ xem hạn</label>
+    <select id="target-hour" style="width:100%;padding:7px 9px;border:1px solid #ccc;border-radius:5px;font-size:.83rem">
+      <option value="11">Tý  (23h–1h)</option>
+      <option value="12">Sửu (1h–3h)</option>
+      <option value="1">Dần (3h–5h)</option>
+      <option value="2">Mão (5h–7h)</option>
+      <option value="3">Thìn (7h–9h)</option>
+      <option value="4">Tỵ  (9h–11h)</option>
+      <option value="5">Ngọ (11h–13h)</option>
+      <option value="6" selected>Mùi (13h–15h)</option>
+      <option value="7">Thân (15h–17h)</option>
+      <option value="8">Dậu (17h–19h)</option>
+      <option value="9">Tuất (19h–21h)</option>
+      <option value="10">Hợi (21h–23h)</option>
+    </select>
+  </div>
+  <button class="main-btn" onclick="run()">Lập lá số & Luận giải</button>
+  <button onclick="backToStep1()" style="width:100%;margin-top:6px;padding:8px;background:none;border:1px solid #ccc;border-radius:6px;color:#888;font-size:.76rem;cursor:pointer">← Quay lại câu hỏi</button>
+  <div style="margin-top:12px;padding-top:10px;border-top:1px dashed #d8c8e8">
+    <div style="font-size:.74rem;font-weight:700;color:#6a3aaa;margin-bottom:6px">💞 Xem hợp đôi (2 lá số)</div>
+    <div style="font-size:.68rem;color:#888;margin-bottom:6px">Lập lá số người 1 → lưu A. Đổi ngày sinh, lập lá người 2 → lưu B. Rồi bấm Luận hợp đôi.</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <button onclick="saveCouple('A')" style="padding:7px 12px;border-radius:6px;border:1px solid #b89ad8;background:#f6f0fc;color:#5a3a8a;font-size:.72rem;cursor:pointer">Lưu làm lá số A</button>
+      <button onclick="saveCouple('B')" style="padding:7px 12px;border-radius:6px;border:1px solid #b89ad8;background:#f6f0fc;color:#5a3a8a;font-size:.72rem;cursor:pointer">Lưu làm lá số B</button>
+      <button onclick="runCoupleInterpret()" style="padding:7px 12px;border-radius:6px;border:none;background:linear-gradient(135deg,#c0392b,#e74c3c);color:#fff;font-size:.72rem;font-weight:600;cursor:pointer">Luận hợp đôi A×B</button>
+    </div>
+    <div id="couple-status" style="font-size:.68rem;color:#666;margin-top:6px">Chưa lưu lá nào.</div>
+    <div id="couple-result" style="margin-top:10px"></div>
+  </div>
+</div>
+<div class="summary" id="summary">
+  <div class="card">
+    <div class="sum-grid" id="sum-grid"></div>
+    <div class="laso-wrap"><div class="laso-grid" id="laso-grid"></div></div>
+    <div class="dbg-sec">
+      <button class="dbg-btn" onclick="document.getElementById('dbg').classList.toggle('show')">▶ Debug</button>
+      <div class="dbg-box" id="dbg"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════
+// CONSTANTS
+// ══════════════════════════════════════════════════
+const CHI  = [null,'Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi','Tý','Sửu']
+const CAN  = ['Giáp','Ất','Bính','Đinh','Mậu','Kỷ','Canh','Tân','Nhâm','Quý']
+const PAL  = ['Mệnh','Phụ Mẫu','Phúc Đức','Điền Trạch','Quan Lộc','Nô Bộc',
+              'Thiên Di','Tật Ách','Tài Bạch','Tử Tức','Phu Thê','Huynh Đệ']
+const CUC_NAME = {2:'Thủy Nhị Cục',3:'Mộc Tam Cục',4:'Kim Tứ Cục',5:'Thổ Ngũ Cục',6:'Hỏa Lục Cục'}
+const GRID_POS = {1:[4,1],2:[4,2],3:[4,3],4:[4,4],5:[3,4],6:[2,4],7:[1,4],8:[1,3],9:[1,2],10:[1,1],11:[2,1],12:[3,1]}
+
+// ── 3B: Sao phụ core ──
+const LOC_TON_MAP = {'Giáp':1,'Ất':2,'Bính':4,'Đinh':5,'Mậu':4,'Kỷ':5,'Canh':7,'Tân':8,'Nhâm':10,'Quý':11}
+const THIEN_MA_MAP = {'Thân':1,'Tý':1,'Thìn':1,'Tỵ':10,'Dậu':10,'Sửu':10,'Dần':7,'Ngọ':7,'Tuất':7,'Hợi':4,'Mão':4,'Mùi':4}
+const HOA_TINH_START = {'Dần':12,'Ngọ':12,'Tuất':12,'Thân':1,'Tý':1,'Thìn':1,'Tỵ':2,'Dậu':2,'Sửu':2,'Hợi':8,'Mão':8,'Mùi':8}
+const LINH_TINH_START= {'Dần':2,'Ngọ':2,'Tuất':2,'Thân':9,'Tý':9,'Thìn':9,'Tỵ':9,'Dậu':9,'Sửu':9,'Hợi':9,'Mão':9,'Mùi':9}
+
+// ── 3C: Sao phụ extended ──
+// ruleVariants: mode mặc định "hhvn" — đặt ở 1 block duy nhất để đổi môn phái
+const ruleVariants = {
+  khoiVietMode    : 'hhvn',
+  tuHoaMode       : 'hhvn',
+  quanPhucMode    : 'hhvn',
+  luuHaMode       : 'hhvn',
+  truongSinhMode  : 'tuSinh',  // variant mặc định
+}
+
+// ══ Step 4: Vòng Trường Sinh ══
+const TRUONG_SINH_SEQ = [
+  'Tràng Sinh','Mộc Dục','Quan Đới','Lâm Quan','Đế Vượng',
+  'Suy','Bệnh','Tử','Mộ','Tuyệt','Thai','Dưỡng'
+]
+// Khởi điểm Tràng Sinh theo Cục (variant tuSinh)
+const TRUONG_SINH_START_TUSANH = {
+  2: 7,  // Thủy Nhị Cục → Thân
+  3: 10, // Mộc Tam Cục  → Hợi
+  4: 4,  // Kim Tứ Cục   → Tỵ
+  5: 7,  // Thổ Ngũ Cục  → Thân
+  6: 1,  // Hỏa Lục Cục  → Dần
+}
+
+// A. Theo Can năm (hhvn)
+const THIEN_KHOI_MAP = {'Giáp':12,'Ất':11,'Bính':10,'Đinh':8,'Mậu':6,'Kỷ':5,'Canh':1,'Tân':2,'Nhâm':3,'Quý':4}
+const THIEN_VIET_MAP = {'Giáp':6,'Ất':7,'Bính':8,'Đinh':10,'Mậu':12,'Kỷ':11,'Canh':5,'Tân':4,'Nhâm':2,'Quý':1}
+const THIEN_QUAN_MAP = {'Giáp':6,'Ất':3,'Bính':4,'Đinh':1,'Mậu':2,'Kỷ':8,'Canh':10,'Tân':8,'Nhâm':9,'Quý':5}
+const THIEN_PHUC_MAP = {'Giáp':8,'Ất':7,'Bính':11,'Đinh':10,'Mậu':2,'Kỷ':1,'Canh':5,'Tân':4,'Nhâm':5,'Quý':4}
+const LUU_HA_MAP     = {'Giáp':8,'Ất':9,'Bính':6,'Đinh':3,'Mậu':4,'Kỷ':5,'Canh':11,'Tân':12,'Nhâm':1,'Quý':2}
+const THIEN_TRU_MAP  = {'Giáp':4,'Ất':5,'Bính':3,'Đinh':6,'Mậu':7,'Kỷ':8,'Canh':10,'Tân':11,'Nhâm':1,'Quý':2}
+// Lưu Văn Tinh = moveForward(Lộc Tồn, 4)  — tính lúc an sao, không dùng map
+
+const TU_HOA_MAP = {
+  'Giáp':{'Liêm Trinh':'Hóa Lộc','Phá Quân':'Hóa Quyền','Vũ Khúc':'Hóa Khoa','Thái Dương':'Hóa Kỵ'},
+  'Ất':{'Thiên Cơ':'Hóa Lộc','Thiên Lương':'Hóa Quyền','Tử Vi':'Hóa Khoa','Thái Âm':'Hóa Kỵ'},
+  'Bính':{'Thiên Đồng':'Hóa Lộc','Thiên Cơ':'Hóa Quyền','Văn Xương':'Hóa Khoa','Liêm Trinh':'Hóa Kỵ'},
+  'Đinh':{'Thái Âm':'Hóa Lộc','Thiên Đồng':'Hóa Quyền','Thiên Cơ':'Hóa Khoa','Cự Môn':'Hóa Kỵ'},
+  'Mậu':{'Tham Lang':'Hóa Lộc','Thái Âm':'Hóa Quyền','Hữu Bật':'Hóa Khoa','Thiên Cơ':'Hóa Kỵ'},
+  'Kỷ':{'Vũ Khúc':'Hóa Lộc','Tham Lang':'Hóa Quyền','Thiên Lương':'Hóa Khoa','Văn Khúc':'Hóa Kỵ'},
+  'Canh':{'Thái Dương':'Hóa Lộc','Vũ Khúc':'Hóa Quyền','Thái Âm':'Hóa Khoa','Thiên Đồng':'Hóa Kỵ'},
+  'Tân':{'Cự Môn':'Hóa Lộc','Thái Dương':'Hóa Quyền','Văn Khúc':'Hóa Khoa','Văn Xương':'Hóa Kỵ'},
+  'Nhâm':{'Thiên Lương':'Hóa Lộc','Tử Vi':'Hóa Quyền','Tả Phụ':'Hóa Khoa','Vũ Khúc':'Hóa Kỵ'},
+  'Quý':{'Phá Quân':'Hóa Lộc','Cự Môn':'Hóa Quyền','Thái Âm':'Hóa Khoa','Tham Lang':'Hóa Kỵ'},
+}
+
+// ══ B. Theo Chi năm — dùng nhóm tam hợp ══
+const LONG_TRI_MAP  = {'Tý':3,'Sửu':4,'Dần':5,'Mão':6,'Thìn':7,'Tỵ':8,'Ngọ':9,'Mùi':10,'Thân':11,'Dậu':12,'Tuất':1,'Hợi':2}
+const PHUNG_CAC_MAP = {'Tý':9,'Sửu':8,'Dần':7,'Mão':6,'Thìn':5,'Tỵ':4,'Ngọ':3,'Mùi':2,'Thân':1,'Dậu':12,'Tuất':11,'Hợi':10}
+// Tam hợp: HMM=Hợi/Mão/Mùi, DNT=Dần/Ngọ/Tuất, STT=Thân/Tý/Thìn, TDS=Tỵ/Dậu/Sửu
+function getTriGroup(yb){
+  if(['Hợi','Mão','Mùi'].includes(yb))return'HMM'
+  if(['Dần','Ngọ','Tuất'].includes(yb))return'DNT'
+  if(['Thân','Tý','Thìn'].includes(yb))return'STT'
+  return'TDS'
+}
+const HONG_LOAN_MAP = {HMM:3,DNT:2,STT:8,TDS:5}
+const DAO_HOA_MAP   = {HMM:11,DNT:5,STT:11,TDS:2}
+const HOA_CAI_MAP   = {HMM:6,DNT:9,STT:3,TDS:12}
+const KIEP_SAT_MAP  = {HMM:7,DNT:4,STT:1,TDS:10}
+const PHA_TOAI_MAP  = {HMM:8,DNT:5,STT:2,TDS:11}
+
+// ══ 3D: Vòng Thái Tuế (khởi chi năm, đi thuận 12 sao) ══
+const THAI_TUE_SEQ = [
+  'Thái Tuế','Thiếu Dương','Tang Môn','Thiếu Âm','Quan Phù','Tử Phù',
+  'Tuế Phá','Long Đức','Bạch Hổ','Phúc Đức Tinh','Điếu Khách','Trực Phù'
+]
+// Thiên Hư: khởi Ngọ(5) coi là Tý, đếm thuận đến chi năm
+// Thiên Khốc: khởi Ngọ(5) coi là Ngọ, đếm nghịch đến chi năm
+
+// ══ 3D: Vòng Lộc Tồn (13 sao, Dương Nam/Âm Nữ đi thuận, ngược lại đi nghịch) ══
+// Vòng Lộc Tồn: Bác Sỹ đồng cung Lộc Tồn (offset 0), an tiếp theo hướng di chuyển
+const LOC_VON_SEQ = [
+  'Bác Sỹ','Lực Sỹ','Thanh Long','Tiểu Hao','Tướng Quân',
+  'Tấu Thư','Phi Liêm','Hỷ Thần','Bệnh Phù','Đại Hao','Phục Binh','Quan Phủ'
+]
+
+// ══ 3D: Đức phúc, Cô Thần / Quả Tú ══
+// Giải Thần theo can năm (nhóm đôi)
+// Giải Thần theo chi năm sinh
+const GIAI_THAN_MAP = {'Tý':9,'Sửu':8,'Dần':7,'Mão':6,'Thìn':5,'Tỵ':4,'Ngọ':3,'Mùi':2,'Thân':1,'Dậu':12,'Tuất':11,'Hợi':10}
+// ══ Step 7A: Ngũ Hổ Độn — can cung Mệnh ══
+const NGU_HO_DON={
+  'Giáp':{'Dần':'Bính','Mão':'Đinh','Thìn':'Mậu','Tỵ':'Kỷ','Ngọ':'Canh','Mùi':'Tân','Thân':'Nhâm','Dậu':'Quý','Tuất':'Giáp','Hợi':'Ất','Tý':'Bính','Sửu':'Đinh'},
+  'Ất':{'Dần':'Mậu','Mão':'Kỷ','Thìn':'Canh','Tỵ':'Tân','Ngọ':'Nhâm','Mùi':'Quý','Thân':'Giáp','Dậu':'Ất','Tuất':'Bính','Hợi':'Đinh','Tý':'Mậu','Sửu':'Kỷ'},
+  'Bính':{'Dần':'Canh','Mão':'Tân','Thìn':'Nhâm','Tỵ':'Quý','Ngọ':'Giáp','Mùi':'Ất','Thân':'Bính','Dậu':'Đinh','Tuất':'Mậu','Hợi':'Kỷ','Tý':'Canh','Sửu':'Tân'},
+  'Đinh':{'Dần':'Nhâm','Mão':'Quý','Thìn':'Giáp','Tỵ':'Ất','Ngọ':'Bính','Mùi':'Đinh','Thân':'Mậu','Dậu':'Kỷ','Tuất':'Canh','Hợi':'Tân','Tý':'Nhâm','Sửu':'Quý'},
+  'Mậu':{'Dần':'Giáp','Mão':'Ất','Thìn':'Bính','Tỵ':'Đinh','Ngọ':'Mậu','Mùi':'Kỷ','Thân':'Canh','Dậu':'Tân','Tuất':'Nhâm','Hợi':'Quý','Tý':'Giáp','Sửu':'Ất'},
+  'Kỷ':{'Dần':'Bính','Mão':'Đinh','Thìn':'Mậu','Tỵ':'Kỷ','Ngọ':'Canh','Mùi':'Tân','Thân':'Nhâm','Dậu':'Quý','Tuất':'Giáp','Hợi':'Ất','Tý':'Bính','Sửu':'Đinh'},
+  'Canh':{'Dần':'Mậu','Mão':'Kỷ','Thìn':'Canh','Tỵ':'Tân','Ngọ':'Nhâm','Mùi':'Quý','Thân':'Giáp','Dậu':'Ất','Tuất':'Bính','Hợi':'Đinh','Tý':'Mậu','Sửu':'Kỷ'},
+  'Tân':{'Dần':'Canh','Mão':'Tân','Thìn':'Nhâm','Tỵ':'Quý','Ngọ':'Giáp','Mùi':'Ất','Thân':'Bính','Dậu':'Đinh','Tuất':'Mậu','Hợi':'Kỷ','Tý':'Canh','Sửu':'Tân'},
+  'Nhâm':{'Dần':'Nhâm','Mão':'Quý','Thìn':'Giáp','Tỵ':'Ất','Ngọ':'Bính','Mùi':'Đinh','Thân':'Mậu','Dậu':'Kỷ','Tuất':'Canh','Hợi':'Tân','Tý':'Nhâm','Sửu':'Quý'},
+  'Quý':{'Dần':'Giáp','Mão':'Ất','Thìn':'Bính','Tỵ':'Đinh','Ngọ':'Mậu','Mùi':'Kỷ','Thân':'Canh','Dậu':'Tân','Tuất':'Nhâm','Hợi':'Quý','Tý':'Giáp','Sửu':'Ất'}
+}
+
+// ══ Step 5: Tuần / Triệt ══
+const TRIET_MAP={
+  'Giáp':[7,8],'Kỷ':[7,8],
+  'Ất':[5,6],'Canh':[5,6],
+  'Bính':[3,4],'Tân':[3,4],
+  'Đinh':[1,2],'Nhâm':[1,2],
+  'Mậu':[11,12],'Quý':[11,12]
+}
+// Lookup Tuần theo Giáp đầu vòng hoa giáp
+const TUAN_LOOKUP={
+  'Giáp Tý':[9,10],'Giáp Tuất':[7,8],'Giáp Thân':[5,6],
+  'Giáp Ngọ':[3,4],'Giáp Thìn':[1,2],'Giáp Dần':[11,12]
+}
+const BRANCH_0BASED=['Tý','Sửu','Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi']
+const BRANCH_0TO12=[11,12,1,2,3,4,5,6,7,8,9,10]
+
+// Cô Thần / Quả Tú theo nhóm tứ hành xung
+function getQuadGroup(yb){
+  if(['Dần','Mão','Thìn'].includes(yb))return'DMT'
+  if(['Tỵ','Ngọ','Mùi'].includes(yb))return'TNM'
+  if(['Thân','Dậu','Tuất'].includes(yb))return'SDT'
+  return'HTT'
+}
+const CO_THAN_MAP = {DMT:4,TNM:7,SDT:10,HTT:1}
+const QUA_TU_MAP  = {DMT:12,TNM:3,SDT:6,HTT:9}
+// Thiên Hỷ: khởi Dậu(8) là Tý, đếm nghịch đến chi năm
+// Đường Phù = Lộc Tồn + 5, Quốc Ấn = Đường Phù + 3
+
+// Nạp Âm list
+const NAP_AM = [
+  {n:'Hải Trung Kim',e:'Kim'},{n:'Lư Trung Hỏa',e:'Hỏa'},{n:'Đại Lâm Mộc',e:'Mộc'},
+  {n:'Lộ Bàng Thổ',e:'Thổ'},{n:'Kiếm Phong Kim',e:'Kim'},{n:'Sơn Đầu Hỏa',e:'Hỏa'},
+  {n:'Giản Hạ Thủy',e:'Thủy'},{n:'Thành Đầu Thổ',e:'Thổ'},{n:'Bạch Lạp Kim',e:'Kim'},
+  {n:'Dương Liễu Mộc',e:'Mộc'},{n:'Tuyền Trung Thủy',e:'Thủy'},{n:'Ốc Thượng Thổ',e:'Thổ'},
+  {n:'Tích Lịch Hỏa',e:'Hỏa'},{n:'Tùng Bách Mộc',e:'Mộc'},{n:'Trường Lưu Thủy',e:'Thủy'},
+  {n:'Sa Trung Kim',e:'Kim'},{n:'Sơn Hạ Hỏa',e:'Hỏa'},{n:'Bình Địa Mộc',e:'Mộc'},
+  {n:'Bích Thượng Thổ',e:'Thổ'},{n:'Kim Bạch Kim',e:'Kim'},{n:'Phúc Đăng Hỏa',e:'Hỏa'},
+  {n:'Thiên Hà Thủy',e:'Thủy'},{n:'Đại Trạch Thổ',e:'Thổ'},{n:'Thoa Xuyến Kim',e:'Kim'},
+  {n:'Tang Đố Mộc',e:'Mộc'},{n:'Đại Khê Thủy',e:'Thủy'},{n:'Sa Trung Thổ',e:'Thổ'},
+  {n:'Thiên Thượng Hỏa',e:'Hỏa'},{n:'Thạch Lựu Mộc',e:'Mộc'},{n:'Đại Hải Thủy',e:'Thủy'}
+]
+
+// ══════════════════════════════════════════════════
+// [3A] HELPERS
+// ══════════════════════════════════════════════════
+function clampMod(n,m){ return ((n%m)+m)%m }
+function normalize12(n){ return (((n-1)%12)+12)%12+1 }
+function moveForward(f,s){ return normalize12(f+s) }
+function moveBackward(f,s){ return normalize12(f-s) }
+function countFrom(start,offset,dir){ return dir==='f'?moveForward(start,offset):moveBackward(start,offset) }
+function chiName(i){ return CHI[i]??'—' }
+function chiIdx(name){ return CHI.indexOf(name) }
+
+function initChart(){
+  return {
+    mainStarsByPalace: Array.from({length:13},()=>[]),
+    subStarsByPalace : Array.from({length:13},()=>[]),
+    overlays: [],
+    truongSinhByPalace: Array(13).fill('')  // Step 4
+  }
+}
+function addStar(chart, palIdx, name, group){
+  const idx=normalize12(palIdx)
+  if(isNaN(idx)||idx<1||idx>12){ console.warn('addStar bad idx:',palIdx,'->',idx,'star:',name); return }
+  if(group==='main') chart.mainStarsByPalace[idx].push(name)
+  else               chart.subStarsByPalace[idx].push(name)
+}
+function addOverlay(chart, palIdxArr, name, meta){
+  chart.overlays.push({name, palaces:palIdxArr.map(normalize12), meta})
+}
+
+// ══════════════════════════════════════════════════
+// STEP 4: AN VÒNG TRƯỜNG SINH
+// ══════════════════════════════════════════════════
+function anTruongSinh(chart, cuc, amDuong){
+  const mode = ruleVariants.truongSinhMode
+  let startPos
+  if(mode === 'tuSinh'){
+    startPos = TRUONG_SINH_START_TUSANH[cuc] || 7
+  } else {
+    // placeholder cho mode khác sau này
+    startPos = TRUONG_SINH_START_TUSANH[cuc] || 7
+  }
+  const fwd = (amDuong === 'Dương Nam' || amDuong === 'Âm Nữ')
+  TRUONG_SINH_SEQ.forEach((name, i) => {
+    const pos = fwd ? moveForward(startPos, i) : moveBackward(startPos, i)
+    chart.truongSinhByPalace[pos] = name
+  })
+}
+
+// ══════════════════════════════════════════════════
+// STEP 5: TUẦN / TRIỆT
+// ══════════════════════════════════════════════════
+function getTuanPalaces(lunarYear){
+  // Cách 1: Lookup table
+  const si=clampMod(lunarYear-4,10)
+  const bi=clampMod(lunarYear-4,12)
+  const giapBr0=clampMod(bi-si,12)
+  const key='Giáp '+BRANCH_0BASED[giapBr0]
+  const lookup=TUAN_LOOKUP[key]
+
+  // Cách 2: Thuật toán (verify)
+  const quyBr0=clampMod(giapBr0+9,12)
+  const algo=[
+    BRANCH_0TO12[clampMod(quyBr0+1,12)],
+    BRANCH_0TO12[clampMod(quyBr0+2,12)]
+  ].sort((a,b)=>a-b)
+
+  // Test đối chiếu
+  const match=JSON.stringify(lookup?.slice().sort((a,b)=>a-b))===JSON.stringify(algo)
+  console.log('[Step5] Tuần key:',key,'| lookup:',lookup,'| algo:',algo,'| match:',match)
+
+  return lookup || algo
+}
+
+function anTuanTriet(chart, ys, lunarYear){
+  // Triệt: theo can năm
+  const triet=TRIET_MAP[ys]
+  if(triet) addOverlay(chart, triet, 'Triệt', {canNam:ys})
+
+  // Tuần: theo hoa giáp
+  const tuan=getTuanPalaces(lunarYear)
+  if(tuan) addOverlay(chart, tuan, 'Tuần', {giapVong:lunarYear})
+}
+
+// ══════════════════════════════════════════════════
+// LUNAR CONVERSION
+// ══════════════════════════════════════════════════
+function INT(d){return Math.floor(d)}
+function jdFromDate(dd,mm,yy){
+  const a=INT((14-mm)/12),y=yy+4800-a,m=mm+12*a-3
+  let jd=dd+INT((153*m+2)/5)+365*y+INT(y/4)-INT(y/100)+INT(y/400)-32045
+  if(jd<2299161)jd=dd+INT((153*m+2)/5)+365*y+INT(y/4)-32083
+  return jd
+}
+function getNewMoonDay(k,tz){
+  const T=k/1236.85,T2=T*T,T3=T2*T
+  let Jde=2415020.75933+29.53058868*k+0.0001178*T2-0.000000155*T3
+  Jde+=0.00033*Math.sin((166.56+132.87*T-0.009173*T2)*Math.PI/180)
+  const M=359.2242+29.10535608*k-0.0000333*T2-0.00000347*T3
+  const Mpr=306.0253+385.81691806*k+0.0107306*T2+0.00001236*T3
+  const F=21.2964+390.67050646*k-0.0016528*T2-0.00000239*T3
+  const C1=(0.1734-0.000393*T)*Math.sin(M*Math.PI/180)+0.0021*Math.sin(2*M*Math.PI/180)
+  const C2=-0.4068*Math.sin(Mpr*Math.PI/180)+0.0161*Math.sin(2*Mpr*Math.PI/180)
+  const C3=-0.0004*Math.sin(3*Mpr*Math.PI/180)+0.0104*Math.sin(2*F*Math.PI/180)
+  const C4=-0.0051*Math.sin((M+Mpr)*Math.PI/180)-0.0074*Math.sin((M-Mpr)*Math.PI/180)
+  const C5=-0.0004*Math.sin((2*F+M)*Math.PI/180)-0.0004*Math.sin((2*F-M)*Math.PI/180)
+  const C6=0.0021*Math.sin((2*F-Mpr)*Math.PI/180)
+  return INT(Jde+C1+C2+C3+C4+C5+C6+0.5+tz/24)
+}
+function getSunLong(jdn,tz){
+  const T=(jdn-0.5-tz/24-2451545)/36525,T2=T*T,dr=Math.PI/180
+  let M=357.5291+35999.0503*T-0.0001559*T2
+  let L0=280.46645+36000.76983*T+0.0003032*T2
+  let DL=(1.9146-0.004817*T-0.000014*T2)*Math.sin(dr*M)
+  DL+=(0.019993-0.000101*T)*Math.sin(dr*2*M)+0.00029*Math.sin(dr*3*M)
+  let L=(L0+DL)*dr;L-=Math.PI*2*INT(L/(Math.PI*2))
+  return INT(L/(Math.PI/6))
+}
+function getLunarMonth11(yy,tz){
+  const off=jdFromDate(31,12,yy)-2415021
+  const k=INT(off/29.530588853)
+  let nm=getNewMoonDay(k,tz)
+  if(getSunLong(nm,tz)>=9)nm=getNewMoonDay(k-1,tz)
+  return nm
+}
+function getLeapOffset(a11,tz){
+  const k=INT((a11-2415021.076998695)/29.530588853+0.5)
+  let last=0,i=1,arc=getSunLong(getNewMoonDay(k+i,tz),tz)
+  do{last=arc;i++;arc=getSunLong(getNewMoonDay(k+i,tz),tz)}while(arc!==last&&i<14)
+  return i-1
+}
+function solar2Lunar(dd,mm,yy,tz){
+  const dayNum=jdFromDate(dd,mm,yy)
+  const k=INT((dayNum-2415021.076998695)/29.530588853)
+  let ms=getNewMoonDay(k+1,tz)
+  if(ms>dayNum)ms=getNewMoonDay(k,tz)
+  let a11=getLunarMonth11(yy,tz),b11=a11,lunarYear
+  if(a11>=ms){lunarYear=yy;a11=getLunarMonth11(yy-1,tz)}
+  else{lunarYear=yy+1;b11=getLunarMonth11(yy+1,tz)}
+  const lunarDay=dayNum-ms+1,diff=INT((ms-a11)/29)
+  let isLeap=false,lunarMonth=diff+11
+  if(b11-a11>365){const lo=getLeapOffset(a11,tz);if(diff>=lo){lunarMonth=diff+10;if(diff===lo)isLeap=true}}
+  if(lunarMonth>12)lunarMonth-=12
+  if(lunarMonth>=11&&diff<4)lunarYear--
+  return{lunarDay,lunarMonth,lunarYear,isLeap}
+}
+
+// ══════════════════════════════════════════════════
+// YEAR STEM / BRANCH
+// ══════════════════════════════════════════════════
+function getYearStemIdx(y){ return clampMod(y-4,10) }
+function getYearBranchIdx(y){ return [11,12,1,2,3,4,5,6,7,8,9,10][clampMod(y-4,12)] }
+function getYearStem(y){ return CAN[getYearStemIdx(y)] }
+function getYearBranch(y){ return chiName(getYearBranchIdx(y)) }
+
+// ══════════════════════════════════════════════════
+// STEP 1: MỆNH / THÂN (giữ nguyên từ step 1+2)
+// ══════════════════════════════════════════════════
+function getMenh(m,h){ return clampMod(m-h,12)+1 }
+function getThan(m,h){ return normalize12(clampMod(m+h-2,12)+1) }
+
+// ══════════════════════════════════════════════════
+// STEP 2: CỤC & TỬ VI (Nạp Âm — giữ nguyên)
+// ══════════════════════════════════════════════════
+function getDanStemIdx(ysi){
+  if(ysi===0||ysi===5)return 2; if(ysi===1||ysi===6)return 4
+  if(ysi===2||ysi===7)return 6; if(ysi===3||ysi===8)return 8; return 0
+}
+function getMenhStemIdx(lunarYear,menhIndex){
+  return clampMod(getDanStemIdx(getYearStemIdx(lunarYear))+(menhIndex-1),10)
+}
+function getSexIdx(si,bi){ const b=(bi+1)%12; for(let i=0;i<60;i++) if(i%10===si&&i%12===b)return i; return 0 }
+function getNapAm(sexIdx){ return NAP_AM[Math.floor(sexIdx/2)] ?? {n:'—',e:'—'} }
+function elemToCuc(e){ return{Thủy:2,Mộc:3,Kim:4,Thổ:5,Hỏa:6}[e]||2 }
+
+function getViTriTuVi(lunarDay,lunarYear,menhIndex){
+  const msi=getMenhStemIdx(lunarYear,menhIndex)
+  const sexi=getSexIdx(msi,menhIndex)
+  const nap=getNapAm(sexi)
+  const C=elemToCuc(nap.e)
+  let X=0; while((lunarDay+X)%C!==0)X++
+  const Q=(lunarDay+X)/C
+  const tv=normalize12(X%2===0?Q+X:Q-X)
+  return{C,tv,nap,X,Q}
+}
+
+// ══════════════════════════════════════════════════
+// STEP 2: AN 14 CHÍNH TINH
+// ══════════════════════════════════════════════════
+function anChinhTinh(chart,tv){
+  const add=(pos,name)=>addStar(chart,pos,name,'main')
+  add(tv,'Tử Vi'); add(tv-1,'Thiên Cơ'); add(tv-3,'Thái Dương')
+  add(tv-4,'Vũ Khúc'); add(tv-5,'Thiên Đồng'); add(tv-8,'Liêm Trinh')
+  let phu=14-tv; if(tv!==1&&tv!==7&&phu>12)phu-=12
+  add(phu,'Thiên Phủ'); add(phu+1,'Thái Âm'); add(phu+2,'Tham Lang')
+  add(phu+3,'Cự Môn'); add(phu+4,'Thiên Tướng'); add(phu+5,'Thiên Lương')
+  add(phu+6,'Thất Sát'); add(phu+10,'Phá Quân')
+  return normalize12(phu)
+}
+
+// ══════════════════════════════════════════════════
+// [3B] AN SAO PHỤ CORE
+// ══════════════════════════════════════════════════
+function anSaoPhuCore(chart, ys, yb, lunarMonth, h, amDuong){
+  const sub=(pos,name)=>addStar(chart,pos,name,'sub')
+
+  // 1) Lộc Tồn
+  // 2) Kình Dương = cung SAU Lộc Tồn theo chiều KĐH = moveForward
+  // 3) Đà La = cung TRƯỚC Lộc Tồn theo chiều KĐH = moveBackward
+  const loc=LOC_TON_MAP[ys]
+  if(loc){ sub(loc,'Lộc Tồn'); sub(moveForward(loc,1),'Kình Dương'); sub(moveBackward(loc,1),'Đà La') }
+
+  // 4) Thiên Mã
+  const ma=THIEN_MA_MAP[yb]; if(ma) sub(ma,'Thiên Mã')
+
+  // 5) Tả Phụ: khởi Thìn(3), tháng 1, đếm thuận
+  const taPhu=moveForward(3, lunarMonth-1); sub(taPhu,'Tả Phụ')
+
+  // 6) Hữu Bật: khởi Tuất(9), tháng 1, đếm nghịch
+  const huuBat=moveBackward(9, lunarMonth-1); sub(huuBat,'Hữu Bật')
+
+  // 7) Văn Xương: khởi Tuất(9), giờ Tý, đếm nghịch
+  const vx=moveBackward(9, h-1); sub(vx,'Văn Xương')
+
+  // 8) Văn Khúc: khởi Thìn(3), giờ Tý, đếm thuận
+  const vk=moveForward(3, h-1); sub(vk,'Văn Khúc')
+
+  // 9) Hỏa Tinh / Linh Tinh
+  const hoaS=HOA_TINH_START[yb]||1, linhS=LINH_TINH_START[yb]||1
+  const fwdHoa=(amDuong==='Dương Nam'||amDuong==='Âm Nữ')
+  sub(fwdHoa?moveForward(hoaS,h-1):moveBackward(hoaS,h-1),'Hỏa Tinh')
+  sub(fwdHoa?moveBackward(linhS,h-1):moveForward(linhS,h-1),'Linh Tinh')
+
+  // 10-11) Địa Không / Địa Kiếp: khởi Hợi(10), giờ Tý
+  sub(moveBackward(10,h-1),'Địa Không')
+  sub(moveForward(10,h-1),'Địa Kiếp')
+
+  return {taPhu, huuBat, vx, vk}
+}
+
+// ══════════════════════════════════════════════════
+// [3C] AN SAO PHỤ EXTENDED
+// ══════════════════════════════════════════════════
+function anSaoPhuExtended(chart, ys, yb, lunarMonth, lunarDay, h, menhIdx, thanIdx, refs, amDuong){
+  const sub=(pos,name)=>addStar(chart,pos,name,'sub')
+  const ybIdx=chiIdx(yb)
+  const tg=getTriGroup(yb)
+  const qg=getQuadGroup(yb)
+
+  // ── A. Theo Can năm ──
+  sub(THIEN_KHOI_MAP[ys],'Thiên Khôi')
+  sub(THIEN_VIET_MAP[ys],'Thiên Việt')
+  sub(THIEN_QUAN_MAP[ys]||1,'Thiên Quan')
+  sub(THIEN_PHUC_MAP[ys]||1,'Thiên Phúc')
+  sub(LUU_HA_MAP[ys]||1,'Lưu Hà')
+  sub(THIEN_TRU_MAP[ys]||1,'Thiên Trù')
+  const loc=LOC_TON_MAP[ys]
+  if(loc) sub(moveForward(loc,3),'Lưu Văn Tinh')  // Lộc=1, đếm đến 4 = +3 bước
+
+  // Tứ Hóa: tìm sao trong chart và gắn hóa kèm
+  const hoaMap=TU_HOA_MAP[ys]||{}
+  Object.entries(hoaMap).forEach(([starName,hoaType])=>{
+    for(let i=1;i<=12;i++){
+      if(chart.mainStarsByPalace[i].includes(starName)||chart.subStarsByPalace[i].includes(starName)){
+        chart.subStarsByPalace[i].push(hoaType+'('+starName+')')
+      }
+    }
+  })
+
+  // ── B. Theo Chi năm ──
+  sub(LONG_TRI_MAP[yb]||1,'Long Trì')
+  sub(PHUNG_CAC_MAP[yb]||1,'Phượng Các')
+  sub(HONG_LOAN_MAP[tg]||1,'Hồng Loan')
+  sub(DAO_HOA_MAP[tg]||1,'Đào Hoa')
+  sub(HOA_CAI_MAP[tg]||1,'Hoa Cái')
+  sub(KIEP_SAT_MAP[tg]||1,'Kiếp Sát')
+  sub(PHA_TOAI_MAP[tg]||1,'Phá Toái')
+  // Thiên Không = cung trước Thái Tuế (Thái Tuế = chi năm)
+  sub(moveForward(ybIdx,1),'Thiên Không')
+  // Thiên Tài: từ Mệnh coi là Tý, đếm thuận đến chi năm
+  sub(moveForward(menhIdx, clampMod(ybIdx-11,12)),'Thiên Tài')
+  // Thiên Thọ: từ Thân coi là Tý, đếm thuận đến chi năm
+  sub(moveForward(thanIdx, clampMod(ybIdx-11,12)),'Thiên Thọ')
+
+  // ── C. Theo tháng sinh ──
+  sub(moveForward(8, lunarMonth-1),'Thiên Hình')
+  const dieuPos=moveForward(12,lunarMonth-1)
+  sub(dieuPos,'Thiên Diêu'); sub(dieuPos,'Thiên Y')
+  sub(moveForward(7, lunarMonth-1),'Thiên Giải')
+  sub(moveForward(6, lunarMonth-1),'Địa Giải')
+
+  // ── D. Theo ngày âm lịch (1-30) ──
+  const {taPhu,huuBat,vx,vk}=refs
+  sub(moveForward(taPhu, lunarDay-1),'Tam Thai')
+  sub(moveBackward(huuBat, lunarDay-1),'Bát Tọa')
+  sub(moveBackward(moveForward(vx, lunarDay-1),1),'Ân Quang')
+  // Thiên Quý: VK=1, nghịch đến ngày, lùi 1 cung theo chiều thuận (+1)
+  sub(moveForward(moveBackward(vk, lunarDay-1),1),'Thiên Quý')
+
+  // ── E. Sao cố định theo giờ / vị trí ──
+  sub(moveForward(5, h-1),'Thai Phụ')   // khởi Ngọ=Tý
+  sub(moveForward(1, h-1),'Phong Cáo')  // khởi Dần=Tý
+  sub(3,'Thiên La'); sub(9,'Địa Võng')
+  sub(moveForward(menhIdx,5),'Thiên Thương')
+  sub(moveForward(menhIdx,7),'Thiên Sứ')
+
+  // ── 3D: Vòng Thái Tuế (khởi chi năm, thuận) ──
+  THAI_TUE_SEQ.forEach((name,i)=>sub(moveForward(ybIdx,i),name))
+  // Thiên Hư: khởi Ngọ(5) là Tý(h Tý offset=0), đếm thuận đến chi năm
+  sub(moveForward(5, clampMod(ybIdx-11,12)),'Thiên Hư')
+  // Thiên Khốc: khởi Ngọ(5) là Ngọ(offset=0), đếm nghịch đến chi năm
+  sub(normalize12(ybIdx-4),'Thiên Khốc')  // Ngọ=Ngọ, nghịch đến chiNam = chiNam-4
+
+  // ── 3D: Vòng Lộc Tồn (13 sao, Dương Nam/Âm Nữ thuận, còn lại nghịch) ──
+  const locFwd=(amDuong==='Dương Nam'||amDuong==='Âm Nữ')
+  if(loc){
+    LOC_VON_SEQ.forEach((name,i)=>{
+      sub(locFwd?moveForward(loc,i):moveBackward(loc,i), name)
+    })
+  }
+
+  // ── 3D: Nhóm đức phúc ──
+  // Thiên Đức = đồng cung Phúc Đức Tinh (Thái Tuế + 9)
+  sub(moveForward(ybIdx,9),'Thiên Đức')
+  // Nguyệt Đức = đồng cung Tử Phù (Phúc Đức + 2 ≡ Tử Tức = Mệnh + 9... 
+  // spec: Nguyệt Đức = đồng cung Tử Phù = Thái Tuế + 5
+  sub(moveForward(ybIdx,5),'Nguyệt Đức')
+  // Giải Thần: theo can năm (nhóm đôi)
+  sub(GIAI_THAN_MAP[yb]||1,'Giải Thần')  // theo chi năm
+
+  // ── 3D: Cô Thần / Quả Tú ──
+  sub(CO_THAN_MAP[qg]||1,'Cô Thần')
+  sub(QUA_TU_MAP[qg]||1,'Quả Tú')
+
+  // ── 3D: Hỷ Tinh, Đường Phù, Quốc Ấn ──
+  // Thiên Hỷ: khởi Dậu(8) là Tý, đếm nghịch đến chi năm
+  sub(moveBackward(8, clampMod(ybIdx-11,12)),'Thiên Hỷ')
+  // Đường Phù = Lộc Tồn + 5, Quốc Ấn = Đường Phù + 3
+  if(loc){ sub(moveForward(loc,5),'Đường Phù'); sub(moveForward(loc,8),'Quốc Ấn') }
+
+  // ── Đẩu Quân ──
+  // Bước 1: từ Thái Tuế (tháng 1), đếm NGHỊCH đến tháng sinh
+  const dauB1 = moveBackward(ybIdx, lunarMonth-1)
+  // Bước 2: từ cung đó (coi là giờ Tý=h=1), đếm THUẬN đến giờ sinh
+  const dauQuan = moveForward(dauB1, h-1)
+  sub(dauQuan, 'Đẩu Quân')
+}
+
+// ══════════════════════════════════════════════════
+// [3A] buildNatalChart — ENGINE ENTRY POINT
+// ══════════════════════════════════════════════════
+function buildNatalChart(input){
+  const {lunarDay,lunarMonth,lunarYear,isLeap,branchH,gender} = input
+  const ys  = getYearStem(lunarYear)
+  const yb  = getYearBranch(lunarYear)
+  const ysi = getYearStemIdx(lunarYear)
+  const ybi = getYearBranchIdx(lunarYear)
+
+  const isYangYear = ['Giáp','Bính','Mậu','Canh','Nhâm'].includes(ys)
+  const isNam      = gender==='male'
+  const amDuong    = isYangYear&&isNam?'Dương Nam':!isYangYear&&!isNam?'Âm Nữ':isYangYear&&!isNam?'Dương Nữ':'Âm Nam'
+
+  // h = thứ tự giờ Tý=1
+  const h = normalize12(branchH-10)
+
+  // Step 1
+  const menhIndex = getMenh(lunarMonth, h)
+  const thanIndex  = getThan(lunarMonth, h)
+
+  // Step 2
+  const {C,tv,nap,X,Q} = getViTriTuVi(lunarDay,lunarYear,menhIndex)
+
+  // Map 12 cung
+  const palaceMap={}
+  for(let i=0;i<12;i++) palaceMap[moveForward(menhIndex,i)]=PAL[i]
+
+  // Init chart
+  const chart = initChart()
+
+  // An chính tinh
+  anChinhTinh(chart, tv)
+
+  // 3B: sao phụ core
+  const refs = anSaoPhuCore(chart, ys, yb, lunarMonth, h, amDuong)
+
+  // 3C+3D: sao phụ extended
+  anSaoPhuExtended(chart, ys, yb, lunarMonth, lunarDay, h, menhIndex, thanIndex, refs, amDuong)
+
+  // Step 4: vòng Trường Sinh
+  anTruongSinh(chart, C, amDuong)
+
+  // Step 5: Tuần / Triệt
+  anTuanTriet(chart, ys, lunarYear)
+
+  const debug={lunarDay,lunarMonth,lunarYear,isLeap,ys,yb,amDuong,h,menhIndex,thanIndex,C,cucName:CUC_NAME[C],tv:chiName(tv),nap,X,Q,ruleVariants,truongSinhMode:ruleVariants.truongSinhMode,overlays:chart.overlays}
+  console.log('[DEBUG chart]', JSON.stringify(debug,null,2))
+
+  // Step 7A: can 12 cung
+  const canMap=buildCanMap(ys, menhIndex)
+
+  return {input,menhIndex,thanIndex,yearStemIndex:ysi,yearBranchIndex:ybi,canMap,
+          cuc:C,cucName:CUC_NAME[C],viTriTuVi:tv,napAm:nap,
+          mainStarsByPalace:chart.mainStarsByPalace,
+          subStarsByPalace:chart.subStarsByPalace,
+          overlays:chart.overlays,
+          truongSinhByPalace:chart.truongSinhByPalace,
+          palaceMap,amDuong,ys,yb,debug}
+}
+
+// ══════════════════════════════════════════════════
+// STEP 7A: FUNCTIONS — Can cung Mệnh & Can 12 cung
+// ══════════════════════════════════════════════════
+function getCanCungMenh(canNamSinh, menhChiName){
+  return NGU_HO_DON[canNamSinh]?.[menhChiName] || null
+}
+
+function buildCanMap(canNamSinh, menhIndex){
+  // Bước 1: can năm sinh đã có (canNamSinh)
+  // Bước 2: tra NGU_HO_DON -> can của cung DẦN (khởi điểm cố định)
+  const canDan = NGU_HO_DON[canNamSinh]?.['Dần']
+  if(!canDan) return {}
+  const canDanIdx = CAN.indexOf(canDan)
+  // Bước 3: an thuận từ Dần (branchIdx=1) đến Sửu (branchIdx=12)
+  const map={}
+  for(let i=0;i<12;i++){
+    const chiIdx = i+1          // Dần=1, Mão=2, ..., Sửu=12
+    const canIdx = (canDanIdx+i)%10
+    map[chiIdx] = CAN[canIdx]
+  }
+  return map  // {branchIdx(1-12): canName}
+}
+
+// ══════════════════════════════════════════════════
+// STEP 6: TIME FLOW ENGINE
+// ══════════════════════════════════════════════════
+
+// Tý-based list (spec step6 dùng 0-index Tý=0)
+const cungList=['Tý','Sửu','Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi']
+function cungChiToIndex(cung){ return cungList.indexOf(cung) }
+function getYearCan(year){
+  return CAN[clampMod(year-4,10)]
+}
+// Convert branchIdx (Dần=1) sang cungList name
+function branchIdxToCung(idx){ return chiName(idx) }
+// Convert cungList name sang branchIdx (Dần=1)
+function cungToBranchIdx(cung){ return CHI.indexOf(cung) }
+
+class TimeFlowEngine{
+  constructor(natalResult){
+    this.natal      = natalResult
+    this.cuc        = natalResult.cuc
+    this.menhCung   = chiName(natalResult.menhIndex)  // tên địa chi
+    this.lunarYearOfBirth = natalResult.input.lunarYear
+    this.thangSinh  = natalResult.input.lunarMonth
+    this.birthYear  = new Date(natalResult.input.dob).getFullYear()
+    this.lunarBirthYear = natalResult.input.lunarYear  // năm ÂM dùng cho đại/tiểu hạn
+    const isMale    = natalResult.input.gender==='male'
+    const isYangYear= ['Giáp','Bính','Mậu','Canh','Nhâm'].includes(natalResult.ys)
+    this.isReverse  = (isMale&&!isYangYear)||(!isMale&&isYangYear)
+    this.isMale     = isMale
+    // gioSinh.hourNumber: giờ theo cungList (Tý=0)
+    const h=normalize12(natalResult.input.branchH-10) // h Tý=1..Hợi=12
+    this.gioSinh    = { hourNumber: h-1 } // 0-based: Tý=0..Hợi=11
+  }
+
+  // ── Đại Hạn ──
+  // targetLunarYear: NĂM ÂM của năm xét hạn
+  // tuổi âm (mụ) = năm âm xét - năm âm sinh + 1
+  getDaiHanStart(targetLunarYear){
+    const tuoiAm=targetLunarYear-this.lunarBirthYear+1
+    const cucAge=this.cuc
+    let index=cungChiToIndex(this.menhCung)
+
+    if(tuoiAm<cucAge){
+      return{cung:cungList[index],namConLai:cucAge-tuoiAm,daVao:false,namThu:0,startAge:cucAge,endAge:cucAge+9}
+    }
+    const delta=tuoiAm-cucAge
+    const steps=Math.floor(delta/10)
+    const namThu=(delta%10)+1
+    const step=this.isReverse?-1:1
+    index=(index+steps*step+12)%12
+    const startAge=cucAge+steps*10
+    return{cung:cungList[index],namConLai:10-(delta%10),daVao:true,namThu,delta,startAge,endAge:startAge+9}
+  }
+
+  // ── Tiểu Hạn ──
+  // offset = (tuổi âm - daiHan.startAge) % 12
+  // tuổi âm = năm âm xét - năm âm sinh + 1
+  getTieuHan(targetLunarYear, daiHanStartAge, daiHanCung){
+    const tuoiAm = targetLunarYear - this.lunarBirthYear + 1
+    const offset = (tuoiAm - daiHanStartAge) % 12
+    const startIndex = cungChiToIndex(daiHanCung)
+    return cungList[(startIndex + offset + 12) % 12]
+  }
+
+  // ── Lưu Nguyệt Cách 4 ──
+  getLuuNguyetCach4(tieuHanCung, thangSinh, gioSinh, currentMonth){
+    let cur=cungChiToIndex(tieuHanCung)
+    // Lùi thangSinh bước
+    for(let i=0;i<thangSinh;i++) cur=(cur+11)%12
+    // Tiến gioSinh.hourNumber bước
+    for(let i=0;i<gioSinh.hourNumber;i++) cur=(cur+1)%12
+    // Phân phối 12 tháng thuận
+    return cungList[(cur+currentMonth-1)%12]
+  }
+
+  getNguyetHanTheoCung(cung){
+    const map={
+      'Tý':{ten:'Thiên Hình',yNghia:'Thị phi, kiện tụng',mucDo:'xau'},
+      'Sửu':{ten:'Thiên Tai',yNghia:'Tai ách, bệnh tật',mucDo:'xau'},
+      'Dần':{ten:'Thiên Phúc',yNghia:'Phúc lộc, may mắn',mucDo:'tot'},
+      'Mão':{ten:'Thiên Hình',yNghia:'Thị phi, kiện tụng',mucDo:'xau'},
+      'Thìn':{ten:'Thiên Địa',yNghia:'Biến động, thay đổi',mucDo:'trung'},
+      'Tỵ':{ten:'Thiên Phúc',yNghia:'Phúc lộc, may mắn',mucDo:'tot'},
+      'Ngọ':{ten:'Thiên Tài',yNghia:'Tài lộc, công danh',mucDo:'tot'},
+      'Mùi':{ten:'Thiên Địa',yNghia:'Biến động, thay đổi',mucDo:'trung'},
+      'Thân':{ten:'Thiên Tài',yNghia:'Tài lộc, công danh',mucDo:'tot'},
+      'Dậu':{ten:'Thiên Hình',yNghia:'Thị phi, kiện tụng',mucDo:'xau'},
+      'Tuất':{ten:'Thiên Tai',yNghia:'Tai ách, bệnh tật',mucDo:'xau'},
+      'Hợi':{ten:'Thiên Phúc',yNghia:'Phúc lộc, may mắn',mucDo:'tot'}
+    }
+    return map[cung]||{ten:'—',yNghia:'—',mucDo:'trung'}
+  }
+
+  // ── Lưu Nhật ──
+  getLuuNhat(monthCung, day){
+    if(day<1||day>30) return null
+    const idx=cungChiToIndex(monthCung)
+    return cungList[(idx+day-1)%12]
+  }
+
+  luanNhatHan(cung){
+    const map={
+      'Tý':{han:'Bình thường',yNghia:'Ngày ổn định',sacThai:'trung'},
+      'Sửu':{han:'Tiểu cát',yNghia:'Có tin vui nhỏ',sacThai:'tot'},
+      'Dần':{han:'Đại cát',yNghia:'Mọi việc hanh thông',sacThai:'tot'},
+      'Mão':{han:'Bình thường',yNghia:'Ngày ổn định',sacThai:'trung'},
+      'Thìn':{han:'Tiểu hung',yNghia:'Có chút thị phi',sacThai:'xau'},
+      'Tỵ':{han:'Đại cát',yNghia:'Dễ thành công',sacThai:'tot'},
+      'Ngọ':{han:'Đại cát',yNghia:'Vạn sự như ý',sacThai:'tot'},
+      'Mùi':{han:'Tiểu hung',yNghia:'Cẩn thận tiểu nhân',sacThai:'xau'},
+      'Thân':{han:'Đại cát',yNghia:'Tài lộc dồi dào',sacThai:'tot'},
+      'Dậu':{han:'Bình thường',yNghia:'Ngày ổn định',sacThai:'trung'},
+      'Tuất':{han:'Tiểu hung',yNghia:'Cẩn thận sức khỏe',sacThai:'xau'},
+      'Hợi':{han:'Đại cát',yNghia:'Phúc lộc đầy nhà',sacThai:'tot'}
+    }
+    return map[cung]||{han:'—',yNghia:'—',sacThai:'trung'}
+  }
+
+  // ── Lưu Thời ──
+  getLuuThoi(dayCung, hourNumber){
+    if(hourNumber<0||hourNumber>11) return null
+    const idx=cungChiToIndex(dayCung)
+    return cungList[(idx+hourNumber)%12]
+  }
+
+  luanThoiHan(cung){
+    const map={
+      'Tý':{han:'Thanh Long',yNghia:'Cát thần',sacThai:'tot'},
+      'Sửu':{han:'Minh Đường',yNghia:'Cát thần',sacThai:'tot'},
+      'Dần':{han:'Thiên Hình',yNghia:'Hung thần',sacThai:'xau'},
+      'Mão':{han:'Chu Tước',yNghia:'Hung thần',sacThai:'xau'},
+      'Thìn':{han:'Kim Quỹ',yNghia:'Cát thần',sacThai:'tot'},
+      'Tỵ':{han:'Bạch Hổ',yNghia:'Hung thần',sacThai:'xau'},
+      'Ngọ':{han:'Ngọc Đường',yNghia:'Cát thần',sacThai:'tot'},
+      'Mùi':{han:'Thiên Lao',yNghia:'Hung thần',sacThai:'xau'},
+      'Thân':{han:'Nguyên Vũ',yNghia:'Hung thần',sacThai:'xau'},
+      'Dậu':{han:'Thái Thường',yNghia:'Cát thần',sacThai:'tot'},
+      'Tuất':{han:'Thiên Phúc',yNghia:'Cát thần',sacThai:'tot'},
+      'Hợi':{han:'Câu Trần',yNghia:'Hung thần',sacThai:'xau'}
+    }
+    return map[cung]||{han:'—',yNghia:'—',sacThai:'trung'}
+  }
+
+  // ── Lưu Thái Tuế / Lộc Tồn ──
+  getLuuThaiTue(targetYear){
+    return cungList[clampMod(targetYear-4,12)]
+  }
+
+  getLuuLocTon(targetYearCan){
+    const map={'Giáp':'Dần','Ất':'Mão','Bính':'Tỵ','Đinh':'Ngọ','Mậu':'Tỵ','Kỷ':'Ngọ','Canh':'Thân','Tân':'Dậu','Nhâm':'Hợi','Quý':'Tý'}
+    return map[targetYearCan]
+  }
+
+  getLuuKinhDa(locTonCung){
+    const idx=cungChiToIndex(locTonCung)
+    return{kinh:cungList[(idx+1)%12], da:cungList[(idx+11)%12]}
+  }
+
+  // ── Helpers ──
+  nextCung(cung){ return cungList[(cungChiToIndex(cung)+1)%12] }
+  prevCung(cung){ return cungList[(cungChiToIndex(cung)+11)%12] }
+}
+
+// ── Build Transit Frame ──
+function buildTransitFrame(engine, targetYear, targetMonth, targetDay, targetHourBranch, transitYS, transitYBIdx){
+  // targetHourBranch: branchIdx (Dần=1..Hợi=10,Tý=11,Sửu=12)
+  // hourNumber (0-based Tý=0): normalize12(branchH-10)-1
+  const targetGioH=normalize12(targetHourBranch-10)
+  const targetGioSinh={hourNumber:targetGioH-1}
+  const daiHan=engine.getDaiHanStart(targetYear)
+  const tieuHan=engine.getTieuHan(targetYear, daiHan.startAge, daiHan.cung)
+  const luuNguyet=engine.getLuuNguyetCach4(tieuHan, engine.thangSinh, engine.gioSinh, targetMonth)
+  const luuNhat=engine.getLuuNhat(luuNguyet, targetDay)
+  const luuThoi=luuNhat?engine.getLuuThoi(luuNhat, targetGioSinh.hourNumber):null
+  const thaiTue=engine.getLuuThaiTue(targetYear)
+  const locTon=engine.getLuuLocTon(getYearCan(targetYear))
+  const kinhDa=locTon?engine.getLuuKinhDa(locTon):{kinh:'—',da:'—'}
+  // Step 7C: 2 lớp cung động — Đại Vận (từ cung đại hạn), Lưu Niên (từ cung trùng chi năm)
+  const trungPhung=buildTrungPhung(daiHan.cung, transitYBIdx)
+  return{
+    targetYear, targetMonth, targetDay,
+    transitYS:transitYS||'', transitYB:transitYBIdx?chiName(transitYBIdx):'',
+    daiHan, tieuHan,
+    luuNguyet, nguyet_hint:engine.getNguyetHanTheoCung(luuNguyet),
+    luuNhat,   nhat_luan:luuNhat?engine.luanNhatHan(luuNhat):null,
+    luuThoi,   thoi_luan:luuThoi?engine.luanThoiHan(luuThoi):null,
+    luuSao:{thaiTue,locTon:locTon||'—',kinh:kinhDa.kinh,da:kinhDa.da},
+    trungPhung
+  }
+}
+
+// ── Danh sách 12 Đại Hạn ──
+function buildDaiHanList(engine){
+  const list=[]
+  for(let i=0;i<12;i++){
+    const step=engine.isReverse?-1:1
+    const idx=(cungChiToIndex(engine.menhCung)+i*step+120)%12
+    const startAge=engine.cuc+i*10
+    const endAge=startAge+9
+    // Năm ÂM ứng với tuổi mụ: tuổi mụ = nămÂm - lunarBirthYear + 1
+    // → nămÂm = lunarBirthYear + tuoiMu - 1
+    list.push({
+      cung:cungList[idx], startAge, endAge,
+      startYear:engine.lunarBirthYear+startAge-1,
+      endYear:engine.lunarBirthYear+endAge-1
+    })
+  }
+  return list
+}
+
+// ══════════════════════════════════════════════════
+// STEP 7C: TRÙNG PHÙNG — an lớp cung động (Đại Vận / Lưu Niên)
+// Tách hoàn toàn khỏi palaceMap gốc. Không đụng an cung/an sao.
+// ──────────────────────────────────────────────────
+// Tên 12 cung chức năng (đã có ở PAL toàn cục), rải NGHỊCH từ cung Mệnh của tầng.
+// Quy ước index dùng hệ CHI của code: Dần=1..Hợi=10, Tý=11, Sửu=12.
+// startPalaceIdx: vị trí (1-12) cung được coi là "Mệnh" của tầng đó.
+// Trả về map { palaceIdx(1-12): tênCungChứcNăng }
+function anLopDongCung(startPalaceIdx){
+  const out={}
+  for(let nameIdx=0; nameIdx<12; nameIdx++){
+    out[ moveBackward(startPalaceIdx, nameIdx) ] = PAL[nameIdx]  // rải nghịch
+  }
+  return out
+}
+
+// Tầng Đại Vận: khởi từ cung đại hạn hiện tại (Đại Mệnh)
+// Tầng Lưu Niên: khởi từ cung trùng địa chi năm xét (Lưu Mệnh)
+// daiHanCungName: tên chi (string) của cung đại hạn, vd 'Thìn'
+// luuNienChiIdx : index (hệ code 1-12) của cung trùng chi năm xét
+function buildTrungPhung(daiHanCungName, luuNienChiIdx){
+  const daiVanMenhIdx = chiIdx(daiHanCungName)  // string -> index code
+  return {
+    daiVanByPalace : anLopDongCung(daiVanMenhIdx),
+    luuNienByPalace: anLopDongCung(luuNienChiIdx),
+    daiVanMenhIdx,
+    luuNienMenhIdx: luuNienChiIdx
+  }
+}
+
+// ══════════════════════════════════════════════════
+// STEP 7A: MOVING STARS ENGINE (sao lưu năm xét)
+// ══════════════════════════════════════════════════
+// Kiến trúc: mỗi nhóm sao là 1 hàm riêng, dễ thêm sau này
+// Output: luuStarsByPalace[1..12] = [{name, group}]
+
+function buildMovingStars(ys, ybIdx, targetHourBranch, natalResult, daiVanCungName, canMap){
+  // luuStarsByPalace: tách namespace khỏi natal
+  const luu=Array.from({length:13},()=>[])
+  const add=(pos,name,group='luu')=>{
+    const idx=normalize12(pos)
+    if(isNaN(idx)||idx<1||idx>12) return
+    luu[idx].push({name,group})
+  }
+
+  // giờ offset theo hệ Tý=1
+  const hOff=((targetHourBranch-11)%12+12)%12
+
+  // ── Nhóm 1: Vòng Lộc Tồn lưu ──
+  const loc=LOC_TON_MAP[ys]
+  if(loc){
+    add(loc, 'Lưu Lộc Tồn')
+    // Bắc phái: KHÔNG an Lưu Kình Dương / Lưu Đà La
+    // Lưu (Niên) Văn Tinh là sao CỐ ĐỊNH (đã an ở sao phụ), không phải sao lưu
+  }
+
+  // ── Nhóm 2: Thiên Mã lưu ──
+  const yb=chiName(ybIdx)
+  const ma=THIEN_MA_MAP[yb]
+  if(ma) add(ma,'Lưu Thiên Mã')
+
+  // ── Nhóm 3: Khôi Việt lưu ──
+  add(THIEN_KHOI_MAP[ys],'Lưu Thiên Khôi')
+  add(THIEN_VIET_MAP[ys],'Lưu Thiên Việt')
+
+  // ── Nhóm 4: Văn Xương / Văn Khúc lưu (theo giờ xem hạn) ──
+  add(moveBackward(9,hOff), 'Lưu Văn Xương')
+  add(moveForward(3,hOff),  'Lưu Văn Khúc')
+
+  // (Lưu Hà là sao CỐ ĐỊNH theo can năm sinh — đã an ở sao phụ, không phải sao lưu)
+
+  // ── Nhóm 6: Lưu Niên Tứ Hóa (TẦNG 3) ──
+  // Can năm xét (ys) tra TU_HOA_MAP → gắn 'L.Hóa...' vào sao tương ứng trên lá số
+  const hoaMap=TU_HOA_MAP[ys]||{}
+  if(natalResult){
+    Object.entries(hoaMap).forEach(([starName,hoaType])=>{
+      for(let i=1;i<=12;i++){
+        const hasInMain=natalResult.mainStarsByPalace[i].includes(starName)
+        const hasInSub =natalResult.subStarsByPalace[i].some(s=>s.startsWith(starName)||s===starName)
+        if(hasInMain||hasInSub){
+          add(i,'L.'+hoaType,'luu-hoa')
+        }
+      }
+    })
+  }
+
+  // ── Nhóm 7: Đại Vận Tứ Hóa (TẦNG 2) ──
+  // Can của cung Đại Vận Mệnh = can cố định tại ô đất đó (canMap)
+  // Tra TU_HOA_MAP → gắn 'ĐV.Hóa...' vào sao tương ứng trên lá số
+  if(natalResult && daiVanCungName && canMap){
+    const daiVanCungIdx = chiIdx(daiVanCungName)   // tên chi -> index code
+    const canDaiVan = canMap[daiVanCungIdx]         // can cố định tại ô đó
+    const hoaMapDV = TU_HOA_MAP[canDaiVan]||{}
+    Object.entries(hoaMapDV).forEach(([starName,hoaType])=>{
+      for(let i=1;i<=12;i++){
+        const hasInMain=natalResult.mainStarsByPalace[i].includes(starName)
+        const hasInSub =natalResult.subStarsByPalace[i].some(s=>s.startsWith(starName)||s===starName)
+        if(hasInMain||hasInSub){
+          add(i,'ĐV.'+hoaType,'dv-hoa')
+        }
+      }
+    })
+  }
+
+  return {luuStarsByPalace:luu, transitYS:ys, transitYB:yb, transitYBIdx:ybIdx}
+}
+
+// ══════════════════════════════════════════════════
+// STEP 7D: PHÁT HIỆN XUNG ĐỘT TỨ HÓA (Song Kỵ / Lộc Kỵ giao chiến)
+// ──────────────────────────────────────────────────
+// Gom cả 3 tầng theo từng sao, dò các hiện tượng biến động.
+// canSinhNien: can năm sinh gốc; canDaiVan: can cung đại vận; canLuuNien: can năm xét
+function detectTuHoaConflicts(natalResult, canSinhNien, canDaiVan, canLuuNien){
+  // starHoa: { tênSao: [{tang, hoaType, palaceIdx}] }
+  const starHoa={}
+  const tangs=[
+    {tang:'Sinh Niên', can:canSinhNien},
+    {tang:'Đại Vận',  can:canDaiVan},
+    {tang:'Lưu Niên',  can:canLuuNien},
+  ]
+  // Vị trí sao trên lá số (tìm 1 lần)
+  const findPalace=(starName)=>{
+    for(let i=1;i<=12;i++){
+      if(natalResult.mainStarsByPalace[i].includes(starName)) return i
+      if(natalResult.subStarsByPalace[i].some(s=>s.startsWith(starName)||s===starName)) return i
+    }
+    return null
+  }
+  tangs.forEach(({tang,can})=>{
+    const hoaMap=TU_HOA_MAP[can]||{}
+    Object.entries(hoaMap).forEach(([starName,hoaType])=>{
+      const pal=findPalace(starName)
+      if(pal===null) return  // sao không có trên lá số thì bỏ
+      if(!starHoa[starName]) starHoa[starName]=[]
+      starHoa[starName].push({tang, hoaType, palaceIdx:pal})
+    })
+  })
+
+  const conflicts=[]
+  Object.entries(starHoa).forEach(([starName, hits])=>{
+    if(hits.length<2) return  // cần ≥2 tầng mới có biến động
+    const kys =hits.filter(h=>h.hoaType==='Hóa Kỵ')
+    const locs=hits.filter(h=>h.hoaType==='Hóa Lộc')
+    const pal =hits[0].palaceIdx
+    // Song Kỵ: ≥2 tầng cùng Kỵ vào 1 sao
+    if(kys.length>=2){
+      conflicts.push({type:'Song Kỵ', star:starName, palaceIdx:pal,
+        detail:kys.map(k=>k.tang).join(' + ')+' cùng Hóa Kỵ',
+        note:'Hung — áp lực dồn dập, dễ tổn thất nặng'})
+    }
+    // Lộc Kỵ giao chiến: cùng sao vừa Lộc (tầng này) vừa Kỵ (tầng kia)
+    if(locs.length>=1 && kys.length>=1){
+      conflicts.push({type:'Lộc Kỵ giao chiến', star:starName, palaceIdx:pal,
+        detail:locs.map(l=>l.tang+' Lộc').join(', ')+' gặp '+kys.map(k=>k.tang+' Kỵ').join(', '),
+        note:'Cát xứ tàng hung — trong cái tốt ẩn cái họa, biến động lớn'})
+    }
+  })
+  return {starHoa, conflicts}
+}
+
+// ══════════════════════════════════════════════════
+// STEP 7E: KIỂU 2 — Lưu Tứ Hóa bay vào cung xung yếu
+// ──────────────────────────────────────────────────
+// Quét 4 Lưu Niên Tứ Hóa (Lộc/Quyền/Khoa/Kỵ năm xét) → tìm sao đang ở cung nào,
+// rồi tra tên cung đó ở tầng Đại Vận và tầng Gốc.
+// Chỉ tính hóa bay vào 18 sao: 14 chính tinh + Tả Phụ, Hữu Bật, Văn Xương, Văn Khúc.
+const SAO_NHAN_LUU_HOA=[
+  'Tử Vi','Thiên Cơ','Thái Dương','Vũ Khúc','Thiên Đồng','Liêm Trinh',
+  'Thiên Phủ','Thái Âm','Tham Lang','Cự Môn','Thiên Tướng','Thiên Lương',
+  'Thất Sát','Phá Quân','Tả Phụ','Hữu Bật','Văn Xương','Văn Khúc'
+]
+// Cung dễ gây biến động khi nhận Hóa Kỵ
+const CUNG_XUNG_YEU=['Tật Ách','Phu Thê','Tài Bạch','Quan Lộc','Mệnh','Tử Tức']
+function detectLuuHoaFlying(natalResult, canLuuNien, gocPalaceMap, daiVanByPalace, luuNienByPalace){
+  const hoaMap=TU_HOA_MAP[canLuuNien]||{}
+  const findPalace=(starName)=>{
+    for(let i=1;i<=12;i++){
+      if(natalResult.mainStarsByPalace[i].includes(starName)) return i
+      if(natalResult.subStarsByPalace[i].some(s=>s.startsWith(starName)||s===starName)) return i
+    }
+    return null
+  }
+  const flights=[]
+  Object.entries(hoaMap).forEach(([starName,hoaType])=>{
+    if(!SAO_NHAN_LUU_HOA.includes(starName)) return  // chỉ 18 sao
+    const pal=findPalace(starName)
+    if(pal===null) return
+    const gocCung   = gocPalaceMap ? gocPalaceMap[pal] : null
+    const daiVanCung= daiVanByPalace ? daiVanByPalace[pal] : null
+    const luuCung   = luuNienByPalace ? luuNienByPalace[pal] : null
+    // Đánh giá mức cảnh báo: Hóa Kỵ bay vào cung xung yếu = nặng
+    let level='info', note=''
+    if(hoaType==='Hóa Kỵ'){
+      const hitDV = daiVanCung && CUNG_XUNG_YEU.includes(daiVanCung)
+      const hitGoc= gocCung && CUNG_XUNG_YEU.includes(gocCung)
+      if(hitDV||hitGoc){
+        level='warn'
+        note='Lưu Kỵ bay vào cung xung yếu'+(hitDV?(' (ĐV '+daiVanCung+')'):'')+(hitGoc?(' (Gốc '+gocCung+')'):'')+' — dễ có biến động/hạn nặng'
+      } else {
+        note='Lưu Kỵ — lưu ý cung này trong năm'
+      }
+    } else if(hoaType==='Hóa Lộc'){
+      level='good'; note='Lưu Lộc — cơ hội, tài lộc tại cung này'
+    } else {
+      note='Lưu '+hoaType.replace('Hóa ','')
+    }
+    flights.push({hoaType, star:starName, palaceIdx:pal, gocCung, daiVanCung, luuCung, level, note})
+  })
+  return flights
+}
+
+const QUESTIONNAIRE_DATA = {"chung":{"cau_hoi_tinh_cach_nen":[{"id":"QC1","cau_hoi":"Khi bị dồn vào tình huống khó, bạn thường:","lua_chon":[{"lua_chon":"A. Tìm cách kiểm soát tình hình, không muốn mất thế chủ động","map":"CONTROL (3) + RISK (1)"},{"lua_chon":"B. Dừng lại phân tích, tìm nguyên nhân và giải pháp","map":"LOGIC (3)"},{"lua_chon":"C. Linh hoạt thích nghi theo hoàn cảnh","map":"ADAPT (3)"},{"lua_chon":"D. Sẵn sàng phá bỏ hướng cũ, làm lại từ đầu","map":"RISK (3)"},{"lua_chon":"E. Chọn cách an toàn, tránh rủi ro lớn","map":"STABILITY (3)"},{"lua_chon":"F. Bị ảnh hưởng cảm xúc khá nhiều","map":"EMOTION (3)"}]},{"id":"QC2","cau_hoi":"Khi phải quyết định quan trọng, bạn dựa vào:","lua_chon":[{"lua_chon":"A. Phân tích dữ liệu, logic rõ ràng","map":"LOGIC (3)"},{"lua_chon":"B. Cảm nhận cá nhân / trực giác","map":"EMOTION (2) + ADAPT (1)"},{"lua_chon":"C. Kinh nghiệm và sự ổn định lâu dài","map":"STABILITY (3)"},{"lua_chon":"D. Cơ hội và mức độ đột phá","map":"RISK (3)"},{"lua_chon":"E. Khả năng kiểm soát kết quả","map":"CONTROL (3)"}]},{"id":"QC3","cau_hoi":"Bạn nhìn nhận rủi ro như thế nào:","lua_chon":[{"lua_chon":"A. Cơ hội để bứt phá","map":"RISK (3)"},{"lua_chon":"B. Cần tính toán kỹ trước khi chấp nhận","map":"LOGIC (2) + STABILITY (1)"},{"lua_chon":"C. Tránh được thì tránh","map":"STABILITY (3)"},{"lua_chon":"D. Tùy hoàn cảnh, linh hoạt xử lý","map":"ADAPT (3)"}]},{"id":"QC4","cau_hoi":"Bạn thường nhìn người khác theo hướng:","lua_chon":[{"lua_chon":"A. Đánh giá năng lực và hiệu quả","map":"LOGIC (2) + CONTROL (1)"},{"lua_chon":"B. Quan tâm cảm xúc và sự hòa hợp","map":"EMOTION (3)"},{"lua_chon":"C. Xem họ có đáng tin và ổn định không","map":"STABILITY (3)"},{"lua_chon":"D. Xem họ có giúp mình mở rộng cơ hội không","map":"RISK (2) + CONTROL (1)"},{"lua_chon":"E. Tùy người, tùy hoàn cảnh","map":"ADAPT (3)"}]},{"id":"QC5","cau_hoi":"Khi theo đuổi mục tiêu, bạn:","lua_chon":[{"lua_chon":"A. Muốn nắm quyền chủ động, kiểm soát tiến trình","map":"CONTROL (3)"},{"lua_chon":"B. Tối ưu từng bước, đi chắc","map":"LOGIC (2) + STABILITY (1)"},{"lua_chon":"C. Đi theo cảm hứng, linh hoạt","map":"ADAPT (2) + EMOTION (1)"},{"lua_chon":"D. Chấp nhận đánh đổi lớn để đạt nhanh","map":"RISK (3)"},{"lua_chon":"E. Ưu tiên an toàn, ít biến động","map":"STABILITY (3)"}]},{"id":"QC6","cau_hoi":"Khi đưa ra quyết định liên quan đến người khác, bạn thường:","lua_chon":[{"lua_chon":"A. Đặt lợi ích tập thể lên trên cá nhân","map":"JUSTICE (3)"},{"lua_chon":"B. Tuân thủ đúng quy định, dù có bất lợi cho mình","map":"JUSTICE (2) + STABILITY (1)"},{"lua_chon":"C. Cân bằng giữa công bằng và hiệu quả","map":"LOGIC (2) + JUSTICE (1)"},{"lua_chon":"D. Ưu tiên người thân, bạn bè trước","map":"EMOTION (2) + JUSTICE (1)"},{"lua_chon":"E. Làm theo số đông, không muốn khác biệt","map":"ADAPT (2) + JUSTICE (1)"}]}]},"cac_chu_de":[{"chu_de":"Quan Lộc (Công việc)","cung_tat":[{"id":"Q1","cau_hoi":"Khi gặp vấn đề ở công việc, nguyên nhân chính thường đến từ ai?","lua_chon":[{"lua_chon":"A. Sếp / cấp trên / người lớn tuổi hơn","map_cung":"Phụ Mẫu","trong_so":10},{"lua_chon":"B. Đồng nghiệp / bạn bè cùng cấp","map_cung":"Nô Bộc","trong_so":8},{"lua_chon":"C. Cấp dưới / người nhỏ tuổi hơn","map_cung":"Nô Bộc","trong_so":6},{"lua_chon":"D. Khách hàng / đối tác","map_cung":"Phu Thê / Thiên Di","trong_so":5},{"lua_chon":"E. Gia đình / người thân","map_cung":"Huynh Đệ","trong_so":4},{"lua_chon":"F. Bản thân tự gây ra","map_cung":"Mệnh / Quan Lộc","trong_so":7},{"lua_chon":"G. Không có bất kì trở ngại nào","map_cung":"không","trong_so":0}]},{"id":"Q2","cau_hoi":"Môi trường làm việc của bạn có đặc điểm gì nổi bật?","lua_chon":[{"lua_chon":"A. Cạnh tranh cao, áp lực lớn","map_cung":"Nô Bộc","trong_so":8},{"lua_chon":"B. Hợp tác, hỗ trợ lẫn nhau","map_cung":"Phúc Đức","trong_so":2},{"lua_chon":"C. Độc lập, ít tương tác","map_cung":"Mệnh","trong_so":5},{"lua_chon":"D. Thường xuyên thay đổi, bấp bênh","map_cung":"Thiên Di","trong_so":6},{"lua_chon":"E. Môi trường không cạnh tranh, hòa đồng","map_cung":"không","trong_so":0}]},{"id":"Q3","cau_hoi":"Bạn có từng bị ảnh hưởng bởi chính sách / quy định của công ty không?","lua_chon":[{"lua_chon":"A. Có, thường xuyên","map_cung":"Phụ Mẫu","trong_so":9},{"lua_chon":"B. Thỉnh thoảng","map_cung":"Quan Lộc","trong_so":4},{"lua_chon":"C. Không","map_cung":"không","trong_so":0}]}],"tat_cua_tat":[{"id":"Q4","cau_hoi":"Vấn đề với sếp xuất phát từ nguyên nhân nào?","lua_chon":[{"lua_chon":"A. Sếp khó tính, hay bắt bẻ, không giỏi bằng, gây khó dễ","map_cung":"Phụ Mẫu (tật)","trong_so":10},{"lua_chon":"B. Mình không hợp văn hóa công ty","map_cung":"Mệnh / Tật Ách","trong_so":7},{"lua_chon":"C. Có người gièm pha sau lưng","map_cung":"Nô Bộc","trong_so":8},{"lua_chon":"D. Áp lực tài chính / KPI quá cao","map_cung":"Tài Bạch","trong_so":7},{"lua_chon":"E. Sức khỏe yếu, làm việc kém hiệu quả","map_cung":"Tật Ách","trong_so":6},{"lua_chon":"F. Không có","map_cung":"không","trong_so":0}]},{"id":"Q5","cau_hoi":"Vấn đề với đồng nghiệp bắt nguồn từ đâu?","lua_chon":[{"lua_chon":"A. Ghen tị, tranh giành lợi ích","map_cung":"Tài Bạch","trong_so":8},{"lua_chon":"B. Hiểu lầm, thiếu giao tiếp","map_cung":"Phúc Đức","trong_so":6},{"lua_chon":"C. Bị lôi kéo vào phe phái","map_cung":"Huynh Đệ","trong_so":7},{"lua_chon":"D. Do sếp chia rẽ","map_cung":"Phụ Mẫu","trong_so":9},{"lua_chon":"E. Không có","map_cung":"không","trong_so":0}]}],"cau_hoi_tinh_cach_dinh_tinh":[{"id":"QL-ĐT1","cau_hoi":"Trong công việc, bạn thường được cấp trên hoặc đồng nghiệp miêu tả là người như thế nào?","lua_chon":[{"lua_chon":"A. Quyết đoán, cứng rắn, thích nắm quyền, đôi khi độc đoán","map_nhom":"Control","chinh_tinh":"Tử Vi / Thất Sát","trong_so":10},{"lua_chon":"B. Linh hoạt, thích nghi nhanh, hay thay đổi kế hoạch giữa chừng","map_nhom":"Adapt","chinh_tinh":"Thiên Cơ / Thiên Đồng","trong_so":10},{"lua_chon":"C. Cẩn trọng, tính toán kỹ, làm việc có quy trình, không thích rủi ro","map_nhom":"Stability","chinh_tinh":"Thiên Phủ / Vũ Khúc","trong_so":10},{"lua_chon":"D. Mạo hiểm, chấp nhận đánh đổi lớn để đạt mục tiêu nhanh, thích phá bỏ cũ làm mới","map_nhom":"Risk","chinh_tinh":"Phá Quân / Tham Lang","trong_so":10},{"lua_chon":"E. Tỉ mỉ, phân tích sâu, thích dùng số liệu và logic để ra quyết định","map_nhom":"Logic","chinh_tinh":"Văn Xương / Văn Khúc","trong_so":10},{"lua_chon":"F. Hòa đồng, quan tâm đến cảm xúc của người khác, dễ đồng cảm","map_nhom":"Emotion","chinh_tinh":"Thái Âm / Cự Môn","trong_so":10},{"lua_chon":"G. Công bằng, đúng quy tắc, không thiên vị, thích sự minh bạch","map_nhom":"Justice","chinh_tinh":"Thiên Tướng / Thiên Lương","trong_so":10}]},{"id":"QL-ĐT2","cau_hoi":"Khi đối mặt với một dự án khó hoặc deadline cận kề, phản ứng đầu tiên của bạn là gì?","lua_chon":[{"lua_chon":"A. Tự mình đứng ra phân công, kiểm soát từng đầu việc","map_nhom":"Control","chinh_tinh":"Tử Vi (9) - Thất Sát (7)"},{"lua_chon":"B. Bình tĩnh phân tích vấn đề, tìm giải pháp tối ưu nhất","map_nhom":"Logic","chinh_tinh":"Văn Xương (9) - Văn Khúc (7)"},{"lua_chon":"C. Huy động cả nhóm, tận dụng mối quan hệ để cùng làm","map_nhom":"Adapt","chinh_tinh":"Thiên Đồng (8) - Thiên Cơ (7)"},{"lua_chon":"D. Sẵn sàng làm thêm giờ, cắt bỏ những phần không quan trọng để chạy deadline","map_nhom":"Risk","chinh_tinh":"Phá Quân (9) - Tham Lang (7)"},{"lua_chon":"E. Tuân thủ đúng quy trình, không vội vàng, chấp nhận trễ deadline nếu cần","map_nhom":"Stability","chinh_tinh":"Thiên Phủ (9) - Vũ Khúc (7)"},{"lua_chon":"F. Dựa vào cảm xúc, dễ bị ảnh hưởng bởi tâm trạng nhóm","map_nhom":"Emotion","chinh_tinh":"Thái Âm (8) - Cự Môn (6)"},{"lua_chon":"G. Tìm cách phân công công bằng, ai việc nấy, không áp lực ai","map_nhom":"Justice","chinh_tinh":"Thiên Lương (8) - Thiên Tướng (7)"}]}]},{"chu_de":"Tài Bạch (Tài chính)","cung_tat":[{"id":"Q6","cau_hoi":"Nguồn tài chính của bạn thường liên quan đến?","lua_chon":[{"lua_chon":"A. Công việc / thu nhập chính","map_cung":"Quan Lộc","trong_so":10},{"lua_chon":"B. Đầu tư, kinh doanh phụ","map_cung":"Tài Bạch","trong_so":8},{"lua_chon":"C. Chi tiêu gia đình / vợ/chồng","map_cung":"Phu Thê / Điền Trạch","trong_so":7},{"lua_chon":"D. Có thêm khoản phụ khác ăn theo hoa hồng/ nguồn thu không chính thức","map_cung":"Nô Bộc","trong_so":6},{"lua_chon":"E. Trúng số/ lô đề","map_cung":"Phúc Đức","trong_so":5}]},{"id":"Q7","cau_hoi":"Bạn có xu hướng tiêu tiền vào gì nhiều nhất?","lua_chon":[{"lua_chon":"A. Ăn uống, giải trí, bản thân","map_cung":"Mệnh / Tử Tức","trong_so":6},{"lua_chon":"B. Nhà cửa, xe cộ, tài sản","map_cung":"Điền Trạch","trong_so":8},{"lua_chon":"C. Học hành, phát triển bản thân","map_cung":"Quan Lộc / Phúc Đức","trong_so":7},{"lua_chon":"D. Đi lại, du lịch","map_cung":"Thiên Di","trong_so":5},{"lua_chon":"E. Cho vay, giúp đỡ người khác","map_cung":"Nô Bộc","trong_so":6},{"lua_chon":"F. Từ thiện","map_cung":"Phúc Đức","trong_so":4},{"lua_chon":"G. Gia đình","map_cung":"Phu Thê / Điền Trạch","trong_so":7},{"lua_chon":"H. Con cái","map_cung":"Tử Tức","trong_so":7}]}],"tat_cua_tat":[{"id":"Q8","cau_hoi":"Vấn đề tài chính của bạn xuất phát từ nguyên nhân sâu xa nào?","lua_chon":[{"lua_chon":"A. Lương thấp, không tăng lương","map_cung":"Quan Lộc (tật)","trong_so":10},{"lua_chon":"B. Chi tiêu không kiểm soát","map_cung":"Mệnh / Tử Tức","trong_so":7},{"lua_chon":"C. Có người ăn bám, lợi dụng","map_cung":"Huynh Đệ / Nô Bộc","trong_so":8},{"lua_chon":"D. Gặp vận đen, tai nạn, bệnh tật","map_cung":"Tật Ách / Phúc Đức","trong_so":9},{"lua_chon":"E. Đầu tư thua lỗ do thiếu kiến thức/ nhận định sai","map_cung":"Phúc Đức","trong_so":6},{"lua_chon":"F. Bạn bè lợi dụng, lừa đảo","map_cung":"Nô Bộc","trong_so":8},{"lua_chon":"G. Không có, cuộc sống đều đều","map_cung":"không","trong_so":0}]}],"cau_hoi_tinh_cach_dinh_tinh":[{"id":"TB-ĐT1","cau_hoi":"Quan điểm của bạn về việc đầu tư hoặc kinh doanh là gì?","lua_chon":[{"lua_chon":"A. Chỉ đầu tư khi đã nghiên cứu kỹ, an toàn là trên hết","map_nhom":"Stability","chinh_tinh":"Thiên Phủ (9) - Vũ Khúc (8)"},{"lua_chon":"B. Chấp nhận rủi ro cao để đổi lấy lợi nhuận cao, thích 'lướt sóng'","map_nhom":"Risk","chinh_tinh":"Phá Quân (9) - Tham Lang (8)"},{"lua_chon":"C. Đa dạng hóa, không bỏ trứng vào một giỏ, linh hoạt theo thị trường","map_nhom":"Adapt","chinh_tinh":"Thiên Cơ (9) - Thiên Đồng (6)"},{"lua_chon":"D. Để người khác quản lý tài chính hộ, mình chỉ cần dòng tiền đều đặn","map_nhom":"Emotion","chinh_tinh":"Thái Âm (8) - Cự Môn (6)"},{"lua_chon":"E. Tự mình nắm toàn bộ sổ sách, muốn kiểm soát từng đồng thu chi","map_nhom":"Control","chinh_tinh":"Tử Vi (10) - Thất Sát (7)"},{"lua_chon":"F. Phân tích kỹ lưỡng, dùng số liệu lịch sử, thống kê để quyết định","map_nhom":"Logic","chinh_tinh":"Văn Xương (9) - Văn Khúc (8)"},{"lua_chon":"G. Chỉ đầu tư vào những gì minh bạch, đúng pháp luật, có tầm nhìn xã hội","map_nhom":"Justice","chinh_tinh":"Thiên Lương (8) - Thiên Tướng (7)"}]},{"id":"TB-ĐT2","cau_hoi":"Khi có một khoản tiền lớn bất ngờ (thưởng Tết, trúng số, được cho), bạn thường làm gì?","lua_chon":[{"lua_chon":"A. Gửi tiết kiệm hoặc mua vàng / bất động sản","map_nhom":"Stability","chinh_tinh":"Thiên Phủ (9) - Vũ Khúc (8)"},{"lua_chon":"B. Đầu tư vào một cơ hội kinh doanh mới hoặc chứng khoán","map_nhom":"Risk","chinh_tinh":"Phá Quân (9) - Tham Lang (8)"},{"lua_chon":"C. Mua sắm những thứ mình thích từ lâu (xe, đồ hiệu, du lịch)","map_nhom":"Emotion","chinh_tinh":"Thái Âm (8) - Cự Môn (6)"},{"lua_chon":"D. Một phần để dành, một phần cho gia đình, một phần đầu tư","map_nhom":"Adapt","chinh_tinh":"Thiên Cơ (8) - Thiên Đồng (6)"},{"lua_chon":"E. Trả nợ (nếu có) hoặc giúp đỡ người thân, bạn bè","map_nhom":"Justice","chinh_tinh":"Thiên Lương (8) - Thiên Tướng (7)"},{"lua_chon":"F. Lên kế hoạch chi tiêu rõ ràng, có phân tích lợi ích từng khoản","map_nhom":"Logic","chinh_tinh":"Văn Xương (9) - Văn Khúc (7)"},{"lua_chon":"G. Để dành toàn bộ, không tiêu gì cả","map_nhom":"Control","chinh_tinh":"Tử Vi (8) - Thất Sát (6)"}]}]},{"chu_de":"Phu Thê (Tình cảm / Hôn nhân)","cung_tat":[{"id":"Q9","cau_hoi":"Vấn đề trong chuyện tình cảm của bạn thường đến từ?","lua_chon":[{"lua_chon":"A. Gia đình hai bên can thiệp","map_cung":"Phụ Mẫu","trong_so":9},{"lua_chon":"B. Bạn bè, đồng nghiệp tác động","map_cung":"Nô Bộc","trong_so":7},{"lua_chon":"C. Người thứ ba","map_cung":"Nô Bộc / Thiên Di","trong_so":10},{"lua_chon":"D. Khác biệt quan điểm, tính cách","map_cung":"Mệnh / Tật Ách","trong_so":8},{"lua_chon":"E. Vấn đề tài chính","map_cung":"Tài Bạch","trong_so":7},{"lua_chon":"F. Xa cách địa lý","map_cung":"Thiên Di","trong_so":6},{"lua_chon":"G. Không","map_cung":"không","trong_so":0}]},{"id":"Q10","cau_hoi":"Bạn hoặc người yêu/vợ/chồng có đặc điểm gì dễ gây mâu thuẫn?","lua_chon":[{"lua_chon":"A. Nóng tính, dễ cáu gắt","map_cung":"Tật Ách","trong_so":10},{"lua_chon":"B. Ít nói, khép kín, khó hiểu","map_cung":"Phúc Đức","trong_so":7},{"lua_chon":"C. Đa nghi, ghen tuông, vũ phu","map_cung":"Thiên Di","trong_so":9},{"lua_chon":"D. Tham vọng, mải làm ăn","map_cung":"Quan Lộc","trong_so":8},{"lua_chon":"E. Phóng khoáng, thích tự do","map_cung":"Nô Bộc","trong_so":7},{"lua_chon":"F. Đào hoa","map_cung":"Thiên Di","trong_so":6},{"lua_chon":"G. Bất đồng quan điểm","map_cung":"Tật Ách","trong_so":7},{"lua_chon":"H. Không quan tâm, hờ hững","map_cung":"Mệnh","trong_so":5}]}],"tat_cua_tat":[{"id":"Q11","cau_hoi":"Khi có mâu thuẫn gia đình (bố mẹ can thiệp), nguyên nhân sâu xa là?","lua_chon":[{"lua_chon":"A. Bố mẹ không ưng người yêu","map_cung":"Phụ Mẫu (tật)","trong_so":10},{"lua_chon":"B. Vấn đề tài sản, của hồi môn","map_cung":"Tài Bạch / Điền Trạch","trong_so":8},{"lua_chon":"C. Bố mẹ đang có vấn đề với nhau","map_cung":"Phụ Mẫu của Phụ Mẫu","trong_so":9},{"lua_chon":"D. Do mình kể chuyện không khéo","map_cung":"Mệnh / Khẩu thiệt","trong_so":6},{"lua_chon":"E. Không có","map_cung":"không","trong_so":0}]},{"id":"Q12","cau_hoi":"Nếu có người thứ ba, họ có mối quan hệ gì với bạn/người yêu?","lua_chon":[{"lua_chon":"A. Đồng nghiệp","map_cung":"Nô Bộc","trong_so":10},{"lua_chon":"B. Bạn cũ, người yêu cũ","map_cung":"Thiên Di","trong_so":8},{"lua_chon":"C. Bạn bè thân thiết","map_cung":"Huynh Đệ","trong_so":7},{"lua_chon":"D. Người quen qua mạng xã hội","map_cung":"Thiên Di","trong_so":6},{"lua_chon":"E. Không","map_cung":"không","trong_so":0}]}],"cau_hoi_tinh_cach_dinh_tinh":[{"id":"TC-ĐT1","cau_hoi":"Trong một mối quan hệ tình cảm, bạn thường là người như thế nào?","lua_chon":[{"lua_chon":"A. Muốn nắm quyền quyết định, thích sắp xếp mọi thứ cho đối phương","map_nhom":"Control","chinh_tinh":"Tử Vi (10) - Thất Sát (7)"},{"lua_chon":"B. Linh hoạt, chiều chuộng, dễ thay đổi theo ý người kia","map_nhom":"Adapt","chinh_tinh":"Thiên Đồng (9) - Thiên Cơ (7)"},{"lua_chon":"C. Lãng mạn, tình cảm, dễ khóc dễ cười, cần được quan tâm","map_nhom":"Emotion","chinh_tinh":"Thái Âm (10) - Cự Môn (7)"},{"lua_chon":"D. Lý trí, đặt vấn đề thực tế lên trên (tài chính, tương lai) hơn là cảm xúc","map_nhom":"Logic","chinh_tinh":"Văn Xương (8) - Văn Khúc (7)"},{"lua_chon":"E. Sống phóng khoáng, không thích ràng buộc, cần không gian riêng","map_nhom":"Risk","chinh_tinh":"Tham Lang (10) - Phá Quân (7)"},{"lua_chon":"F. Trung thành, ổn định, một khi đã yêu là lâu dài","map_nhom":"Stability","chinh_tinh":"Thiên Phủ (10) - Vũ Khúc (7)"},{"lua_chon":"G. Công bằng, tôn trọng, không áp đặt, luôn lắng nghe","map_nhom":"Justice","chinh_tinh":"Thiên Tướng (9) - Thiên Lương (8)"}]},{"id":"TC-ĐT2","cau_hoi":"Khi xảy ra cãi vã với người yêu / vợ chồng, bạn thường xử lý thế nào?","lua_chon":[{"lua_chon":"A. Chủ động nói chuyện, phân tích lỗi sai, tìm giải pháp","map_nhom":"Logic","chinh_tinh":"Văn Xương (9) - Văn Khúc (7)"},{"lua_chon":"B. Im lặng, nhường nhịn, để nguội rồi tính","map_nhom":"Emotion","chinh_tinh":"Thái Âm (9) - Cự Môn (7)"},{"lua_chon":"C. Sẵn sàng làm lành ngay, mua quà, dỗ dành","map_nhom":"Risk","chinh_tinh":"Tham Lang (10) - Phá Quân (6)"},{"lua_chon":"D. Tranh luận đến cùng, không chịu thua, bảo vệ quan điểm của mình","map_nhom":"Control","chinh_tinh":"Thất Sát (10) - Tử Vi (7)"},{"lua_chon":"E. Bỏ đi chỗ khác một thời gian, cần không gian riêng để suy nghĩ","map_nhom":"Adapt","chinh_tinh":"Thiên Cơ (8) - Thiên Đồng (6)"},{"lua_chon":"F. Nhờ người thân hoặc bạn bè hòa giải","map_nhom":"Justice","chinh_tinh":"Thiên Lương (8) - Thiên Tướng (7)"},{"lua_chon":"G. Giữ ổn định, không để cảm xúc lấn át, tìm cách dung hòa","map_nhom":"Stability","chinh_tinh":"Thiên Phủ (8) - Vũ Khúc (7)"}]}]},{"chu_de":"Tật Ách (Sức khỏe)","cung_tat":[{"id":"Q13","cau_hoi":"Vấn đề sức khỏe của bạn thường liên quan đến?","lua_chon":[{"lua_chon":"A. Di truyền từ bố mẹ","map_cung":"Phụ Mẫu","trong_so":9},{"lua_chon":"B. Áp lực công việc, stress","map_cung":"Quan Lộc","trong_so":8},{"lua_chon":"C. Ăn uống, sinh hoạt không điều độ","map_cung":"Mệnh / Tử Tức","trong_so":7},{"lua_chon":"D. Tai nạn, chấn thương bất ngờ","map_cung":"Thiên Di / Nô Bộc","trong_so":8},{"lua_chon":"E. Do tinh thần, tâm lý","map_cung":"Phúc Đức","trong_so":7},{"lua_chon":"F. Do mãn tính, bẩm sinh, hoặc không rõ nguyên nhân","map_cung":"Tật Ách","trong_so":6}]},{"id":"Q14","cau_hoi":"Bạn có bệnh lý nền hoặc bệnh mãn tính không?","lua_chon":[{"lua_chon":"A. Có, liên quan đến tim mạch / huyết áp/ máu mỡ","map_cung":"Phụ Mẫu","trong_so":9},{"lua_chon":"B. Có, liên quan đến tiêu hóa / gan thận/ tiểu đường","map_cung":"Tật Ách","trong_so":8},{"lua_chon":"C. Có, liên quan đến thần kinh, xương khớp","map_cung":"Thiên Di","trong_so":7},{"lua_chon":"D. Có, liên quan đến hô hấp","map_cung":"Phúc Đức","trong_so":8},{"lua_chon":"E. Có, liên quan đến da liễu, dị ứng, kí sinh trùng","map_cung":"Tật Ách","trong_so":6},{"lua_chon":"F. Có, thiếu dinh dưỡng","map_cung":"Mệnh","trong_so":5},{"lua_chon":"G. Có, liên quan đến máu và các bệnh về máu","map_cung":"Phụ Mẫu","trong_so":8},{"lua_chon":"H. Có, liên quan đến các bệnh về mắt","map_cung":"Thiên Di","trong_so":6},{"lua_chon":"I. Có, liên quan đến ngoại hậu môn, tiết niệu, đái tháo đường","map_cung":"Tật Ách","trong_so":7},{"lua_chon":"J. Có, liên quan đến nội tiết, sinh sản","map_cung":"Phu Thê","trong_so":7},{"lua_chon":"K. Không","map_cung":"không","trong_so":0}]}],"tat_cua_tat":[{"id":"Q15","cau_hoi":"Bệnh di truyền từ bố mẹ xuất phát từ bên nội hay ngoại?","lua_chon":[{"lua_chon":"A. Bên nội (họ cha)","map_cung":"Phụ Mẫu (tật)","trong_so":10},{"lua_chon":"B. Bên ngoại (họ mẹ)","map_cung":"Mẫu (Phụ Mẫu tật)","trong_so":10},{"lua_chon":"C. Cả hai","map_cung":"Phúc Đức","trong_so":8},{"lua_chon":"D. Không","map_cung":"không","trong_so":0}]},{"id":"Q16","cau_hoi":"Stress công việc ảnh hưởng đến sức khỏe, vậy áp lực công việc đến từ đâu?","lua_chon":[{"lua_chon":"A. Sếp quá khó tính","map_cung":"Phụ Mẫu","trong_so":9},{"lua_chon":"B. Khối lượng công việc quá lớn, việc khó","map_cung":"Quan Lộc","trong_so":8},{"lua_chon":"C. Mâu thuẫn với đồng nghiệp","map_cung":"Nô Bộc","trong_so":7},{"lua_chon":"D. Lương thấp, không ổn định","map_cung":"Tài Bạch","trong_so":7},{"lua_chon":"E. Không có","map_cung":"không","trong_so":0}]}],"cau_hoi_tinh_cach_dinh_tinh":[{"id":"SK-ĐT1","cau_hoi":"Khi cảm thấy cơ thể có dấu hiệu bất thường (mệt mỏi, đau nhức...), bạn thường làm gì?","lua_chon":[{"lua_chon":"A. Đi khám ngay, làm xét nghiệm đầy đủ, không chủ quan","map_nhom":"Logic","chinh_tinh":"Văn Xương (8) - Văn Khúc (7)"},{"lua_chon":"B. Tự tra mạng, tự mua thuốc, chỉ đi khám khi nặng","map_nhom":"Risk","chinh_tinh":"Phá Quân (9) - Tham Lang (7)"},{"lua_chon":"C. Nghỉ ngơi, ăn uống điều độ, để cơ thể tự hồi phục","map_nhom":"Adapt","chinh_tinh":"Thiên Đồng (10) - Thiên Cơ (6)"},{"lua_chon":"D. Cố gắng chịu đựng, đi làm vì không muốn nghỉ","map_nhom":"Control","chinh_tinh":"Tử Vi (9) - Thất Sát (8)"},{"lua_chon":"E. Hỏi ý kiến bố mẹ, người thân trước khi quyết định","map_nhom":"Stability","chinh_tinh":"Thiên Phủ (8) - Vũ Khúc (7)"},{"lua_chon":"F. Lo lắng, suy nghĩ nhiều, dễ rơi vào trạng thái hoang mang","map_nhom":"Emotion","chinh_tinh":"Cự Môn (9) - Thái Âm (7)"},{"lua_chon":"G. Tìm hiểu bệnh lý, nguyên nhân gốc rễ, đi khám trung tâm uy tín","map_nhom":"Justice","chinh_tinh":"Thiên Lương (8) - Thiên Tướng (7)"}]},{"id":"SK-ĐT2","cau_hoi":"Bạn có xu hướng chăm sóc sức khỏe của mình như thế nào?","lua_chon":[{"lua_chon":"A. Tập thể dục đều đặn, ăn uống khoa học, có kế hoạch rõ ràng","map_nhom":"Stability","chinh_tinh":"Thiên Phủ (9) - Vũ Khúc (8)"},{"lua_chon":"B. Thích thì tập, không thì thôi, lúc ăn uống thả ga","map_nhom":"Risk","chinh_tinh":"Tham Lang (9) - Phá Quân (7)"},{"lua_chon":"C. Chú trọng tinh thần nhiều hơn (thiền, yoga, nghe nhạc)","map_nhom":"Emotion","chinh_tinh":"Thái Âm (10) - Cự Môn (7)"},{"lua_chon":"D. Chỉ chăm sóc khi đã có bệnh, còn không thì thường","map_nhom":"Adapt","chinh_tinh":"Thiên Đồng (7) - Thiên Cơ (6)"},{"lua_chon":"E. Theo dõi chỉ số cơ thể, đọc sách sức khỏe, áp dụng khoa học","map_nhom":"Logic","chinh_tinh":"Văn Xương (9) - Văn Khúc (8)"},{"lua_chon":"F. Tự kỷ luật, ép mình tập dù không thích để có sức khỏe tốt","map_nhom":"Control","chinh_tinh":"Tử Vi (8) - Thất Sát (7)"},{"lua_chon":"G. Đi khám định kỳ, không chủ quan, sống điều độ","map_nhom":"Justice","chinh_tinh":"Thiên Lương (9) - Thiên Tướng (7)"}]}]},{"chu_de":"Điền Trạch (Nhà cửa, xe cộ, nơi ở)","cung_tat":[{"id":"Q19","cau_hoi":"Vấn đề về nhà cửa / nơi ở của bạn thường đến từ đâu?","lua_chon":[{"lua_chon":"A. Cha mẹ gây áp lực hoặc can thiệp","map_cung":"Phụ Mẫu","trong_so":9},{"lua_chon":"B. Vợ/chồng không đồng thuận","map_cung":"Phu Thê","trong_so":8},{"lua_chon":"C. Thiếu tiền mua / sửa nhà","map_cung":"Tài Bạch","trong_so":9},{"lua_chon":"D. Chuyển nhà nhiều lần, bất ổn","map_cung":"Thiên Di","trong_so":7},{"lua_chon":"E. Tranh chấp đất đai với người thân","map_cung":"Huynh Đệ / Điền Trạch","trong_so":10},{"lua_chon":"F. Không có vấn đề lớn","map_cung":"không","trong_so":0}]}],"tat_cua_tat":[{"id":"Q20","cau_hoi":"Nếu không mua được nhà / ở không ổn định, nguyên nhân sâu xa là?","lua_chon":[{"lua_chon":"A. Do bố mẹ không hỗ trợ tài chính","map_cung":"Phụ Mẫu (tật)","trong_so":10},{"lua_chon":"B. Do thu nhập thấp, tiết kiệm kém","map_cung":"Quan Lộc / Tài Bạch","trong_so":8},{"lua_chon":"C. Do vợ/chồng chi tiêu quá tay","map_cung":"Phu Thê","trong_so":8},{"lua_chon":"D. Do phải lo cho người thân (bệnh, nợ)","map_cung":"Huynh Đệ / Nô Bộc","trong_so":7},{"lua_chon":"E. Do tâm lý sợ ràng buộc, thích tự do","map_cung":"Thiên Di","trong_so":6},{"lua_chon":"F. Do môi trường xung quanh (ô nhiễm, ồn ào, hàng xóm)","map_cung":"Thiên Di / Điền Trạch","trong_so":6},{"lua_chon":"G. Không","map_cung":"không","trong_so":0}]}],"cau_hoi_tinh_cach_dinh_tinh":[{"id":"ĐT-ĐT1","cau_hoi":"Khi chọn nhà hoặc nơi ở mới, bạn coi trọng điều gì nhất?","lua_chon":[{"lua_chon":"A. Phong thủy, hướng nhà, yếu tố tâm linh","map_nhom":"Control","chinh_tinh":"Tử Vi (9) - Thất Sát (7)"},{"lua_chon":"B. Vị trí trung tâm, tiện ích, giá trị đầu tư","map_nhom":"Logic","chinh_tinh":"Văn Xương (9) - Văn Khúc (8)"},{"lua_chon":"C. Không gian yên tĩnh, gần gũi thiên nhiên","map_nhom":"Emotion","chinh_tinh":"Thái Âm (10) - Cự Môn (6)"},{"lua_chon":"D. Gần chỗ làm, trường con, chợ, tiện sinh hoạt","map_nhom":"Adapt","chinh_tinh":"Thiên Cơ (9) - Thiên Đồng (7)"},{"lua_chon":"E. Sẵn sàng chấp nhận xa trung tâm để có nhà rộng, rẻ","map_nhom":"Risk","chinh_tinh":"Phá Quân (10) - Tham Lang (8)"},{"lua_chon":"F. Chọn nhà có cộng đồng văn minh, an ninh tốt","map_nhom":"Justice","chinh_tinh":"Thiên Lương (8) - Thiên Tướng (7)"},{"lua_chon":"G. Chọn nhà theo đúng ngân sách, không vay nợ nhiều","map_nhom":"Stability","chinh_tinh":"Thiên Phủ (8) - Vũ Khúc (7)"}]},{"id":"ĐT-ĐT2","cau_hoi":"Khi nhà cửa có vấn đề cần sửa chữa hoặc cải tạo, bạn thường thế nào?","lua_chon":[{"lua_chon":"A. Tự tay làm hoặc giám sát chặt chẽ từng bước","map_nhom":"Control","chinh_tinh":"Tử Vi (10) - Thất Sát (8)"},{"lua_chon":"B. Thuê thợ, ủy quyền cho người khác, mình chỉ cần kết quả","map_nhom":"Adapt","chinh_tinh":"Thiên Đồng (9) - Thái Âm (7)"},{"lua_chon":"C. Tính toán chi phí kỹ, làm từ từ, không vay nợ","map_nhom":"Stability","chinh_tinh":"Vũ Khúc (10) - Thiên Phủ (8)"},{"lua_chon":"D. Sẵn sàng vay mượn để làm nhanh, đẹp, xịn","map_nhom":"Risk","chinh_tinh":"Phá Quân (9) - Tham Lang (8)"},{"lua_chon":"E. Để đó, không sửa nếu chưa thực sự cần","map_nhom":"Emotion","chinh_tinh":"Cự Môn (7) - Thái Âm (6)"},{"lua_chon":"F. Lên danh sách ưu tiên, phân tích chi phí/lợi ích","map_nhom":"Logic","chinh_tinh":"Văn Xương (9) - Văn Khúc (8)"},{"lua_chon":"G. Hỏi ý kiến chuyên gia hoặc người có kinh nghiệm trước","map_nhom":"Justice","chinh_tinh":"Thiên Lương (8) - Thiên Tướng (7)"}]}]},{"chu_de":"Tử Tức (Con cái)","cung_tat":[{"id":"Q21","cau_hoi":"Vấn đề liên quan đến con cái (hoặc việc có con) của bạn thường do đâu?","lua_chon":[{"lua_chon":"A. Áp lực từ cha mẹ","map_cung":"Phụ Mẫu","trong_so":9},{"lua_chon":"B. Không đồng thuận với vợ/chồng","map_cung":"Phu Thê","trong_so":10},{"lua_chon":"C. Vấn đề tài chính","map_cung":"Tài Bạch","trong_so":8},{"lua_chon":"D. Sức khỏe sinh sản","map_cung":"Tật Ách","trong_so":9},{"lua_chon":"E. Do con cái hư / khó dạy","map_cung":"Tử Tức","trong_so":7},{"lua_chon":"F. Chưa có con do chưa gặp đúng thời điểm","map_cung":"Thiên Di","trong_so":5},{"lua_chon":"G. Không có vấn đề","map_cung":"không","trong_so":0}]}],"tat_cua_tat":[{"id":"Q22","cau_hoi":"Nếu việc có con / nuôi con khó khăn, nguyên nhân sâu xa nhất là?","lua_chon":[{"lua_chon":"A. Do cha mẹ 1 hoặc 2 bên","map_cung":"Phụ Mẫu (tật)","trong_so":10},{"lua_chon":"B. Do tài chính bấp bênh kéo dài","map_cung":"Tài Bạch / Quan Lộc","trong_so":8},{"lua_chon":"C. Do bệnh nền của bản thân hoặc vợ chồng","map_cung":"Tật Ách / Phu Thê","trong_so":9},{"lua_chon":"D. Do từng mất con / sảy thai","map_cung":"Tử Tức (tật)","trong_so":10},{"lua_chon":"E. Do tâm lý sợ trách nhiệm","map_cung":"Mệnh","trong_so":7},{"lua_chon":"F. Do không có thời gian","map_cung":"Quan Lộc","trong_so":7},{"lua_chon":"G. Do không có tình cảm với con","map_cung":"Mệnh / Phu Thê","trong_so":8},{"lua_chon":"H. Không","map_cung":"không","trong_so":0}]}],"cau_hoi_tinh_cach_dinh_tinh":[{"id":"TT-ĐT1","cau_hoi":"Quan điểm của bạn về việc dạy con cái là gì?","lua_chon":[{"lua_chon":"A. Nghiêm khắc, kỷ luật, định hướng rõ ràng từ nhỏ","map_nhom":"Control","chinh_tinh":"Tử Vi (10) - Thất Sát (8)"},{"lua_chon":"B. Tôn trọng sở thích của con, cho con tự do phát triển","map_nhom":"Adapt","chinh_tinh":"Thiên Cơ (9) - Thiên Đồng (7)"},{"lua_chon":"C. Dạy con bằng tình thương, nhẹ nhàng, khích lệ","map_nhom":"Emotion","chinh_tinh":"Thái Âm (10) - Cự Môn (6)"},{"lua_chon":"D. Đầu tư nhiều vào học hành, kỹ năng, tương lai","map_nhom":"Logic","chinh_tinh":"Văn Xương (9) - Văn Khúc (8)"},{"lua_chon":"E. Phóng khoáng, không gò bó, con tự lo thân","map_nhom":"Risk","chinh_tinh":"Tham Lang (10) - Phá Quân (8)"},{"lua_chon":"F. Dạy con theo chuẩn mực xã hội, lễ nghĩa","map_nhom":"Justice","chinh_tinh":"Thiên Tướng (9) - Thiên Lương (8)"},{"lua_chon":"G. Phân tích điểm mạnh yếu của con để có phương pháp phù hợp","map_nhom":"Stability","chinh_tinh":"Thiên Phủ (9) - Vũ Khúc (7)"}]},{"id":"TT-ĐT2","cau_hoi":"Khi con cái mắc lỗi hoặc hư, phản ứng đầu tiên của bạn là gì?","lua_chon":[{"lua_chon":"A. Ngay lập tức mắng, phạt, yêu cầu sửa ngay","map_nhom":"Control","chinh_tinh":"Thất Sát (10) - Tử Vi (8)"},{"lua_chon":"B. Bình tĩnh hỏi lý do, phân tích lỗi sai","map_nhom":"Logic","chinh_tinh":"Văn Xương (9) - Văn Khúc (8)"},{"lua_chon":"C. Dỗ dành, khuyên nhẹ nhàng, sợ con tổn thương","map_nhom":"Emotion","chinh_tinh":"Thái Âm (10) - Cự Môn (7)"},{"lua_chon":"D. Bỏ qua, không quan trọng hóa, con sẽ tự lớn","map_nhom":"Risk","chinh_tinh":"Tham Lang (9) - Phá Quân (7)"},{"lua_chon":"E. Bình tĩnh, áp dụng hình phạt công bằng, đúng mức, có giải thích","map_nhom":"Justice","chinh_tinh":"Thiên Lương (9) - Thiên Tướng (8)"},{"lua_chon":"F. Quan sát, ghi chép lỗi sai, theo dõi tiến bộ của con sau đó","map_nhom":"Adapt","chinh_tinh":"Thiên Cơ (8) - Thiên Đồng (6)"},{"lua_chon":"G. Dạy con theo đúng kế hoạch, nề nếp, không nóng vội","map_nhom":"Stability","chinh_tinh":"Thiên Phủ (8) - Vũ Khúc (7)"}]}]}]};
+
+// ══════════════════════════════════════════════════
+// STEP 8D: LAI NHÂN CUNG / TỰ HÓA / LỘC KỴ QUỸ ĐẠO
+// ══════════════════════════════════════════════════
+function findLaiNhanCung(natalResult){
+  const canNam=natalResult.ys, out=[]
+  for(let b=1;b<=12;b++) if(natalResult.canMap?.[b]===canNam)
+    out.push({palaceIdx:b, cung:chiName(b), cungChucNang:natalResult.palaceMap[b]})
+  return out
+}
+function _starsAt(natalResult,b){
+  return [...(natalResult.mainStarsByPalace[b]||[]),
+    ...(natalResult.subStarsByPalace[b]||[]).map(s=>s.replace(/\(.*\)/,'').replace(/^(Hóa \S+|L\.|ĐV\.)\s*/,'').trim())]
+}
+function detectTuHoa(natalResult){
+  const result={}
+  for(let b=1;b<=12;b++){
+    const can=natalResult.canMap?.[b]; if(!can) continue
+    const hoaMap=TU_HOA_MAP[can]||{}
+    const stars=_starsAt(natalResult,b)
+    for(const [star,hoaType] of Object.entries(hoaMap))
+      if(stars.includes(star)){ if(!result[b]) result[b]=[]; result[b].push({star,hoaType,tuHoa:'Tự '+hoaType}) }
+  }
+  return result
+}
+function findPalaceOfStar(natalResult, starName){
+  for(let b=1;b<=12;b++) if((natalResult.mainStarsByPalace[b]||[]).includes(starName)) return b
+  return null
+}
+function getSinhNienHoa(natalResult, starName){
+  return (TU_HOA_MAP[natalResult.ys]||{})[starName]||null
+}
+function traceQuyDao(natalResult, tuHoaMap, loaiHoa, startStar, startPalace){
+  const path=[], visited=new Set()
+  let curStar=startStar, curPalace=startPalace, step=0
+  while(step<3 && curPalace!=null){
+    const can=natalResult.canMap?.[curPalace]
+    const node={step:step+1, cung:chiName(curPalace), palaceIdx:curPalace,
+      cungChucNang:natalResult.palaceMap[curPalace], can, sao:curStar}
+    if(visited.has(curPalace)){ node.stop='Vòng lặp đóng (về cung đã qua)'; path.push(node); break }
+    visited.add(curPalace)
+    const th=tuHoaMap[curPalace]
+    if(th&&th.length){ node.stop='Gặp Tự Hóa ('+th.map(t=>t.tuHoa).join(', ')+') — tiêu tán tại chỗ'; path.push(node); break }
+    const sn=getSinhNienHoa(natalResult,curStar)
+    if(sn==='Hóa Lộc'||sn==='Hóa Kỵ'){ node.stop='Về căn nguyên (sao mang '+sn+' gốc)'; path.push(node); break }
+    const hm=TU_HOA_MAP[can]||{}
+    let nextStar=null
+    for(const [s,h] of Object.entries(hm)) if(h===loaiHoa){ nextStar=s; break }
+    node.phiTiep=nextStar?`can ${can} → ${nextStar} ${loaiHoa.replace('Hóa ','')}`:'(không phi được)'
+    path.push(node)
+    if(!nextStar) break
+    const np=findPalaceOfStar(natalResult,nextStar); if(np==null) break
+    curStar=nextStar; curPalace=np; step++
+  }
+  return path
+}
+function buildQuyDao(natalResult, canLuuNien){
+  const tuHoaMap=detectTuHoa(natalResult)
+  const hoaMap=TU_HOA_MAP[canLuuNien]||{}
+  const out={loc:null, ky:null}
+  for(const [star,hoa] of Object.entries(hoaMap)){
+    if(hoa==='Hóa Lộc'){ const p=findPalaceOfStar(natalResult,star); if(p!=null) out.loc={khoiSao:star,khoiCung:chiName(p),path:traceQuyDao(natalResult,tuHoaMap,'Hóa Lộc',star,p)} }
+    if(hoa==='Hóa Kỵ'){ const p=findPalaceOfStar(natalResult,star); if(p!=null) out.ky={khoiSao:star,khoiCung:chiName(p),path:traceQuyDao(natalResult,tuHoaMap,'Hóa Kỵ',star,p)} }
+  }
+  return out
+}
+
+// ── Hàm 2: Quỹ Đạo Tự Thân (từ cung Tự Hóa, 2 tầng) ──
+// Tầng 1: phi CÙNG LOẠI với Tự Hóa → nếu về chính cung = "Xuất"
+// Tầng 2: chỉ với cung TỰ LỘC → phi KỴ truy "quả" (3 bước + 3 bức tường)
+function buildQuyDaoTuThan(natalResult){
+  const tuHoaMap=detectTuHoa(natalResult)
+  const results=[]
+  for(const [biStr, arr] of Object.entries(tuHoaMap)){
+    const bi=+biStr, can=natalResult.canMap?.[bi]
+    for(const {star, hoaType} of arr){
+      // ── Tầng 1: phi cùng loại ──
+      const hmCan=TU_HOA_MAP[can]||{}
+      let cungLoaiStar=null
+      for(const [s,h] of Object.entries(hmCan)) if(h===hoaType){ cungLoaiStar=s; break }
+      const cungLoaiPalace=cungLoaiStar?findPalaceOfStar(natalResult,cungLoaiStar):null
+      const laXuat=(cungLoaiPalace===bi)  // phi về chính cung
+      const tang1={
+        loaiTuHoa:hoaType.replace('Hóa ',''),
+        sao:star, cung:chiName(bi), cungChucNang:natalResult.palaceMap[bi],
+        phiCungLoai: cungLoaiStar?`can ${can} phi ${hoaType.replace('Hóa ','')} → ${cungLoaiStar}`:'(không phi được)',
+        nhan: laXuat ? (hoaType.replace('Hóa ','')+' Xuất — năng lượng tự đến rồi tự đi, không tụ lại') :
+              (cungLoaiPalace!=null?('chuyển sang '+chiName(cungLoaiPalace)+' ('+natalResult.palaceMap[cungLoaiPalace]+')'):'—')
+      }
+      // ── Tầng 2: chỉ Tự Lộc mới truy quả (phi Kỵ) ──
+      let tang2=null
+      if(hoaType==='Hóa Lộc'){
+        const hm=TU_HOA_MAP[can]||{}
+        let kyStar=null
+        for(const [s,h] of Object.entries(hm)) if(h==='Hóa Kỵ'){ kyStar=s; break }
+        if(kyStar){
+          const kyPalace=findPalaceOfStar(natalResult,kyStar)
+          const buoc1={cung:chiName(bi),cungChucNang:natalResult.palaceMap[bi],can,
+            phiKy:`can ${can} phi Kỵ → ${kyStar}`,
+            quaTai: kyPalace!=null?(chiName(kyPalace)+' ('+natalResult.palaceMap[kyPalace]+')'):'(không tìm thấy sao)'}
+          // Truy tiếp từ cung quả (nếu có), 3 bước + 3 bức tường
+          const tiep = kyPalace!=null ? traceQuyDao(natalResult, tuHoaMap, 'Hóa Kỵ', kyStar, kyPalace) : []
+          tang2={buoc1, tiep}
+        }
+      }
+      results.push({tang1, tang2})
+    }
+  }
+  return results
+}
+
+// ══════════════════════════════════════════════════
+// STEP 8E: LƯU NHẬT — chấm điểm cát hung từng ngày tới hết tháng âm
+// ══════════════════════════════════════════════════
+const _CAN_NGAY=['Giáp','Ất','Bính','Đinh','Mậu','Kỷ','Canh','Tân','Nhâm','Quý']
+const _CHI_NGAY=['Tý','Sửu','Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi']
+// Can chi ngày từ ngày dương (qua JDN)
+function canChiNgay(dd,mm,yy){
+  const jd=jdFromDate(dd,mm,yy)
+  return {can:_CAN_NGAY[(jd+9)%10], chi:_CHI_NGAY[(jd+1)%12], jd}
+}
+// cung đối (xung chiếu) theo chiName
+function _oppCungName(cungName){
+  const idx=cungList.indexOf(cungName); if(idx<0) return null
+  return cungList[(idx+6)%12]
+}
+// Sao nào ở cung (tên cung) — chính tinh
+function _mainStarsAtCungName(natalResult, cungName){
+  for(let b=1;b<=12;b++) if(chiName(b)===cungName) return natalResult.mainStarsByPalace[b]||[]
+  return []
+}
+// cung chức năng gốc mà 1 tên cung địa chi đang mang
+function _chucNangAtCungName(natalResult, cungName){
+  for(let b=1;b<=12;b++) if(chiName(b)===cungName) return natalResult.palaceMap[b]
+  return null
+}
+
+// Chấm điểm 1 ngày. Trả {score, tags[], luuNhatCung, chucNang}
+function scoreLuuNhat(natalResult, transit, luuNhatCungName, canNgay){
+  const tags=[]; let score=0
+  const menhCungName=chiName(natalResult.menhIndex)
+  const luuNienMenh=transit.trungPhung?.luuNienMenhIdx!=null?chiName(transit.trungPhung.luuNienMenhIdx):null
+  const oppNgay=_oppCungName(luuNhatCungName)
+  const hoaMapNgay=TU_HOA_MAP[canNgay]||{}
+
+  // Chỉ số 1: Trùng phùng — cung ngày đè lên cung gốc nào
+  const chucNang=_chucNangAtCungName(natalResult, luuNhatCungName)
+
+  // Chỉ số 2.1: Sinh Niên hóa nằm sẵn ở ô ngày
+  const starsAtNgay=_mainStarsAtCungName(natalResult, luuNhatCungName)
+  const snMap=TU_HOA_MAP[natalResult.ys]||{}
+  for(const s of starsAtNgay){
+    if(snMap[s]==='Hóa Kỵ'){ score-=2; tags.push('có áp lực tiềm ẩn sẵn ('+'Kỵ gốc'+')') }
+    if(snMap[s]==='Hóa Lộc'){ score+=1; tags.push('có nền may sẵn (Lộc gốc)') }
+  }
+
+  // Chỉ số 2.2: Lưu Niên Kỵ (can năm) trúng / xung ô ngày
+  const lnMap=TU_HOA_MAP[transit.transitYS]||{}
+  let lnKyStar=null; for(const [s,h] of Object.entries(lnMap)) if(h==='Hóa Kỵ'){lnKyStar=s;break}
+  if(lnKyStar){
+    const kyAtNgay=starsAtNgay.includes(lnKyStar)
+    const kyAtOpp=_mainStarsAtCungName(natalResult, oppNgay).includes(lnKyStar)
+    if(kyAtNgay){ score-=2; tags.push('rắc rối của năm dồn vào ngày này') }
+    else if(kyAtOpp){ score-=1; tags.push('rắc rối của năm xung chiếu ngày này') }
+  }
+
+  // Chỉ số 2.3: Can ngày phi tứ hóa
+  // Lộc/Khoa nhập Lưu Nhật Mệnh hoặc Mệnh gốc -> tốt (tính cả xung chiếu)
+  for(const [s,h] of Object.entries(hoaMapNgay)){
+    const palOfStar=(()=>{ for(let b=1;b<=12;b++) if((natalResult.mainStarsByPalace[b]||[]).includes(s)) return chiName(b); return null })()
+    if(palOfStar==null) continue
+    const hitNgay=(palOfStar===luuNhatCungName), hitMenh=(palOfStar===menhCungName)
+    const hitLuuMenh=(luuNienMenh&&palOfStar===luuNienMenh)
+    const xungNgay=(palOfStar===oppNgay), xungMenh=(palOfStar===_oppCungName(menhCungName))
+    if(h==='Hóa Lộc'||h==='Hóa Khoa'){
+      if(hitNgay||hitMenh){ score+=2; tags.push('ngày có lộc/hanh thông') }
+      else if(xungNgay||xungMenh){ score+=1; tags.push('có chút thuận lợi chiếu tới') }
+    }
+    if(h==='Hóa Kỵ'){
+      if(hitNgay||hitMenh||hitLuuMenh){ score-=2; tags.push('ngày dễ trục trặc/hao tổn') }
+      else if(xungNgay||xungMenh){ score-=1; tags.push('có chuyện xung khắc chiếu tới') }
+    }
+  }
+  return {score, tags, luuNhatCung:luuNhatCungName, chucNang, canNgay}
+}
+
+// Quét từ ngày dương đang xét tới hết tháng âm. onlyStrong=true chỉ giữ ngày mạnh.
+function buildLuuNhatThang(natalResult, transit, fromDd, fromMm, fromYy, onlyStrong=true){
+  const startLunar=solar2Lunar(fromDd, fromMm, fromYy, 7)
+  const luuNguyetCung=transit.luuNguyet
+  if(!luuNguyetCung) return []
+  const days=[]
+  let dd=fromDd, mm=fromMm, yy=fromYy, guard=0
+  while(guard++<40){
+    const lunar=solar2Lunar(dd,mm,yy,7)
+    if(lunar.lunarMonth!==startLunar.lunarMonth || lunar.lunarYear!==startLunar.lunarYear) break
+    const lunarDay=lunar.lunarDay
+    const idx=cungList.indexOf(luuNguyetCung)
+    const luuNhatCung=cungList[(idx+lunarDay-1)%12]
+    const cc=canChiNgay(dd,mm,yy)
+    const sc=scoreLuuNhat(natalResult, transit, luuNhatCung, cc.can)
+    days.push({duong:`${dd}/${mm}`, am:lunarDay, canChi:cc.can+' '+cc.chi, ...sc})
+    const nd=new Date(yy,mm-1,dd); nd.setDate(nd.getDate()+1)
+    dd=nd.getDate(); mm=nd.getMonth()+1; yy=nd.getFullYear()
+  }
+  const mapped=days.map(d=>({
+    duong:d.duong, am:d.am, canChi:d.canChi,
+    ngay:`${d.duong} (âm ${d.am}, ${d.canChi})`,
+    tinhChat: d.score>=2?'tốt':(d.score<=-2?'xấu':'bình thường'),
+    diem:d.score, linhVuc:d.chucNang, dauHieu:[...new Set(d.tags)]
+  }))
+  return onlyStrong ? mapped.filter(d=>Math.abs(d.diem)>=2) : mapped
+}
+
+// ── Lưu Nguyệt 12 tháng: chấm điểm từng tháng trong năm xem ──
+// Dùng cho chủ đề lẻ để chỉ ra tháng nào tốt/xấu cho lĩnh vực đó.
+function buildLuuNguyet12Thang(natalResult, transit, engine, tieuHanCung){
+  const out=[]
+  for(let m=1;m<=12;m++){
+    const cung=engine.getLuuNguyetCach4(tieuHanCung, engine.thangSinh, engine.gioSinh, m)
+    // chấm điểm theo cùng logic tứ hóa (cấp tháng): can tháng chưa có nên chỉ xét
+    // trùng phùng + Sinh Niên + Lưu Niên hóa trúng/xung cung tháng
+    const sc=scoreLuuNguyet(natalResult, transit, cung)
+    out.push({thang:m, cung, linhVuc:sc.chucNang, diem:sc.score,
+      tinhChat: sc.score>=2?'tốt':(sc.score<=-2?'xấu':'bình thường'),
+      dauHieu:[...new Set(sc.tags)]})
+  }
+  return out
+}
+
+// Chấm điểm 1 tháng (cấp Lưu Nguyệt) — không có can tháng nên xét Sinh Niên + Lưu Niên
+function scoreLuuNguyet(natalResult, transit, luuNguyetCungName){
+  const tags=[]; let score=0
+  const chucNang=_chucNangAtCungName(natalResult, luuNguyetCungName)
+  const oppCung=_oppCungName(luuNguyetCungName)
+  const starsHere=_mainStarsAtCungName(natalResult, luuNguyetCungName)
+  // Sinh Niên hóa nằm sẵn
+  const snMap=TU_HOA_MAP[natalResult.ys]||{}
+  for(const s of starsHere){
+    if(snMap[s]==='Hóa Kỵ'){ score-=2; tags.push('áp lực nền tảng (Kỵ gốc)') }
+    if(snMap[s]==='Hóa Lộc'){ score+=2; tags.push('nền may sẵn (Lộc gốc)') }
+    if(snMap[s]==='Hóa Khoa'){ score+=1; tags.push('có quý nhân (Khoa gốc)') }
+  }
+  // Lưu Niên hóa (can năm) trúng/xung cung tháng
+  const lnMap=TU_HOA_MAP[transit.transitYS]||{}
+  for(const [s,h] of Object.entries(lnMap)){
+    const atHere=starsHere.includes(s)
+    const atOpp=_mainStarsAtCungName(natalResult, oppCung).includes(s)
+    if(h==='Hóa Lộc'){ if(atHere){score+=2;tags.push('cơ hội của năm dồn vào tháng này')} else if(atOpp){score+=1;tags.push('cơ hội chiếu tới')} }
+    if(h==='Hóa Khoa'){ if(atHere){score+=1;tags.push('quý nhân của năm trợ giúp')} }
+    if(h==='Hóa Kỵ'){ if(atHere){score-=2;tags.push('rắc rối của năm dồn vào tháng này')} else if(atOpp){score-=1;tags.push('rắc rối xung chiếu tháng này')} }
+  }
+  return {score, tags, chucNang}
+}
+
+// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════════
+// STEP 8A: INTERPRET ENGINE — xác định Cung Tật & Tật của Tật
+// ══════════════════════════════════════════════════
+const QUESTIONNAIRE = QUESTIONNAIRE_DATA
+
+// ── Config hướng đối tượng: targetTopic -> tên chủ đề trong questionnaire ──
+// Thêm chủ đề mới chỉ cần thêm 1 dòng ở đây.
+const TOPIC_MAP = {
+  quan_loc:  'Quan Lộc (Công việc)',
+  tai_bach:  'Tài Bạch (Tài chính)',
+  tinh_cam:  'Phu Thê (Tình cảm / Hôn nhân)',
+  dien_trach:'Điền Trạch (Nhà cửa, xe cộ, nơi ở)',
+  // con_cai: 'Tử Tức (Con cái)',        // mở sau
+  // suc_khoe:'Tật Ách (Sức khỏe)',       // mở sau
+}
+// Tổng quan tháng = gộp 3 chủ đề
+const TONG_QUAN_TOPICS = ['quan_loc','tai_bach','tinh_cam']
+
+// ── Cung chính của mỗi topic (dùng cho xung chiếu khi điểm = 0) ──
+const TOPIC_CUNG_CHINH = {
+  quan_loc:'Quan Lộc', tai_bach:'Tài Bạch', tinh_cam:'Phu Thê',
+  dien_trach:'Điền Trạch', con_cai:'Tử Tức', suc_khoe:'Tật Ách',
+}
+
+// ── 7 nhóm tính cách -> chính tinh ──
+const NHOM_CHINH_TINH = {
+  Control:['Tử Vi','Thất Sát'], Stability:['Thiên Phủ','Vũ Khúc'],
+  Risk:['Phá Quân','Tham Lang'], Adapt:['Thiên Cơ','Thiên Đồng'],
+  Logic:['Văn Xương','Văn Khúc'], Emotion:['Thái Âm','Cự Môn'],
+  Justice:['Thiên Tướng','Thiên Lương'],
+}
+
+const PRIORITY_ORDER = ['Mệnh','Quan Lộc','Tài Bạch','Phu Thê','Tật Ách',
+  'Điền Trạch','Tử Tức','Phụ Mẫu','Huynh Đệ','Nô Bộc','Thiên Di','Phúc Đức']
+
+const XUNG_CHIEU = {
+  'Mệnh':['Tài Bạch','Quan Lộc'],'Tài Bạch':['Mệnh','Quan Lộc'],'Quan Lộc':['Mệnh','Tài Bạch'],
+  'Phu Thê':['Tật Ách','Thiên Di'],'Tật Ách':['Phu Thê','Thiên Di'],'Thiên Di':['Phu Thê','Tật Ách'],
+  'Phụ Mẫu':['Huynh Đệ','Điền Trạch'],'Huynh Đệ':['Phụ Mẫu','Điền Trạch'],'Điền Trạch':['Phụ Mẫu','Huynh Đệ'],
+  'Tử Tức':['Phúc Đức','Nô Bộc'],'Phúc Đức':['Tử Tức','Nô Bộc'],'Nô Bộc':['Tử Tức','Phúc Đức'],
+}
+
+// ── Helpers ──
+// Parse "Phu Thê / Thiên Di" -> ['Phu Thê','Thiên Di']; "không" -> []
+function parseCungField(s){
+  if(!s||s==='không') return []
+  return s.split('/').map(x=>x.trim())
+    .map(x=>x.replace(/\s*\(tật\)\s*/,'').trim())  // bỏ hậu tố "(tật)"
+    .filter(Boolean)
+}
+// Parse "CONTROL (3) + RISK (1)" -> [{nhom:'Control',diem:3},{nhom:'Risk',diem:1}]
+function parseNhomMap(s){
+  if(!s) return []
+  return s.split('+').map(part=>{
+    const m=part.trim().match(/^([A-Za-zÀ-ỹ]+)\s*\((\d+)\)/)
+    if(!m) return null
+    return {nhom:capitalize(m[1]), diem:+m[2]}
+  }).filter(Boolean)
+}
+// Parse "Tử Vi (9) - Thất Sát (7)" -> điểm cao nhất = 9
+function parseChinhTinhMaxDiem(s){
+  if(!s) return 10
+  const nums=[...s.matchAll(/\((\d+)\)/g)].map(m=>+m[1])
+  return nums.length?Math.max(...nums):10
+}
+function capitalize(w){
+  const map={'CONTROL':'Control','STABILITY':'Stability','RISK':'Risk','ADAPT':'Adapt',
+    'LOGIC':'Logic','EMOTION':'Emotion','JUSTICE':'Justice'}
+  return map[w.toUpperCase()]||w
+}
+
+// Lấy chính tinh của 1 cung (theo tên cung). Vô chính diệu -> mượn sao cung đối.
+function getChinhTinhOfPalace(chart, cungName){
+  // palaceMap: {branchIdx: tênCung}. Tìm branchIdx của cungName.
+  let branchIdx=null
+  for(const [bi,name] of Object.entries(chart.palaceMap)){
+    if(name===cungName){ branchIdx=+bi; break }
+  }
+  if(branchIdx===null) return {stars:[],borrowed:false}
+  let stars=(chart.mainStarsByPalace[branchIdx]||[]).slice()
+  let borrowed=false
+  if(stars.length===0){
+    // mượn sao cung đối (cách 6)
+    const oppIdx=((branchIdx-1+6)%12)+1
+    stars=(chart.mainStarsByPalace[oppIdx]||[]).slice()
+    borrowed=true
+  }
+  return {stars,borrowed,branchIdx}
+}
+
+// ── Chuẩn hóa đáp án về mảng: 'A' -> ['A']; ['A','C'] giữ nguyên; null -> [] ──
+function normalizeAns(ans){
+  if(ans==null) return []
+  if(Array.isArray(ans)) return ans.filter(Boolean)
+  return [ans]
+}
+
+// ── TÍNH ĐIỂM CUNG (định lượng) ──
+// answers: {qid: 'A' | ['A','C']}. Chọn nhiều -> cộng điểm tất cả đáp án.
+function tinhDiemCung(questions, answers){
+  const score={}
+  for(const q of questions){
+    for(const ans of normalizeAns(answers[q.id])){
+      const idx=ans.charCodeAt(0)-65  // 'A'->0
+      const lc=q.lua_chon[idx]; if(!lc) continue
+      const cungs=parseCungField(lc.map_cung)
+      const ts=lc.trong_so||0
+      for(const c of cungs){ score[c]=(score[c]||0)+ts }  // map kép: cộng cả 2
+    }
+  }
+  return score
+}
+
+// ── TÍNH NHÓM TÍNH CÁCH từ ĐT1/ĐT2 ──
+function tinhNhomTinhCach(dinhTinhQs, answers){
+  const score={}
+  dinhTinhQs.forEach((q)=>{
+    for(const ans of normalizeAns(answers[q.id])){
+      const idx=ans.charCodeAt(0)-65
+      const lc=q.lua_chon[idx]; if(!lc) continue
+      const nhom=capitalize(lc.map_nhom)
+      // ĐT1 có trong_so=10; ĐT2 dùng điểm chính tinh cao nhất
+      const diem=lc.trong_so!=null?lc.trong_so:parseChinhTinhMaxDiem(lc.chinh_tinh)
+      score[nhom]=(score[nhom]||0)+diem
+    }
+  })
+  // nhóm điểm cao nhất
+  let best=null,bestD=-1
+  for(const [n,d] of Object.entries(score)) if(d>bestD){bestD=d;best=n}
+  return {nhomScore:score, nhom:best}
+}
+
+// ── TÍNH BASELINE từ QC1-QC6 ──
+function tinhBaselineQC(answers){
+  const qcQs=QUESTIONNAIRE.chung.cau_hoi_tinh_cach_nen
+  const score={}
+  for(const q of qcQs){
+    for(const ans of normalizeAns(answers[q.id])){
+      const idx=ans.charCodeAt(0)-65
+      const lc=q.lua_chon[idx]; if(!lc) continue
+      for(const {nhom,diem} of parseNhomMap(lc.map)){ score[nhom]=(score[nhom]||0)+diem }
+    }
+  }
+  let best=null,bestD=-1
+  for(const [n,d] of Object.entries(score)) if(d>bestD){bestD=d;best=n}
+  return {qcScore:score, nhom:best}
+}
+
+// top N cung theo điểm (kèm xử lý bằng điểm)
+function topCung(score, n){
+  const arr=Object.entries(score).filter(([c])=>c!=='không').map(([c,d])=>({cung:c,diem:d}))
+  arr.sort((a,b)=>b.diem-a.diem || PRIORITY_ORDER.indexOf(a.cung)-PRIORITY_ORDER.indexOf(b.cung))
+  return arr.slice(0,n)
+}
+
+// chính tinh của cung có thuộc nhóm không
+function chinhTinhThuocNhom(stars, nhom){
+  if(!nhom) return false
+  const list=NHOM_CHINH_TINH[nhom]||[]
+  return stars.some(s=>list.includes(s))
+}
+
+// ══════════════════════════════════════════════════
+// HÀM CHÍNH: luận 1 chủ đề
+// ══════════════════════════════════════════════════
+function interpretTopic(chart, answers, topicKey){
+  const chuDeName=TOPIC_MAP[topicKey]
+  const chuDe=QUESTIONNAIRE.cac_chu_de.find(c=>c.chu_de===chuDeName)
+  if(!chuDe) return {error:'Không tìm thấy chủ đề '+topicKey}
+  const cungChinh=TOPIC_CUNG_CHINH[topicKey]
+  const debug={steps:[]}
+
+  // ── TẦNG CUNG TẬT ──
+  // B1: điểm cung
+  const scoreCT=tinhDiemCung(chuDe.cung_tat, answers)
+  debug.steps.push({step:1, scoreCungTat:scoreCT})
+  const tong=Object.values(scoreCT).reduce((a,b)=>a+b,0)
+
+  let cungTat=null, cungTatReason=''
+  if(tong===0){
+    // B7: điểm = 0 -> xung chiếu tam hợp với cung CHÍNH
+    const xc=XUNG_CHIEU[cungChinh]||[]
+    cungTat=xc[0]||cungChinh
+    cungTatReason='Điểm=0 → xung chiếu tam hợp với cung chính '+cungChinh+' → '+cungTat
+  } else {
+    const top2=topCung(scoreCT,2)
+    debug.steps.push({step:'1-top2', top2})
+    // B2: chính tinh top2
+    const ct0=getChinhTinhOfPalace(chart, top2[0].cung)
+    const ct1=top2[1]?getChinhTinhOfPalace(chart, top2[1].cung):{stars:[]}
+    debug.steps.push({step:2, [top2[0].cung]:ct0.stars, [top2[1]?.cung]:ct1.stars})
+    // B3: nhóm tính cách
+    const {nhom}=tinhNhomTinhCach(chuDe.cau_hoi_tinh_cach_dinh_tinh, answers)
+    debug.steps.push({step:3, nhom})
+    // B4: khớp nhóm?
+    const khop0=chinhTinhThuocNhom(ct0.stars, nhom)
+    const khop1=top2[1]?chinhTinhThuocNhom(ct1.stars, nhom):false
+    debug.steps.push({step:4, khop0, khop1})
+    if(khop0 && !khop1){ cungTat=top2[0].cung; cungTatReason='B4: chỉ top1 khớp nhóm '+nhom }
+    else if(khop1 && !khop0){ cungTat=top2[1].cung; cungTatReason='B4: chỉ top2 khớp nhóm '+nhom }
+    else {
+      // B5: QC baseline
+      const {nhom:qcNhom}=tinhBaselineQC(answers)
+      const qc0=chinhTinhThuocNhom(ct0.stars, qcNhom)
+      const qc1=top2[1]?chinhTinhThuocNhom(ct1.stars, qcNhom):false
+      debug.steps.push({step:5, qcNhom, qc0, qc1})
+      if(qc0 && !qc1){ cungTat=top2[0].cung; cungTatReason='B5: QC baseline '+qcNhom+' khớp top1' }
+      else if(qc1 && !qc0){ cungTat=top2[1].cung; cungTatReason='B5: QC baseline '+qcNhom+' khớp top2' }
+      else {
+        // B6: khác điểm -> top1; bằng điểm -> priority
+        if(top2.length<2 || top2[0].diem!==top2[1].diem){ cungTat=top2[0].cung; cungTatReason='B6: top1 điểm cao hơn' }
+        else {
+          const p0=PRIORITY_ORDER.indexOf(top2[0].cung), p1=PRIORITY_ORDER.indexOf(top2[1].cung)
+          cungTat=p0<=p1?top2[0].cung:top2[1].cung
+          cungTatReason='B6: bằng điểm → priority order'
+        }
+      }
+    }
+  }
+
+  // ── TẦNG TẬT CỦA TẬT (B8) ──
+  const scoreTT=tinhDiemCung(chuDe.tat_cua_tat, answers)
+  const tongTT=Object.values(scoreTT).reduce((a,b)=>a+b,0)
+  let tatCuaTat=null, tatReason=''
+  if(tongTT===0){
+    const xc=XUNG_CHIEU[cungTat]||[]
+    tatCuaTat=xc[0]||cungTat
+    tatReason='Điểm=0 → xung chiếu tam hợp với Cung Tật '+cungTat
+  } else {
+    const topT=topCung(scoreTT,2)
+    if(topT.length<2 || topT[0].diem!==topT[1].diem){ tatCuaTat=topT[0].cung; tatReason='Top1 điểm cao nhất' }
+    else {
+      const p0=PRIORITY_ORDER.indexOf(topT[0].cung), p1=PRIORITY_ORDER.indexOf(topT[1].cung)
+      tatCuaTat=p0<=p1?topT[0].cung:topT[1].cung
+      tatReason='Bằng điểm → priority order'
+    }
+  }
+
+  const ctStars=cungTat?getChinhTinhOfPalace(chart,cungTat):{stars:[]}
+  const ttStars=tatCuaTat?getChinhTinhOfPalace(chart,tatCuaTat):{stars:[]}
+  return {
+    topic:topicKey, chuDe:chuDeName, cungChinh,
+    cungTat, cungTatStars:ctStars.stars, cungTatBorrowed:ctStars.borrowed, cungTatReason,
+    tatCuaTat, tatCuaTatStars:ttStars.stars, tatCuaTatBorrowed:ttStars.borrowed, tatReason,
+    nhomTinhCach:tinhNhomTinhCach(chuDe.cau_hoi_tinh_cach_dinh_tinh, answers).nhom,
+    qcBaseline:tinhBaselineQC(answers).nhom,
+    debug
+  }
+}
+
+// HÀM EXPORT: interpretChart
+function interpretChart(chart, contextAnswers, targetTopic, transitFrame){
+  if(targetTopic==='Tong_quan_thang'){
+    return {mode:'tong_quan', results:TONG_QUAN_TOPICS.map(t=>interpretTopic(chart, contextAnswers, t))}
+  }
+  return {mode:'single', results:[interpretTopic(chart, contextAnswers, targetTopic)]}
+}
+
+
+
+// ══════════════════════════════════════════════════
+// MAIN
+// ══════════════════════════════════════════════════
+// Auto-update hiển thị âm lịch khi đổi ngày xét hạn
+function updateTargetLunar(){
+  const dateStr=document.getElementById('target-date')?.value
+  if(!dateStr) return
+  const [tyy,tmm,tdd]=dateStr.split('-').map(Number)
+  const lun=solar2Lunar(tdd,tmm,tyy,7)
+  const ys=getYearStem(lun.lunarYear)
+  const yb=chiName(getYearBranchIdx(lun.lunarYear))
+  const el=document.getElementById('target-lunar-display')
+  if(el) el.textContent='Âm: '+lun.lunarDay+'/'+lun.lunarMonth+'/'+lun.lunarYear+(lun.isLeap?' (nhuận)':'')+' — '+ys+' '+yb
+}
+
+function run(){
+  const dobStr=document.getElementById('dob').value
+  const branchH=parseInt(document.getElementById('hour').value)
+  const gender=document.getElementById('gender').value
+  if(!dobStr){alert('Nhập ngày sinh!');return}
+  const [yy,mm,dd]=dobStr.split('-').map(Number)
+  const lunar=solar2Lunar(dd,mm,yy,7)
+  const input={...lunar,branchH,gender,dob:dobStr}
+  const natalResult=buildNatalChart(input)
+  // Step 6: build transit frame
+  const targetDateStr=document.getElementById('target-date').value||'2026-07-15'
+  const [tYY,tMM,tDD]=targetDateStr.split('-').map(Number)
+  const targetLunar=solar2Lunar(tDD,tMM,tYY,7)
+  const targetYear=targetLunar.lunarYear  // NĂM ÂM — dùng cho đại/tiểu hạn + sao lưu năm
+  const targetMonth=targetLunar.lunarMonth
+  const targetDay=targetLunar.lunarDay
+  const targetHourBranch=parseInt(document.getElementById('target-hour').value)||5
+  // Can chi năm xét (âm lịch)
+  const transitYS=getYearStem(targetLunar.lunarYear)
+  const transitYBIdx=getYearBranchIdx(targetLunar.lunarYear)
+  const transitYB=chiName(transitYBIdx)
+  const engine=new TimeFlowEngine(natalResult)
+  const transit=buildTransitFrame(engine,targetYear,targetMonth,targetDay,targetHourBranch,transitYS,transitYBIdx)
+  const movingStars=buildMovingStars(transitYS,transitYBIdx,targetHourBranch,natalResult,transit.daiHan.cung,natalResult.canMap)
+  const daiHanList=buildDaiHanList(engine)
+  // Step 7D: phát hiện xung đột Tứ Hóa 3 tầng
+  const canDaiVan=natalResult.canMap[chiIdx(transit.daiHan.cung)]
+  const tuHoaConflicts=detectTuHoaConflicts(natalResult, natalResult.ys, canDaiVan, transitYS)
+  // Step 7E Kiểu 2: Lưu Tứ Hóa bay vào cung (dùng dữ liệu trùng phùng 7c)
+  const luuHoaFlights=detectLuuHoaFlying(natalResult, transitYS, natalResult.palaceMap,
+    transit.trungPhung?.daiVanByPalace, transit.trungPhung?.luuNienByPalace)
+  // Step 8D: 3 logic nâng cao để hiển thị
+  const laiNhan=findLaiNhanCung(natalResult)
+  const tuHoa=detectTuHoa(natalResult)
+  const quyDao=buildQuyDao(natalResult, transitYS)
+  const quyDaoTuThan=buildQuyDaoTuThan(natalResult)
+  // Hiển thị ngày âm lịch xét hạn
+  const tld=document.getElementById('target-lunar-display')
+  if(tld) tld.textContent=targetLunar.lunarDay+'/'+targetLunar.lunarMonth+'/'+targetLunar.lunarYear+' ('+transitYS+' '+transitYB+')'
+  renderChart(natalResult,movingStars)
+  try{ renderTimePanel(transit,daiHanList,targetYear,natalResult.palaceMap,tuHoaConflicts,luuHoaFlights,{laiNhan,tuHoa,quyDao,quyDaoTuThan}) }
+  catch(e){ console.error('renderTimePanel error:',e) }
+
+  // ── Step 8E: badge bảng Lưu Nhật để kiểm tra (chỉ Tổng quan tháng) ──
+  try{
+    if((window.__lastTopic||'')==='Tong_quan_thang'){
+      const ds=(document.getElementById('target-date')?.value||'').split('-').map(Number)
+      if(ds.length===3){
+        const full=buildLuuNhatThang(natalResult, transit, ds[2], ds[1], ds[0], false)
+        renderLuuNhatBadge(full)
+      }
+    } else { const old=document.getElementById('luunhat-badge'); if(old) old.remove() }
+  }catch(e){ console.error('luuNhat badge error:',e) }
+
+  // ── Step 8B: chạy luận giải với đáp án đã thu ở bước 1 ──
+  window.__natalResult=natalResult
+  window.__transit=transit
+  window.__engine=engine
+  window.__movingStars=movingStars
+  window.__tuHoaConflicts=tuHoaConflicts
+  window.__luuHoaFlights=luuHoaFlights
+  try{
+    const topic=window.__lastTopic||'quan_loc'
+    const answers=window.__answers||{}
+    const interp=interpretChart(natalResult, answers, topic, transit)
+    window.__interp=interp
+    renderInterpretBadges(interp)
+  }catch(e){ console.error('interpret error:',e) }
+}
+
+// ══════════════════════════════════════════════════
+// STEP 8B: FORM LUẬN GIẢI
+// ──────────────────────────────────────────────────
+const TOPIC_LABELS={
+  quan_loc:'Quan Lộc (Công việc)', tai_bach:'Tài Bạch (Tài chính)',
+  tinh_cam:'Tình cảm / Hôn nhân', dien_trach:'Điền Trạch (Nhà/xe)',
+  Tong_quan_thang:'Tổng quan tháng'
+}
+// topic -> tên chủ đề trong questionnaire (để lấy câu hỏi)
+const TOPIC_TO_CHUDE={
+  quan_loc:'Quan Lộc (Công việc)', tai_bach:'Tài Bạch (Tài chính)',
+  tinh_cam:'Phu Thê (Tình cảm / Hôn nhân)', dien_trach:'Điền Trạch (Nhà cửa, xe cộ, nơi ở)'
+}
+const TQ_TOPICS=['quan_loc','tai_bach','tinh_cam']
+
+// ── Câu hỏi tình huống (context) theo chủ đề — KHÔNG chấm điểm, chỉ để luận đúng người ──
+// Mỗi mục: {id, label, options:[...]}
+const CONTEXT_QUESTIONS={
+  quan_loc:[
+    {id:'ql_status', label:'Hiện tại bạn:', options:['Đang đi làm','Thất nghiệp / tìm việc']},
+    {id:'ql_type',   label:'Hình thức công việc:', options:['Ăn lương cố định','Buôn bán / tự kinh doanh','Làm nhiều job kết hợp']}
+  ],
+  tai_bach:[
+    {id:'tb_status', label:'Hiện tại bạn:', options:['Đang đi làm','Thất nghiệp / tìm việc']},
+    {id:'tb_type',   label:'Nguồn thu nhập chính:', options:['Lương cố định','Buôn bán / kinh doanh','Nhiều nguồn kết hợp']}
+  ],
+  tinh_cam:[
+    {id:'tc_status', label:'Tình trạng hôn nhân:', options:['Đã kết hôn','Chưa kết hôn']}
+  ],
+  dien_trach:[
+    {id:'dt_status', label:'Về nhà ở:', options:['Đã có nhà','Chưa có nhà']}
+  ]
+}
+
+// Lấy các câu tình huống cần hỏi cho 1 targetTopic (Tổng quan = gộp 3, lọc trùng theo label)
+function getContextQuestionsForTopic(topic){
+  const keys=getChuDeKeysForTopic(topic)
+  const out=[]; const seen=new Set()
+  for(const k of keys){
+    for(const q of (CONTEXT_QUESTIONS[k]||[])){
+      // dedup theo nội dung câu hỏi (label + options) để Tổng quan không lặp "đi làm/thất nghiệp"
+      const sig=q.label+'|'+q.options.join(',')
+      if(seen.has(sig)) continue
+      seen.add(sig)
+      out.push({...q, topicKey:k})
+    }
+  }
+  return out
+}
+
+// Lấy danh sách chủ đề con cần hỏi cho 1 targetTopic
+function getChuDeKeysForTopic(topic){
+  return topic==='Tong_quan_thang'?TQ_TOPICS:[topic]
+}
+
+// Bước 1 (init lúc tải trang): render nút chọn chủ đề
+function renderTopicSelector(){
+  const btnHost=document.getElementById('topic-buttons'); if(!btnHost) return
+  const cur=window.__lastTopic||''
+  btnHost.innerHTML=Object.entries(TOPIC_LABELS).map(([k,v])=>`
+    <button onclick="selectTopic('${k}')" style="padding:8px 14px;border-radius:8px;border:1px solid ${cur===k?'#6a3aaa':'#ccc'};background:${cur===k?'#6a3aaa':'#f6f0fc'};color:${cur===k?'#fff':'#4a3a6a'};font-size:.74rem;font-weight:600;cursor:pointer">${v}</button>
+  `).join('')
+}
+
+function selectTopic(topic){
+  window.__lastTopic=topic
+  renderTopicSelector()
+  renderQuestionForm(topic)
+  const btn=document.getElementById('btn-next'); if(btn) btn.style.display='block'
+}
+
+// Render form câu hỏi của chủ đề đã chọn (vào #question-form)
+function renderQuestionForm(topic){
+  const formHost=document.getElementById('question-form'); if(!formHost) return
+  const chuDeKeys=getChuDeKeysForTopic(topic)
+  let html='<div style="margin-top:14px;border-top:1px solid #eee;padding-top:12px">'
+
+  // ── Khối tình huống (context) + ô nhập tự do ──
+  const ctxQs=getContextQuestionsForTopic(topic)
+  html+='<div style="background:#f0ecf8;border-radius:8px;padding:12px;margin-bottom:14px">'
+  html+='<div style="font-size:.76rem;font-weight:700;color:#5a3a8a;margin-bottom:8px">Đôi nét về bạn (giúp luận đúng hoàn cảnh)</div>'
+  for(const q of ctxQs){
+    html+=`<div style="margin-bottom:8px">
+      <div style="font-size:.72rem;color:#444;margin-bottom:3px">${q.label}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        ${q.options.map(opt=>`<label style="font-size:.7rem;padding:4px 9px;background:white;border:1px solid #ccc;border-radius:14px;cursor:pointer">
+          <input type="radio" name="ctx_${q.id}" value="${opt}" style="margin-right:4px;vertical-align:middle">${opt}</label>`).join('')}
+      </div>
+    </div>`
+  }
+  html+=`<div style="margin-top:8px">
+    <div style="font-size:.72rem;color:#444;margin-bottom:3px">Vấn đề bạn quan tâm nhất lúc này:</div>
+    <textarea id="ctx-concern" rows="2" placeholder="VD: Mình đang phân vân có nên nhảy việc không..." style="width:100%;font-size:.74rem;padding:6px 8px;border:1px solid #ccc;border-radius:6px;box-sizing:border-box"></textarea>
+  </div>`
+  html+='</div>'
+
+  // ── Câu hỏi chấm điểm (giữ nguyên) ──
+  html+=renderQuestionGroup('Câu hỏi chung (tính cách nền)', QUESTIONNAIRE.chung.cau_hoi_tinh_cach_nen)
+  for(const ck of chuDeKeys){
+    const chuDeName=TOPIC_TO_CHUDE[ck]
+    const chuDe=QUESTIONNAIRE.cac_chu_de.find(c=>c.chu_de===chuDeName)
+    if(!chuDe) continue
+    html+=`<div style="font-size:.8rem;font-weight:700;color:#6a3aaa;margin:16px 0 6px">▸ ${chuDe.chu_de}</div>`
+    html+=renderQuestionGroup('Xác định Cung Tật', chuDe.cung_tat)
+    html+=renderQuestionGroup('Xác định Tật của Tật', chuDe.tat_cua_tat)
+    html+=renderQuestionGroup('Câu hỏi định tính (tính cách)', chuDe.cau_hoi_tinh_cach_dinh_tinh)
+  }
+  html+='</div>'
+  formHost.innerHTML=html
+}
+
+function renderQuestionGroup(groupLabel, questions){
+  if(!questions||!questions.length) return ''
+  let html=`<div style="font-size:.7rem;color:#999;font-weight:600;margin:10px 0 4px">${groupLabel}</div>`
+  for(const q of questions){
+    html+=`<div style="margin-bottom:10px;padding:8px 10px;background:#faf8fd;border-radius:6px">
+      <div style="font-size:.74rem;font-weight:600;color:#333;margin-bottom:5px">${q.id}. ${q.cau_hoi}</div>`
+    q.lua_chon.forEach((lc,i)=>{
+      const letter=String.fromCharCode(65+i)
+      const label=(lc.lua_chon||'').replace(/^[A-G]\.\s*/,'')
+      html+=`<label style="display:block;font-size:.72rem;color:#444;padding:3px 0;cursor:pointer">
+        <input type="checkbox" data-qid="${q.id}" value="${letter}" style="margin-right:6px;vertical-align:middle">${letter}. ${label}</label>`
+    })
+    html+=`</div>`
+  }
+  return html
+}
+
+// Thu thập đáp án từ form (cho phép chọn nhiều / bỏ trống)
+function collectAnswers(){
+  const answers={}
+  document.querySelectorAll('#question-form input[type=checkbox]:checked').forEach(cb=>{
+    const qid=cb.dataset.qid
+    if(!answers[qid]) answers[qid]=[]
+    answers[qid].push(cb.value)
+  })
+  return answers
+}
+
+// Thu thập context tình huống + ô nhập tự do
+function collectContext(){
+  const ctx={situation:{}, concern:''}
+  const topic=window.__lastTopic
+  for(const q of getContextQuestionsForTopic(topic)){
+    const sel=document.querySelector(`input[name="ctx_${q.id}"]:checked`)
+    if(sel) ctx.situation[q.label]=sel.value
+  }
+  const concernEl=document.getElementById('ctx-concern')
+  if(concernEl) ctx.concern=concernEl.value.trim()
+  return ctx
+}
+
+// Bấm "Tiếp →": lưu đáp án + context, chuyển sang bước 2 (nhập lá số)
+function goToStep2(){
+  if(!window.__lastTopic){ alert('Vui lòng chọn vấn đề cần xem trước.'); return }
+  window.__answers=collectAnswers()
+  window.__context=collectContext()
+  document.getElementById('step1-card').style.display='none'
+  document.getElementById('step2-card').style.display='block'
+  window.scrollTo({top:0,behavior:'smooth'})
+}
+
+// Quay lại bước 1
+function backToStep1(){
+  document.getElementById('step2-card').style.display='none'
+  document.getElementById('step1-card').style.display='block'
+  window.scrollTo({top:0,behavior:'smooth'})
+}
+
+// Init lúc tải trang
+window.addEventListener('DOMContentLoaded', renderTopicSelector)
+
+// ── Badge bảng Lưu Nhật (kiểm tra) ──
+function renderLuuNhatBadge(days){
+  const old=document.getElementById('luunhat-badge'); if(old) old.remove()
+  if(!days||!days.length) return
+  const wrap=document.createElement('div')
+  wrap.id='luunhat-badge'; wrap.style.cssText='margin:16px 0'
+  const rows=days.map(d=>{
+    const bg=d.tinhChat==='tốt'?'#eafbf0':(d.tinhChat==='xấu'?'#fdecec':'#fafafa')
+    const cl=d.tinhChat==='tốt'?'#1a7030':(d.tinhChat==='xấu'?'#a01818':'#777')
+    return `<tr style="background:${bg}">
+      <td style="padding:4px 8px;border-bottom:1px solid #eee;font-size:.7rem">${d.duong}</td>
+      <td style="padding:4px 8px;border-bottom:1px solid #eee;font-size:.7rem">${d.am}</td>
+      <td style="padding:4px 8px;border-bottom:1px solid #eee;font-size:.7rem">${d.canChi}</td>
+      <td style="padding:4px 8px;border-bottom:1px solid #eee;font-size:.7rem">${d.linhVuc||'—'}</td>
+      <td style="padding:4px 8px;border-bottom:1px solid #eee;font-size:.7rem;color:${cl};font-weight:600">${d.tinhChat} (${d.diem>0?'+':''}${d.diem})</td>
+      <td style="padding:4px 8px;border-bottom:1px solid #eee;font-size:.64rem;color:#666">${(d.dauHieu||[]).join('; ')||'—'}</td>
+    </tr>`
+  }).join('')
+  wrap.innerHTML=`
+    <div style="background:white;border:1px solid #d8c8e8;border-radius:8px;overflow:hidden">
+      <div style="background:#3a2a5a;color:#d8c8f4;padding:8px 14px;font-size:.78rem;font-weight:700">BẢNG LƯU NHẬT (kiểm tra) — tới hết tháng âm</div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse">
+          <thead><tr style="background:#f0e8f8">
+            <th style="padding:5px 8px;text-align:left;font-size:.66rem;color:#5a3a8a">Dương</th>
+            <th style="padding:5px 8px;text-align:left;font-size:.66rem;color:#5a3a8a">Âm</th>
+            <th style="padding:5px 8px;text-align:left;font-size:.66rem;color:#5a3a8a">Can Chi</th>
+            <th style="padding:5px 8px;text-align:left;font-size:.66rem;color:#5a3a8a">Lĩnh vực</th>
+            <th style="padding:5px 8px;text-align:left;font-size:.66rem;color:#5a3a8a">Cát/Hung</th>
+            <th style="padding:5px 8px;text-align:left;font-size:.66rem;color:#5a3a8a">Dấu hiệu</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>`
+  const panel=document.getElementById('interpret-panel')||document.getElementById('time-panel')
+  if(panel&&panel.parentNode) panel.parentNode.insertBefore(wrap, panel.nextSibling)
+  else (document.getElementById('summary')||document.body).appendChild(wrap)
+}
+
+// ── Render badge kết quả interpret ──
+function renderInterpretBadges(interp){
+  const old=document.getElementById('interpret-panel'); if(old) old.remove()
+  const wrap=document.createElement('div')
+  wrap.id='interpret-panel'; wrap.style.cssText='margin:16px 0'
+  const blocks=interp.results.map(r=>{
+    if(r.error) return `<div style="color:#c00;padding:8px">${r.error}</div>`
+    const borrow0=r.cungTatBorrowed?' <span style="font-size:.6rem;color:#c08020">(mượn sao)</span>':''
+    const borrow1=r.tatCuaTatBorrowed?' <span style="font-size:.6rem;color:#c08020">(mượn sao)</span>':''
+    return `
+    <div style="background:white;border:1px solid #d8c8e8;border-radius:8px;overflow:hidden;margin-bottom:10px">
+      <div style="background:#3a2a5a;color:#d8c8f4;padding:8px 14px;font-size:.78rem;font-weight:700">${r.chuDe} <span style="font-weight:400;opacity:.7">(cung chính: ${r.cungChinh})</span></div>
+      <div style="padding:10px 14px;display:flex;flex-wrap:wrap;gap:8px">
+        <span style="background:#ffe8d8;color:#7a3010;padding:4px 10px;border-radius:12px;font-size:.72rem;font-weight:600">Cung Tật: ${r.cungTat||'—'}${borrow0} ${r.cungTatStars.length?'· '+r.cungTatStars.join(', '):'· VCD'}</span>
+        <span style="background:#ffd8d8;color:#8a1818;padding:4px 10px;border-radius:12px;font-size:.72rem;font-weight:600">Tật của Tật: ${r.tatCuaTat||'—'}${borrow1} ${r.tatCuaTatStars.length?'· '+r.tatCuaTatStars.join(', '):'· VCD'}</span>
+        <span style="background:#e0e8ff;color:#2030a0;padding:4px 10px;border-radius:12px;font-size:.72rem">Nhóm: ${r.nhomTinhCach||'—'}</span>
+      </div>
+      <div style="padding:0 14px 8px;font-size:.62rem;color:#999">${r.cungTatReason} | ${r.tatReason}</div>
+    </div>`
+  }).join('')
+  wrap.innerHTML=`<div style="font-size:.85rem;font-weight:700;color:#3a2a5a;margin-bottom:8px">🔮 LUẬN GIẢI</div>${blocks}
+    <div style="margin-top:6px">
+      <button onclick="runAIInterpret()" id="btn-ai" style="padding:10px 18px;border-radius:8px;border:none;background:linear-gradient(135deg,#6a3aaa,#9a5ad0);color:#fff;font-size:.8rem;font-weight:700;cursor:pointer">✨ Luận giải chi tiết bằng AI</button>
+      <button onclick="showAIPrompt()" style="margin-left:6px;padding:10px 14px;border-radius:8px;border:1px solid #ccc;background:#fff;color:#666;font-size:.74rem;cursor:pointer">Xem/Copy prompt</button>
+    </div>
+    <div id="ai-result" style="margin-top:14px"></div>`
+  const panel=document.getElementById('time-panel')
+  if(panel&&panel.parentNode) panel.parentNode.insertBefore(wrap, panel.nextSibling)
+  else (document.getElementById('summary')||document.body).appendChild(wrap)
+}
+
+// ══════════════════════════════════════════════════
+// STEP 8B: LUẬN GIẢI BẰNG AI (Claudeception)
+// ══════════════════════════════════════════════════
+// Gom toàn bộ context lá số thành JSON gọn cho AI
+function buildAIContext(){
+  const nr=window.__natalResult, t=window.__transit, interp=window.__interp
+  const topic=window.__lastTopic||'quan_loc'
+  // sao theo cung (tên cung + chính tinh + phụ tinh)
+  const cungData={}
+  for(let b=1;b<=12;b++){
+    cungData[chiName(b)]={
+      cungChucNang:nr.palaceMap[b],
+      can:nr.canMap?.[b],
+      chinhTinh:nr.mainStarsByPalace[b]||[],
+      phuTinh:nr.subStarsByPalace[b]||[],
+      truongSinh:nr.truongSinhByPalace?.[b]||null
+    }
+  }
+  // Cung đối (xung chiếu) + tam phương của 1 cung (theo branchIdx 1-12)
+  const oppIdx=(bi)=>((bi-1+6)%12)+1
+  const tamPhuong=(bi)=>[((bi-1+4)%12)+1, ((bi-1+8)%12)+1]  // cách 4 và 8
+  const cungInfoAt=(bi)=>({cung:chiName(bi), chucNang:nr.palaceMap[bi], chinhTinh:nr.mainStarsByPalace[bi]||[]})
+  // tìm branchIdx của 1 tên cung chức năng
+  const findBranch=(ten)=>{ for(const[bi,n]of Object.entries(nr.palaceMap)) if(n===ten) return +bi; return null }
+
+  const menhBi=nr.menhIndex
+  const ctxUser=window.__context||{situation:{},concern:''}
+
+  return {
+    chuDeDangXem:TOPIC_LABELS[topic],
+    namXem:`${t.targetYear} ${t.transitYB}`,
+    // ── Hoàn cảnh thực tế của đương số (để luận đúng người, không luận chung) ──
+    hoanCanhThucTe:{
+      tinhHuong:ctxUser.situation,
+      vanDeQuanTam:ctxUser.concern||'(không nhập)'
+    },
+    laSo:{
+      menh:chiName(nr.menhIndex), than:chiName(nr.thanIndex),
+      cuc:nr.cucName, napAm:nr.napAm?.n,
+      namSinh:`${nr.ys} ${nr.yb}`, gioiTinh:nr.input.gender, amDuong:nr.amDuong,
+      cung:cungData
+    },
+    // ── Cốt lõi con người (luận TRƯỚC khi sang chủ đề) ──
+    cotLoiMenh:{
+      cungMenh:cungInfoAt(menhBi),
+      cungDoiMenh:cungInfoAt(oppIdx(menhBi)),   // Thiên Di — môi trường, người khác nhìn vào
+      tamPhuongMenh:tamPhuong(menhBi).map(cungInfoAt),  // Tài Bạch + Quan Lộc thường
+      cungThan:cungInfoAt(nr.thanIndex),
+      cungPhucDuc:(findBranch('Phúc Đức')!=null)?cungInfoAt(findBranch('Phúc Đức')):null,
+      cungTatAch:(findBranch('Tật Ách')!=null)?cungInfoAt(findBranch('Tật Ách')):null,
+      tinhCachNenQC:window.__interp?.results?.[0]?.qcBaseline||null
+    },
+    ketQuaCungTat:interp.results.map(r=>{
+      const cungChinhBi=findBranch(r.cungChinh)
+      return {
+        chuDe:r.chuDe, cungChinh:r.cungChinh,
+        cungChinhXungChieu:cungChinhBi!=null?cungInfoAt(oppIdx(cungChinhBi)):null,
+        cungChinhTamPhuong:cungChinhBi!=null?tamPhuong(cungChinhBi).map(cungInfoAt):null,
+        cungTat:r.cungTat, cungTatSao:r.cungTatStars,
+        tatCuaTat:r.tatCuaTat, tatCuaTatSao:r.tatCuaTatStars,
+        nhomTinhCach:r.nhomTinhCach
+      }
+    }),
+    daiHan:{cung:t.daiHan.cung, tuoi:`${t.daiHan.startAge}-${t.daiHan.endAge}`, namThu:t.daiHan.namThu},
+    tieuHan:t.tieuHan,
+    trungPhung:t.trungPhung?{
+      daiVan:t.trungPhung.daiVanByPalace, luuNien:t.trungPhung.luuNienByPalace
+    }:null,
+    tuHoaVaCham:window.__tuHoaConflicts?.conflicts||[],
+    luuHoaBayVaoCung:(window.__luuHoaFlights||[]).map(f=>({
+      hoa:f.hoaType, sao:f.star, cung:chiName(f.palaceIdx),
+      cungGoc:f.gocCung, cungDaiVan:f.daiVanCung, mucDo:f.level
+    })),
+    // ── Step 8D: 3 logic nâng cao ──
+    laiNhanCung:findLaiNhanCung(nr).map(l=>({cung:l.cung, cungChucNang:l.cungChucNang})),
+    tuHoa:Object.entries(detectTuHoa(nr)).map(([bi,arr])=>({
+      cung:chiName(+bi), cungChucNang:nr.palaceMap[+bi], cac:arr.map(x=>x.tuHoa+' ('+x.star+')')
+    })),
+    quyDaoHanNam:buildQuyDao(nr, transitYS_for8d()),
+    quyDaoTuThan:buildQuyDaoTuThan(nr),
+    // Lưu Nhật: chỉ khi Tổng quan tháng — các ngày biến động mạnh tới hết tháng âm
+    luuNhatBienDong: topic==='Tong_quan_thang' ? (()=>{
+      try{
+        const ds=(document.getElementById('target-date')?.value||'').split('-').map(Number)
+        if(ds.length===3) return buildLuuNhatThang(nr, t, ds[2], ds[1], ds[0], true)
+      }catch(e){ console.error('luuNhat err',e) }
+      return []
+    })() : undefined,
+    // Lưu Nguyệt 12 tháng: cho chủ đề lẻ — tháng nào tốt/xấu cho lĩnh vực này
+    luuNguyet12Thang: (topic!=='Tong_quan_thang' && window.__engine) ? (()=>{
+      try{ return buildLuuNguyet12Thang(nr, t, window.__engine, t.tieuHan) }
+      catch(e){ console.error('luuNguyet12 err',e); return undefined }
+    })() : undefined
+  }
+}
+// Lấy can lưu niên cho quỹ đạo (từ transit)
+function transitYS_for8d(){ return window.__transit?.transitYS||window.__natalResult?.ys }
+
+const AI_SYSTEM_PROMPT=`Bạn là chuyên gia Tử Vi Bắc Phái (Tứ Hóa Phái) kết hợp Tử Vi hiện đại Đài Loan, nói chuyện như một người bạn từng trải đang khuyên nhủ — KHÔNG phải thầy bói phán thuật ngữ.
+
+NGUYÊN TẮC VÀNG VỀ CÁCH NÓI:
+- Người đọc KHÔNG biết gì về tử vi. TUYỆT ĐỐI không bắt họ hiểu thuật ngữ.
+- CẤM TUYỆT ĐỐI nhắc TÊN SAO trong bài viết, dù chỉ một lần. Danh sách cấm: Tử Vi, Thiên Cơ, Thái Dương, Vũ Khúc, Thiên Đồng, Liêm Trinh, Thiên Phủ, Thái Âm, Tham Lang, Cự Môn, Thiên Tướng, Thiên Lương, Thất Sát, Phá Quân, Tả Phụ, Hữu Bật, Văn Xương, Văn Khúc, Lộc Tồn, Kình Dương, Đà La, Hỏa Tinh, Linh Tinh, Địa Không, Địa Kiếp, và MỌI tên sao khác. JSON có cho bạn tên sao chỉ để BẠN hiểu ngầm — người đọc KHÔNG được thấy bất kỳ tên sao nào.
+- CẤM các từ chuyên môn: Hóa Kỵ/Lộc/Quyền/Khoa, xung, trùng phùng, cung Tật, Tật của Tật, Đại Vận, Lưu Niên, chính tinh, tam hợp, Mệnh/Quan Lộc/Tài Bạch... khi dùng như thuật ngữ cung. (Được phép nói "công việc", "tiền bạc", "tình cảm", "sức khỏe" như từ đời thường.)
+- VÍ DỤ SAI: "Cung Tật của bạn có Thiên Cơ nên hay thay đổi". VÍ DỤ ĐÚNG: "Trong lòng bạn vốn thích sự linh hoạt, hay đổi hướng giữa chừng".
+- Mỗi nhận định viết liền mạch theo 3 lớp: (1) chuyện gì → (2) dẫn tới đâu → (3) nên làm gì.
+- Bạn phân tích lá số theo lý thuyết trong đầu (kể cả tên sao), nhưng CHỈ XUẤT RA kết luận đời thường, sạch hoàn toàn thuật ngữ và tên sao.
+
+QUAN TRỌNG NHẤT — LUẬN ĐÚNG NGƯỜI NÀY, KHÔNG LUẬN CHUNG:
+- Trong JSON có "hoanCanhThucTe" (tình huống thật + điều họ đang bận tâm). Hai người cùng lá số nhưng hoàn cảnh khác nhau thì lời luận PHẢI khác. Luôn neo lời luận vào hoàn cảnh thật này.
+- Nếu họ ghi "vấn đề quan tâm" cụ thể, phải trả lời thẳng vào đó.
+
+THỨ TỰ LUẬN BẮT BUỘC (dù họ hỏi chủ đề gì):
+1) CỐT LÕI CON NGƯỜI TRƯỚC — đọc "cotLoiMenh": bản chất, tính cách gốc, điểm mạnh/yếu nội tại, cách họ nhìn đời và người đời nhìn họ (cung đối + tam phương của Mệnh), nền tảng phúc khí. Kiểm tra chéo với tính cách nền (qcBaseline) xem có nhất quán không. Phải hiểu gốc người này đã, rồi mới luận tiếp.
+2) SANG CHỦ ĐỀ HỌ HỎI — dựa trên nền cốt lõi đó. Dùng: cung chính (biểu hiện bên ngoài), gốc rễ nội tâm (cungTat), nguyên nhân sâu xa (tatCuaTat) đã xác định qua câu hỏi.
+3) XÉT BỐI CẢNH ĐỘNG quanh chủ đề, KHÔNG luận cô lập 1 cung:
+   - Cung đối diện (xung chiếu) và tam phương của cung chính — có dữ liệu sẵn trong JSON.
+   - Vị trí đại hạn (giai đoạn 10 năm) + tiểu hạn (năm) đang tác động thế nào.
+   - Các va chạm năng lượng trong năm (tuHoaVaCham, luuHoaBayVaoCung): năng lượng xấu đóng ở đâu thì làm khổ chỗ đó, đồng thời "đánh" sang lĩnh vực đối diện — phải luận cả hệ quả gián tiếp đó.
+   - "laiNhanCung": đây là LĨNH VỰC NGHIỆP GỐC — nơi tập trung nhân duyên & biến động lớn nhất cả đời. Khi luận cốt lõi con người, nhấn mạnh lĩnh vực này chi phối mạnh cuộc đời họ.
+   - "tuHoa": cung bị tự biến — biểu hiện "có rồi lại mất", thay đổi đột ngột, dễ tan thành quả khi gặp hạn. Nếu chủ đề liên quan cung này, cảnh báo tính bấp bênh.
+   - "quyDaoHanNam": đường đi của may mắn (loc) và rắc rối (ky) trong NĂM xem — biến động khách quan ông trời giáng xuống. Quy tắc: cái may (loc) là NHÂN khởi phát → cái rắc rối (ky) là QUẢ gánh chịu. Kể như câu chuyện: việc bắt đầu từ đâu, kéo theo hệ lụy sang lĩnh vực nào, kết thúc ở đâu.
+   - "quyDaoTuThan": biến đổi NỘI TẠI theo suốt đời/đại vận (không phụ thuộc năm). Mỗi mục: "tang1" cho biết lĩnh vực đó năng lượng tự đến tự đi (Xuất) hay chuyển sang lĩnh vực khác; "tang2" (nếu có) cho biết cái duyên/hào hứng chủ quan ở lĩnh vực này (Nhân) cuối cùng kéo hệ lụy (Quả) dội sang lĩnh vực nào. Đây là phản ứng chủ quan, tính cách hành xử của đương số.
+   - "luuNhatBienDong" (chỉ có khi xem Tổng quan tháng): danh sách các NGÀY biến động mạnh từ nay tới hết tháng âm, kèm tính chất tốt/xấu, lĩnh vực bị tác động, và dấu hiệu. Khi luận Tổng quan tháng, hãy chỉ ra cụ thể vài ngày đáng chú ý (ngày nào nên làm việc gì, ngày nào nên thận trọng) dựa trên danh sách này — diễn đạt đời thường, không nói thuật ngữ. Nếu danh sách rỗng thì nói tháng này khá êm, không có ngày nào bật hẳn lên.
+   - "luuNguyet12Thang" (chỉ có khi xem chủ đề lẻ): điểm cát hung 12 tháng trong năm. Khi luận chủ đề lẻ, hãy chỉ ra THÁNG nào trong năm thuận lợi nhất để đẩy mạnh việc (tháng "tốt") và tháng nào nên thận trọng/giữ mình (tháng "xấu") cho lĩnh vực đang xem. Diễn đạt đời thường, gợi ý cụ thể nên làm gì vào tháng tốt.
+4) Tổng kết lời khuyên.
+
+NGHĨA CÁC LOẠI NĂNG LƯỢNG (nội bộ, dịch ra đời thường khi viết):
+- Kỵ = bế tắc, mất mát, nợ nần, dính mắc, áp lực dồn nén, thị phi, kết thúc. Đóng đâu khổ đó + làm sụp đổ lĩnh vực đối diện.
+- Lộc = cơ hội, tiền vào, duyên mới, ham muốn. Quyền = phải gồng, tranh đua, nắm quyền, áp lực hành động. Khoa = quý nhân, hồi phục, kéo dài nhẹ nhàng, danh tiếng, giữ thể diện.
+
+RÀNG BUỘC:
+- KHÔNG dùng Tam Hợp kiểu Nam Phái. KHÔNG nhắc sao lưu phụ tinh (Lưu Kình, Lưu Đà).
+- Gốc rễ nội tâm & nguyên nhân sâu xa đã xác định qua câu hỏi — tôn trọng, không tự đổi.
+- Tín hiệu yếu → nói thẳng "năm nay nhìn chung ổn, không biến động lớn". Không thổi phồng.
+- Chỉ nói "tháng X cần chú ý" khi nhiều dấu hiệu cùng chỉ về điều đó.
+
+OUTPUT (tiếng Việt, markdown, giọng gần gũi):
+## Con người bạn (cốt lõi)
+(2-4 câu về bản chất, tính cách gốc, điểm mạnh/yếu — neo theo hoàn cảnh thật của họ)
+## Tóm lại về [chủ đề] năm nay
+(1-2 câu thẳng vào vấn đề)
+## Chuyện gì đang diễn ra
+(tình hình + vì sao + dẫn tới đâu, có nhắc bối cảnh xung quanh, không thuật ngữ)
+## Điều cần để ý
+(thuận lợi nên tận dụng + rủi ro nên tránh)
+## Nên làm gì
+(2-4 lời khuyên cụ thể, làm được ngay, gắn với điều họ đang bận tâm)
+## Mức độ tin cậy
+(cao/trung bình/thấp + vì sao)
+
+TRƯỚC KHI XUẤT: rà lại toàn bài, nếu còn BẤT KỲ tên sao hay thuật ngữ tử vi nào thì viết lại câu đó bằng lời đời thường. Bài hoàn chỉnh, không bỏ dở giữa chừng.`
+
+// Gọi API
+async function runAIInterpret(){
+  const btn=document.getElementById('btn-ai')
+  const out=document.getElementById('ai-result')
+  if(!window.__interp){ out.innerHTML='<div style="color:#c00">Chưa có dữ liệu lá số.</div>'; return }
+  const ctx=buildAIContext()
+  const userMsg='Dữ liệu lá số (JSON):\n```json\n'+JSON.stringify(ctx,null,2)+'\n```\n\nHãy luận trước về cốt lõi con người này (dựa cotLoiMenh + hoanCanhThucTe), rồi mới luận chủ đề "'+ctx.chuDeDangXem+'" năm '+ctx.namXem+'. Nhớ neo vào hoàn cảnh thật và điều họ đang quan tâm.'
+  btn.disabled=true; btn.textContent='⏳ Đang luận giải...'
+  out.innerHTML='<div style="color:#888;font-size:.78rem">AI đang phân tích lá số...</div>'
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6', max_tokens:4000,
+        system:AI_SYSTEM_PROMPT,
+        messages:[{role:'user',content:userMsg}]
+      })
+    })
+    if(!resp.ok) throw new Error('HTTP '+resp.status)
+    const data=await resp.json()
+    const text=data.content.filter(c=>c.type==='text').map(c=>c.text).join('\n')
+    out.innerHTML='<div style="background:white;border:1px solid #d8c8e8;border-radius:8px;padding:14px 18px;font-size:.82rem;line-height:1.65">'+renderMarkdown(text)+'</div>'
+  }catch(e){
+    out.innerHTML='<div style="background:#fff6f6;border:1px solid #e8c0c0;border-radius:8px;padding:12px;font-size:.76rem;color:#a01818">'+
+      '⚠ Không gọi được API ('+escapeHtml(e.message)+').<br>Nếu đang mở file local, hãy chạy trong Claude.ai, hoặc bấm "Xem/Copy prompt" để tự dán sang Claude.</div>'
+  }finally{ btn.disabled=false; btn.textContent='✨ Luận giải chi tiết bằng AI' }
+}
+
+// Hiện prompt + JSON để copy thủ công
+function showAIPrompt(){
+  const out=document.getElementById('ai-result')
+  if(!window.__interp){ out.innerHTML='<div style="color:#c00">Chưa có dữ liệu lá số.</div>'; return }
+  const ctx=buildAIContext()
+  const full=AI_SYSTEM_PROMPT+'\n\n---\n\nDữ liệu lá số (JSON):\n```json\n'+JSON.stringify(ctx,null,2)+'\n```\n\nHãy luận đoán cho chủ đề "'+ctx.chuDeDangXem+'" năm '+ctx.namXem+'.'
+  out.innerHTML='<div style="margin-bottom:6px"><button onclick="navigator.clipboard.writeText(document.getElementById(\'ai-prompt-text\').value);this.textContent=\'✓ Đã copy\'" style="padding:6px 12px;border-radius:6px;border:none;background:#6a3aaa;color:#fff;font-size:.72rem;cursor:pointer">📋 Copy prompt</button></div>'+
+    '<textarea id="ai-prompt-text" style="width:100%;height:240px;font-size:.68rem;font-family:monospace;border:1px solid #ccc;border-radius:6px;padding:8px" readonly>'+escapeHtml(full)+'</textarea>'
+}
+
+// ══════════════════════════════════════════════════
+// XEM HỢP ĐÔI (2 lá số)
+// ══════════════════════════════════════════════════
+window.__couple={A:null, B:null}
+
+// Tóm tắt 1 lá số gọn để gửi AI luận hợp đôi
+function summarizeChartForCouple(nr){
+  const cung={}
+  for(let b=1;b<=12;b++){
+    cung[chiName(b)]={chucNang:nr.palaceMap[b], chinhTinh:nr.mainStarsByPalace[b]||[], can:nr.canMap?.[b]}
+  }
+  return {
+    menh:chiName(nr.menhIndex), than:chiName(nr.thanIndex),
+    cuc:nr.cucName, namSinh:`${nr.ys} ${nr.yb}`, gioiTinh:nr.input.gender,
+    laiNhanCung:findLaiNhanCung(nr).map(l=>l.cungChucNang),
+    cungPhuThe:(()=>{ for(let b=1;b<=12;b++) if(nr.palaceMap[b]==='Phu Thê') return {cung:chiName(b),chinhTinh:nr.mainStarsByPalace[b]||[]}; return null })(),
+    cung
+  }
+}
+
+function saveCouple(slot){
+  if(!window.__natalResult){ alert('Hãy lập lá số trước khi lưu.'); return }
+  window.__couple[slot]={
+    chart:summarizeChartForCouple(window.__natalResult),
+    answers:window.__answers||{}, context:window.__context||{}
+  }
+  updateCoupleStatus()
+}
+
+function updateCoupleStatus(){
+  const el=document.getElementById('couple-status'); if(!el) return
+  const a=window.__couple.A, b=window.__couple.B
+  el.innerHTML=`Lá A: ${a?'<b style="color:#1a7030">đã lưu ('+a.chart.namSinh+', '+(a.chart.gioiTinh==='male'?'Nam':'Nữ')+')</b>':'<span style="color:#999">chưa</span>'} · `+
+    `Lá B: ${b?'<b style="color:#1a7030">đã lưu ('+b.chart.namSinh+', '+(b.chart.gioiTinh==='male'?'Nam':'Nữ')+')</b>':'<span style="color:#999">chưa</span>'}`
+}
+
+const COUPLE_SYSTEM_PROMPT=`Bạn là chuyên gia Tử Vi Bắc Phái kết hợp Tử Vi hiện đại Đài Loan, nói chuyện gần gũi như người bạn từng trải. Nhiệm vụ: xem mức độ HỢP/KHẮC của một CẶP ĐÔI dựa trên 2 lá số.
+
+NGUYÊN TẮC NÓI: như khi luận cá nhân — TUYỆT ĐỐI không dùng tên sao hay thuật ngữ tử vi (Hóa Kỵ, cung, chính tinh...). Người đọc không biết tử vi. Tự dịch hết sang lời đời thường.
+
+CÁCH LUẬN HỢP ĐÔI:
+- So tính cách cốt lõi 2 người: bổ sung hay xung khắc nhau ở điểm nào.
+- Nhìn lĩnh vực tình cảm/hôn nhân của từng người: họ cần gì, sợ gì, cư xử ra sao trong quan hệ.
+- Đối chiếu "nghiệp gốc" (laiNhanCung) 2 người: cùng hướng hay kéo nhau về 2 phía.
+- Chỉ ra: điểm hợp (cùng tận hưởng được gì), điểm dễ va chạm (mâu thuẫn hay nảy sinh ở đâu), và cách hóa giải.
+- Nếu thông tin không đủ mạnh để kết luận → nói thật là "cần thêm thời gian tìm hiểu", không phán chắc nịch.
+
+OUTPUT (markdown, tiếng Việt, gần gũi):
+## Tổng quan cặp đôi
+(2-3 câu: nhìn chung hợp tới mức nào)
+## Hai bạn bổ sung nhau ở đâu
+## Dễ va chạm ở đâu
+## Lời khuyên để bền
+## Mức độ tin cậy
+(cao/trung bình/thấp + vì sao)`
+
+async function runCoupleInterpret(){
+  const out=document.getElementById('couple-result')
+  const {A,B}=window.__couple
+  if(!A||!B){ out.innerHTML='<div style="color:#c00;font-size:.74rem">Cần lưu đủ cả lá A và lá B trước.</div>'; return }
+  const payload={
+    nguoiA:{laSo:A.chart, hoanCanh:A.context},
+    nguoiB:{laSo:B.chart, hoanCanh:B.context}
+  }
+  const userMsg='Dữ liệu 2 lá số (JSON):\n```json\n'+JSON.stringify(payload,null,2)+'\n```\n\nHãy luận mức độ hợp/khắc của cặp đôi này.'
+  out.innerHTML='<div style="color:#888;font-size:.74rem">AI đang so 2 lá số...</div>'
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-6', max_tokens:3000, system:COUPLE_SYSTEM_PROMPT, messages:[{role:'user',content:userMsg}]})
+    })
+    if(!resp.ok) throw new Error('HTTP '+resp.status)
+    const data=await resp.json()
+    const text=data.content.filter(c=>c.type==='text').map(c=>c.text).join('\n')
+    out.innerHTML='<div style="background:white;border:1px solid #e8c8d8;border-radius:8px;padding:14px 18px;font-size:.82rem;line-height:1.65">'+renderMarkdown(text)+'</div>'
+  }catch(e){
+    out.innerHTML='<div style="background:#fff6f6;border:1px solid #e8c0c0;border-radius:8px;padding:12px;font-size:.74rem;color:#a01818">⚠ Không gọi được API ('+escapeHtml(e.message)+'). Chạy trong Claude.ai để dùng tính năng này.</div>'
+  }
+}
+
+function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
+
+// Render markdown cơ bản: ## heading, **bold**, - list, đoạn văn
+function renderMarkdown(md){
+  const lines=escapeHtml(md).split('\n')
+  let html='', inList=false
+  for(let line of lines){
+    line=line.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    if(/^##\s+/.test(line)){
+      if(inList){html+='</ul>';inList=false}
+      html+='<div style="font-weight:700;color:#5a2a8a;margin:12px 0 4px;font-size:.88rem">'+line.replace(/^##\s+/,'')+'</div>'
+    } else if(/^[-*]\s+/.test(line)){
+      if(!inList){html+='<ul style="margin:4px 0 4px 4px;padding-left:16px">';inList=true}
+      html+='<li style="margin-bottom:3px">'+line.replace(/^[-*]\s+/,'')+'</li>'
+    } else if(line.trim()===''){
+      if(inList){html+='</ul>';inList=false}
+    } else {
+      if(inList){html+='</ul>';inList=false}
+      html+='<p style="margin:4px 0">'+line+'</p>'
+    }
+  }
+  if(inList) html+='</ul>'
+  return html
+}
+
+// ══════════════════════════════════════════════════
+// RENDER LAYER
+// ══════════════════════════════════════════════════
+function switchTab(tid, layer, btn){
+  const pal=btn.closest('.cung')
+  pal.querySelectorAll('.ltab').forEach(t=>t.classList.remove('active','active-luu'))
+  pal.querySelectorAll('.layer-natal,.layer-luu').forEach(el=>el.classList.remove('show'))
+  btn.classList.add(layer==='luu'?'active-luu':'active')
+  pal.querySelector(`.layer-${layer}[data-tid="${tid}"]`).classList.add('show')
+}
+
+function renderChart(c, movingStars){
+  // Summary
+  document.getElementById('sum-grid').innerHTML=`
+    <div class="si"><div class="lb">Âm lịch</div><div class="vl" style="font-size:.8rem">${c.debug.lunarDay}/${c.debug.lunarMonth}/${c.debug.lunarYear}${c.debug.isLeap?' (nhuận)':''}</div></div>
+    <div class="si"><div class="lb">Năm</div><div class="vl" style="font-size:.8rem">${c.ys} ${c.yb}</div></div>
+    <div class="si gr"><div class="lb">Nạp Âm / Cục</div><div class="vl">${c.napAm.n} → ${c.cucName}</div></div>
+    <div class="si"><div class="lb">Mệnh</div><div class="vl">${chiName(c.menhIndex)}</div></div>
+    <div class="si bl"><div class="lb">Thân</div><div class="vl">${chiName(c.thanIndex)}</div></div>
+    <div class="si"><div class="lb">Tử Vi / Loại</div><div class="vl" style="font-size:.78rem">${chiName(c.viTriTuVi)} | ${c.amDuong}</div></div>
+  `
+
+  // Lá số — Phương án 1: ô co giãn + tab Natal/Lưu
+  const grid=document.getElementById('laso-grid')
+  grid.innerHTML=''
+  let tabCounter=0
+  for(let b=1;b<=12;b++){
+    const [row,col]=GRID_POS[b]
+    const div=document.createElement('div')
+    div.className='cung'+(b===c.menhIndex?' menh':'')+(b===c.thanIndex&&c.thanIndex!==c.menhIndex?' than':'')
+    div.style.gridRow=row; div.style.gridColumn=col
+    const tid=tabCounter++
+
+    // Header
+    const tags=[]
+    if(b===c.menhIndex) tags.push('<span class="ct">✦ Mệnh</span>')
+    if(b===c.thanIndex) tags.push('<span class="ct" style="color:#1a60c0">✦ Thân</span>')
+
+    // Overlay badges (Tuần/Triệt)
+    const overlayBadges=(c.overlays||[]).filter(o=>o.palaces.includes(b))
+      .map(o=>`<span class="overlay-badge ${o.name==='Tuần'?'ob-tuan':'ob-triet'}">${o.name}</span>`).join('')
+
+    // Natal stars
+    const mainBadges=c.mainStarsByPalace[b].map(s=>`<span class="star s-main">${s}</span>`).join('')
+    const subBadges=c.subStarsByPalace[b].map(s=>{
+      const cls=s.includes('Hóa')?'s-hoa':'s-sub'
+      return `<span class="star ${cls}">${s}</span>`
+    }).join('')
+
+    // Sao lưu từ movingStars engine (step 7)
+    const luuStars=(movingStars?.luuStarsByPalace?.[b])||[]
+    const luuBadges=luuStars.map(s=>{
+      const cls=s.group==='luu-hoa'?'s-luu-hoa':s.group==='dv-hoa'?'s-dv-hoa':s.group==='luu-sat'?'s-luu-sat':'s-luu'
+      return `<span class="star ${cls}">${s.name}</span>`
+    }).join('')
+    const hasLuu=luuBadges.length>0
+
+    // Trường Sinh
+    const ts=c.truongSinhByPalace[b]
+    const tsHtml=ts?`<div class="ts-label">⬥ ${ts}</div>`:''
+
+    div.innerHTML=`
+      <div class="ch">
+        <div>
+          <div class="cb">${chiName(b)}<span class="can-label">${(c.canMap&&c.canMap[b])||''}</span></div>
+          ${tags.join('')}
+        </div>
+        <div class="cn">${c.palaceMap[b]||''}</div>
+      </div>
+      ${overlayBadges?`<div style="margin-bottom:2px">${overlayBadges}</div>`:''}
+      <div class="layer-tabs">
+        <div class="ltab active" onclick="switchTab(${tid},'natal',this)">Natal</div>
+        <div class="ltab" onclick="switchTab(${tid},'luu',this)" style="${hasLuu?'':'opacity:.4'}">Lưu</div>
+      </div>
+      <div class="layer-natal show" data-tid="${tid}">
+        <div class="star-wrap">${mainBadges}${subBadges}</div>
+        ${tsHtml}
+      </div>
+      <div class="layer-luu" data-tid="${tid}">
+        ${hasLuu?`<div class="star-wrap">${luuBadges}</div>`:'<div style="font-size:.55rem;color:#aaa;padding:2px">Chưa có sao lưu</div>'}
+      </div>`
+    grid.appendChild(div)
+  }
+
+  // Center
+  const center=document.createElement('div')
+  center.className='cung center'; center.style.gridRow='2/4'; center.style.gridColumn='2/4'
+  center.innerHTML=`
+    <div class="c-title">Lá Số Tử Vi</div>
+    <div class="c-info">
+      Mệnh: <strong>${chiName(c.menhIndex)}</strong><br>
+      Thân: <strong>${chiName(c.thanIndex)}</strong><br>
+      <span class="cuc-b">${c.cucName}</span><br>
+      <small style="font-size:.6rem;color:#888">${c.napAm.n}</small>
+    </div>`
+  grid.appendChild(center)
+
+  // Debug
+  const d=c.debug
+  const lines=[
+    `ruleVariants: ${JSON.stringify(ruleVariants)}`,
+    '',
+    `ÂM LỊCH: ${d.lunarDay}/${d.lunarMonth}/${d.lunarYear}${d.isLeap?' (nhuận)':''}`,
+    `NĂM: ${d.ys} ${d.yb} | ${d.amDuong}`,
+    `GIỜ branchH → h(Tý=1): ${d.h}`,
+    `MỆNH: ${chiName(c.menhIndex)}(${c.menhIndex}) | THÂN: ${chiName(c.thanIndex)}(${c.thanIndex})`,
+    `NẠP ÂM: ${d.nap.n} (${d.nap.e}) → CỤC: ${d.C} = ${d.cucName}`,
+    `TỬ VI: ngày ${d.lunarDay}, C=${d.C}, X=${d.X}, Q=${d.Q} → ${d.tv}`,
+    '',
+    '=== CAN CUNG MỆNH (Ngũ Hổ Độn) ===',
+    'Can năm sinh: '+c.ys+' + cung Mệnh '+chiName(c.menhIndex)+' → Can Mệnh: '+(c.canMap?.[c.menhIndex]||'?'),
+    ...[1,2,3,4,5,6,7,8,9,10,11,12].map(i=>chiName(i)+'['+c.palaceMap[i]+'] can: '+(c.canMap?.[i]||'?')),
+    '',
+    '=== TUẦN / TRIỆT ===',
+    ...(c.overlays||[]).map(o=>o.name+': '+o.palaces.map(p=>chiName(p)+'('+c.palaceMap[p]+')').join(' + ')),
+    '',
+    '=== TRƯỜNG SINH (mode: '+c.debug.truongSinhMode+') ===',
+    ...[1,2,3,4,5,6,7,8,9,10,11,12].map(i=>
+      c.truongSinhByPalace[i]?chiName(i)+'['+c.palaceMap[i]+']: '+c.truongSinhByPalace[i]:''),
+    '',
+    '=== CHÍNH TINH ===',
+    ...[1,2,3,4,5,6,7,8,9,10,11,12].map(i=>
+      c.mainStarsByPalace[i].length?`${chiName(i)}[${c.palaceMap[i]}]: ${c.mainStarsByPalace[i].join(', ')}`:''),
+    '',
+    '=== SAO PHỤ ===',
+    ...[1,2,3,4,5,6,7,8,9,10,11,12].map(i=>
+      c.subStarsByPalace[i].length?`${chiName(i)}[${c.palaceMap[i]}]: ${c.subStarsByPalace[i].join(', ')}`:''),
+  ].filter(l=>l!==undefined)
+  document.getElementById('dbg').textContent=lines.join('\n')
+  document.getElementById('summary').classList.add('show')
+  document.getElementById('dbg').classList.remove('show')
+}
+
+// ══════════════════════════════════════════════════
+// RENDER TIME PANEL (Step 6)
+// ══════════════════════════════════════════════════
+function renderTimePanel(transit, daiHanList, currentYear, gocPalaceMap, tuHoaConflicts, luuHoaFlights, adv8d){
+  // Remove old panel if exists
+  const old=document.getElementById('time-panel')
+  if(old) old.remove()
+
+  const dh=transit.daiHan
+  const currentDH=daiHanList.find(d=>currentYear>=d.startYear&&currentYear<=d.endYear)||daiHanList[0]
+
+  const panel=document.createElement('div')
+  panel.id='time-panel'
+  panel.style.cssText='margin-top:16px'
+
+  panel.innerHTML=`
+  <div style="background:white;border:1px solid #ddd;border-radius:8px;overflow:hidden;margin-bottom:12px">
+    <div style="background:linear-gradient(135deg,#1a3050,#2a5080);color:#a0d0ff;padding:10px 16px;font-size:.82rem;font-weight:700;letter-spacing:1px">
+      ☰ VÒNG HẠN ${transit.targetYear} (${transit.transitYS||''} ${transit.transitYB||''})
+    </div>
+    <div style="padding:14px">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px">
+        <div style="background:#f0f8ff;border:1px solid #c0d8f0;border-radius:6px;padding:8px 10px">
+          <div style="font-size:.65rem;color:#888;margin-bottom:2px">Đại Hạn</div>
+          <div style="font-size:.92rem;font-weight:700;color:#1a4a80">${dh.cung}</div>
+          <div style="font-size:.6rem;color:#aaa">${dh.startAge||'?'}–${dh.endAge||'?'} tuổi • năm ${dh.namThu||'?'}/10</div>
+        </div>
+        <div style="background:#fff0e8;border:1px solid #e0b890;border-radius:6px;padding:8px 10px">
+          <div style="font-size:.65rem;color:#888;margin-bottom:2px">Tiểu Hạn</div>
+          <div style="font-size:.92rem;font-weight:700;color:#7a3010">${transit.tieuHan||'—'}</div>
+        </div>
+        <div style="background:#f8fff0;border:1px solid #b0d890;border-radius:6px;padding:8px 10px">
+          <div style="font-size:.65rem;color:#888;margin-bottom:2px">Lưu Nguyệt (T.${transit.targetMonth})</div>
+          <div style="font-size:.92rem;font-weight:700;color:#1a6020">${transit.luuNguyet||'—'}</div>
+          <div style="font-size:.58rem;color:${transit.nguyet_hint?.mucDo==='tot'?'#1a6020':transit.nguyet_hint?.mucDo==='xau'?'#a02020':'#666'}">${transit.nguyet_hint?.ten||''} — ${transit.nguyet_hint?.yNghia||''}</div>
+        </div>
+        <div style="background:#f8fff0;border:1px solid #b0d890;border-radius:6px;padding:8px 10px">
+          <div style="font-size:.65rem;color:#888;margin-bottom:2px">Lưu Nhật (N.${transit.targetDay})</div>
+          <div style="font-size:.92rem;font-weight:700;color:#1a6020">${transit.luuNhat||'—'}</div>
+          <div style="font-size:.58rem;color:${transit.nhat_luan?.sacThai==='tot'?'#1a6020':transit.nhat_luan?.sacThai==='xau'?'#a02020':'#666'}">${transit.nhat_luan?.han||''} — ${transit.nhat_luan?.yNghia||''}</div>
+        </div>
+        <div style="background:#f8fff0;border:1px solid #b0d890;border-radius:6px;padding:8px 10px">
+          <div style="font-size:.65rem;color:#888;margin-bottom:2px">Lưu Thời</div>
+          <div style="font-size:.92rem;font-weight:700;color:#1a6020">${transit.luuThoi||'—'}</div>
+          <div style="font-size:.58rem;color:${transit.thoi_luan?.sacThai==='tot'?'#1a6020':transit.thoi_luan?.sacThai==='xau'?'#a02020':'#666'}">${transit.thoi_luan?.han||''} — ${transit.thoi_luan?.yNghia||''}</div>
+        </div>
+      </div>
+      <div style="font-size:.7rem;color:#888;margin-bottom:6px;font-weight:500">Sao năm ${transit.targetYear}: Thái Tuế=${transit.luuSao.thaiTue} | Lộc Tồn=${transit.luuSao.locTon} | Kình=${transit.luuSao.kinh} | Đà=${transit.luuSao.da}</div>
+    </div>
+  </div>
+
+  ${transit.trungPhung && gocPalaceMap ? `
+  <div style="background:white;border:1px solid #ddd;border-radius:8px;overflow:hidden;margin-bottom:12px">
+    <div style="background:#3a2a4a;color:#d8b8e8;padding:8px 14px;font-size:.78rem;font-weight:700">TRÙNG PHÙNG — CHỒNG 3 LỚP CUNG (năm ${transit.targetYear} ${transit.transitYB})</div>
+    <div style="padding:8px 12px;font-size:.6rem;color:#999;border-bottom:1px solid #eee">
+      Gốc = lá số gốc · Đại Vận = từ cung đại hạn (${transit.daiHan.cung}) · Lưu Niên = từ cung chi năm (${transit.transitYB})
+    </div>
+    <div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:.7rem">
+        <thead><tr style="background:#ece0f4">
+          <th style="padding:5px 8px;text-align:left;border-bottom:1px solid #ddd">Cung</th>
+          <th style="padding:5px 8px;text-align:left;border-bottom:1px solid #ddd">Gốc</th>
+          <th style="padding:5px 8px;text-align:left;border-bottom:1px solid #ddd">Đại Vận</th>
+          <th style="padding:5px 8px;text-align:left;border-bottom:1px solid #ddd">Lưu Niên</th>
+        </tr></thead>
+        <tbody>
+          ${[1,2,3,4,5,6,7,8,9,10,11,12].map(b=>{
+            const goc=gocPalaceMap[b]||'—'
+            const dv=transit.trungPhung.daiVanByPalace[b]||'—'
+            const ln=transit.trungPhung.luuNienByPalace[b]||'—'
+            const isLuuMenh=(b===transit.trungPhung.luuNienMenhIdx)
+            const isDaiMenh=(b===transit.trungPhung.daiVanMenhIdx)
+            return '<tr style="'+(isLuuMenh?'background:#faf0ff;':'')+'">'+
+              '<td style="padding:4px 8px;border-bottom:1px solid #f0f0f0;font-weight:600">'+chiName(b)+'</td>'+
+              '<td style="padding:4px 8px;border-bottom:1px solid #f0f0f0">'+goc+'</td>'+
+              '<td style="padding:4px 8px;border-bottom:1px solid #f0f0f0;color:#7a3a10">'+(isDaiMenh?'★ ':'')+dv+'</td>'+
+              '<td style="padding:4px 8px;border-bottom:1px solid #f0f0f0;color:#6a2a8a">'+(isLuuMenh?'★ ':'')+ln+'</td>'+
+              '</tr>'
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>` : ''}
+
+  ${tuHoaConflicts ? `
+  <div style="background:white;border:1px solid ${tuHoaConflicts.conflicts.length>0?'#e8c0c0':'#cce0cc'};border-radius:8px;overflow:hidden;margin-bottom:12px">
+    <div style="background:${tuHoaConflicts.conflicts.length>0?'#5a2020':'#204020'};color:${tuHoaConflicts.conflicts.length>0?'#ffc8c8':'#c8ffc8'};padding:8px 14px;font-size:.78rem;font-weight:700">${tuHoaConflicts.conflicts.length>0?'⚠ BIẾN ĐỘNG TỨ HÓA':'✓ TỨ HÓA 3 TẦNG'} — năm ${transit.targetYear} ${transit.transitYB}</div>
+    <div style="padding:10px 14px">
+      ${tuHoaConflicts.conflicts.length>0 ? tuHoaConflicts.conflicts.map(c=>`
+        <div style="border-left:3px solid ${c.type==='Song Kỵ'?'#c02020':'#c08020'};padding:6px 10px;margin-bottom:8px;background:${c.type==='Song Kỵ'?'#fff0f0':'#fff8ec'}">
+          <div style="font-size:.78rem;font-weight:700;color:${c.type==='Song Kỵ'?'#a01818':'#a06010'}">${c.type} · ${c.star} <span style="font-weight:400;color:#888">(${chiName(c.palaceIdx)}${gocPalaceMap?' — '+gocPalaceMap[c.palaceIdx]:''})</span></div>
+          <div style="font-size:.68rem;color:#555;margin-top:2px">${c.detail}</div>
+          <div style="font-size:.66rem;color:#999;margin-top:1px;font-style:italic">${c.note}</div>
+        </div>
+      `).join('') : '<div style="font-size:.7rem;color:#888">Năm này không có hiện tượng Song Kỵ / Lộc Kỵ giao chiến.</div>'}
+    </div>
+  </div>` : ''}
+
+  ${luuHoaFlights ? `
+  <div style="background:white;border:1px solid #c0d0e8;border-radius:8px;overflow:hidden;margin-bottom:12px">
+    <div style="background:#1a3a5a;color:#bcd8f4;padding:8px 14px;font-size:.78rem;font-weight:700">LƯU TỨ HÓA BAY VÀO CUNG — năm ${transit.targetYear} ${transit.transitYB}</div>
+    <div style="padding:8px 12px;font-size:.6rem;color:#999;border-bottom:1px solid #eee">Quét 4 hóa của năm vào 14 chính tinh + Tả Hữu Xương Khúc, đối chiếu cung Gốc / Đại Vận</div>
+    <div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:.7rem">
+        <thead><tr style="background:#e4ecf6">
+          <th style="padding:5px 8px;text-align:left;border-bottom:1px solid #ddd">Hóa</th>
+          <th style="padding:5px 8px;text-align:left;border-bottom:1px solid #ddd">Sao</th>
+          <th style="padding:5px 8px;text-align:left;border-bottom:1px solid #ddd">Cung</th>
+          <th style="padding:5px 8px;text-align:left;border-bottom:1px solid #ddd">Gốc</th>
+          <th style="padding:5px 8px;text-align:left;border-bottom:1px solid #ddd">Đại Vận</th>
+        </tr></thead>
+        <tbody>
+          ${luuHoaFlights.length>0 ? luuHoaFlights.map(f=>{
+            const bg=f.level==='warn'?'background:#fff0f0;':f.level==='good'?'background:#f0fff0;':''
+            const hoaColor=f.hoaType==='Hóa Kỵ'?'#a01818':f.hoaType==='Hóa Lộc'?'#1a7030':'#555'
+            return '<tr style="'+bg+'">'+
+              '<td style="padding:4px 8px;border-bottom:1px solid #f0f0f0;font-weight:700;color:'+hoaColor+'">'+f.hoaType.replace('Hóa ','')+'</td>'+
+              '<td style="padding:4px 8px;border-bottom:1px solid #f0f0f0">'+f.star+'</td>'+
+              '<td style="padding:4px 8px;border-bottom:1px solid #f0f0f0">'+chiName(f.palaceIdx)+'</td>'+
+              '<td style="padding:4px 8px;border-bottom:1px solid #f0f0f0">'+(f.gocCung||'—')+'</td>'+
+              '<td style="padding:4px 8px;border-bottom:1px solid #f0f0f0;'+(f.level==='warn'?'color:#a01818;font-weight:600':'')+'">'+(f.daiVanCung||'—')+'</td>'+
+              '</tr>'
+          }).join('') : '<tr><td colspan="5" style="padding:8px;color:#888;font-size:.66rem">Không có Lưu Tứ Hóa nào rơi vào 18 sao trên lá số.</td></tr>'}
+        </tbody>
+      </table>
+    </div>
+    ${luuHoaFlights.filter(f=>f.level==='warn').length>0?`<div style="padding:8px 12px;background:#fff6f6;border-top:1px solid #f0dada">${luuHoaFlights.filter(f=>f.level==='warn').map(f=>`<div style="font-size:.66rem;color:#a01818;margin-bottom:3px">⚠ ${f.star} (${chiName(f.palaceIdx)}): ${f.note}</div>`).join('')}</div>`:''}
+  </div>` : ''}
+
+  ${adv8d ? `
+  <div style="background:white;border:1px solid #cdbce0;border-radius:8px;overflow:hidden;margin-bottom:12px">
+    <div style="background:#2a1a3a;color:#d8c0f0;padding:8px 14px;font-size:.78rem;font-weight:700">LOGIC NÂNG CAO (Lai Nhân · Tự Hóa · Quỹ Đạo Nghiệp)</div>
+    <div style="padding:10px 14px">
+      <div style="margin-bottom:10px">
+        <span style="font-size:.72rem;font-weight:700;color:#5a2a8a">▸ Lai Nhân Cung (gốc nghiệp): </span>
+        <span style="font-size:.72rem;color:#333">${adv8d.laiNhan.length?adv8d.laiNhan.map(l=>chiName(l.palaceIdx)+' — '+l.cungChucNang).join(', '):'—'}</span>
+      </div>
+      <div style="margin-bottom:10px">
+        <div style="font-size:.72rem;font-weight:700;color:#5a2a8a;margin-bottom:3px">▸ Tự Hóa (cung tự biến):</div>
+        ${Object.keys(adv8d.tuHoa).length? Object.entries(adv8d.tuHoa).map(([bi,arr])=>`<div style="font-size:.68rem;color:#444;margin-left:8px">${chiName(+bi)} (${gocPalaceMap[+bi]}): ${arr.map(x=>x.tuHoa+' — '+x.star).join(', ')}</div>`).join('') : '<div style="font-size:.68rem;color:#999;margin-left:8px">Không có cung tự hóa</div>'}
+      </div>
+      <div>
+        <div style="font-size:.72rem;font-weight:700;color:#5a2a8a;margin-bottom:3px">▸ Quỹ Đạo Hạn Năm ${transit.transitYB} (biến động khách quan):</div>
+        ${['loc','ky'].map(k=>{
+          const q=adv8d.quyDao[k]; if(!q) return ''
+          const nhan=k==='loc'?'Lộc (cơ hội/nhân)':'Kỵ (rắc rối/quả)'
+          const color=k==='loc'?'#1a7030':'#a01818'
+          const chain=q.path.map(n=>chiName(n.palaceIdx)+'('+n.cungChucNang+')'+(n.stop?' ⛔'+n.stop:(n.phiTiep?' →':''))).join(' ')
+          return `<div style="font-size:.68rem;color:#444;margin-left:8px;margin-bottom:3px"><span style="color:${color};font-weight:600">${nhan}:</span> khởi ${q.khoiSao}@${q.khoiCung} → ${chain}</div>`
+        }).join('')}
+      </div>
+    </div>
+  </div>` : ''}
+
+  ${adv8d && adv8d.quyDaoTuThan && adv8d.quyDaoTuThan.length ? `
+  <div style="background:white;border:1px solid #c0d8c8;border-radius:8px;overflow:hidden;margin-bottom:12px">
+    <div style="background:#1a3a2a;color:#bcf0d0;padding:8px 14px;font-size:.78rem;font-weight:700">QUỸ ĐẠO TỰ THÂN (biến đổi nội tại — theo suốt đời/đại vận)</div>
+    <div style="padding:10px 14px">
+      ${adv8d.quyDaoTuThan.map(item=>{
+        const t1=item.tang1
+        let h=`<div style="margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f0f0f0">
+          <div style="font-size:.72rem;font-weight:700;color:#2a6a4a">${t1.cung} (${t1.cungChucNang}) — Tự ${t1.loaiTuHoa} tại ${t1.sao}</div>
+          <div style="font-size:.66rem;color:#555;margin-top:2px"><b>Hiện trạng:</b> ${t1.phiCungLoai} → ${t1.nhan}</div>`
+        if(item.tang2){
+          const b1=item.tang2.buoc1
+          const chain=item.tang2.tiep.map(n=>chiName(n.palaceIdx)+'('+n.cungChucNang+')'+(n.stop?' ⛔'+n.stop:(n.phiTiep?' →':''))).join(' ')
+          h+=`<div style="font-size:.66rem;color:#555;margin-top:3px"><b>Truy quả (Nhân→Quả):</b> ${b1.phiKy} → quả tại ${b1.quaTai}${chain?' → '+chain:''}</div>`
+        }
+        h+=`</div>`
+        return h
+      }).join('')}
+    </div>
+  </div>` : ''}
+
+  <div style="background:white;border:1px solid #ddd;border-radius:8px;overflow:hidden">
+    <div style="background:#2a3a4a;color:#aac8e8;padding:8px 14px;font-size:.78rem;font-weight:700">BẢNG ĐẠI HẠN</div>
+    <div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:.72rem">
+        <thead><tr style="background:#f0e8d8">
+          <th style="padding:5px 8px;text-align:left;border-bottom:1px solid #ddd">Cung</th>
+          <th style="padding:5px 8px;text-align:left;border-bottom:1px solid #ddd">Tuổi</th>
+          <th style="padding:5px 8px;text-align:left;border-bottom:1px solid #ddd">Năm DL</th>
+        </tr></thead>
+        <tbody>
+          ${daiHanList.map(d=>{
+            const isCur=currentYear>=d.startYear&&currentYear<=d.endYear
+            return '<tr style="'+(isCur?'background:#fff8e6;font-weight:600;color:#7a4a10':'')+'">'+
+              '<td style="padding:5px 8px;border-bottom:1px solid #f0f0f0">'+(isCur?'▶ ':'')+d.cung+'</td>'+
+              '<td style="padding:5px 8px;border-bottom:1px solid #f0f0f0">'+d.startAge+'–'+d.endAge+'</td>'+
+              '<td style="padding:5px 8px;border-bottom:1px solid #f0f0f0">'+d.startYear+'–'+d.endYear+'</td>'+
+              '</tr>'
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`
+
+  // Insert after laso grid card
+  const summary=document.getElementById('summary')
+  summary.appendChild(panel)
+}
+</script>
+</body>
+</html>
