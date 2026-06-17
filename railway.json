@@ -4,6 +4,6 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "npx serve . -p $PORT"
+    "startCommand": "npx --yes serve . -l $PORT"
   }
 }
