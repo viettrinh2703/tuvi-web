@@ -2676,13 +2676,24 @@ async function submitPayment(kind){
     const MAX=40000
     const promptTrunc = aiPrompt.length>MAX ? aiPrompt.slice(0,MAX)+'\n...(truncated)' : aiPrompt
     const templateParams={
-      email_khach : email,
+      // Biến mặc định của EmailJS template
+      name        : 'Tử Vi — '+chuDe,
+      email       : email,
+      message     : '=== THÔNG TIN ĐƠN ===\n'+
+                    'Email khách: '+email+'\n'+
+                    'Chủ đề: '+chuDe+'\n'+
+                    'Giá: '+getAmount(kind)+'\n'+
+                    'Nội dung CK: '+c.transferPrefix+' '+email+'\n'+
+                    'Hướng dẫn: '+huongDan+'\n\n'+
+                    '=== LÁ SỐ ===\n'+laSoTxt.slice(0,2000)+'\n\n'+
+                    '=== JSON CHO AI (dán vào Claude) ===\n'+promptTrunc,
+      // Biến bổ sung (dùng được nếu bồ sửa template sau)
       chu_de      : chuDe,
+      email_khach : email,
       gia         : getAmount(kind),
       noi_dung_ck : c.transferPrefix+' '+email,
-      huong_dan   : huongDan,
-      la_so_text  : laSoTxt.slice(0,3000),   // tóm tắt lá số
-      prompt_cho_ai: promptTrunc              // JSON đầy đủ cho AI
+      la_so_text  : laSoTxt.slice(0,2000),
+      prompt_cho_ai: promptTrunc
     }
     emailjs.init(c.emailjsPublicKey)
     const resp=await emailjs.send(c.emailjsServiceId, c.emailjsTemplateId, templateParams)
