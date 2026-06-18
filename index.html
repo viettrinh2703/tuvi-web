@@ -70,8 +70,8 @@ select,input{width:100%;padding:7px 9px;border:1px solid #ccc;border-radius:5px;
 .dbg-box{display:none;background:#111;color:#4cff4c;border-radius:5px;padding:12px;margin-top:8px;font-family:monospace;font-size:.7rem;line-height:1.65;white-space:pre-wrap;max-height:400px;overflow-y:auto}
 .dbg-box.show{display:block}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
-<body>
 <h1>☯ Tử Vi — Luận Giải</h1>
 <div style="text-align:right;margin-top:-26px;margin-bottom:10px">
   <button id="owner-toggle-btn" onclick="toggleOwnerMode()" style="padding:4px 10px;border-radius:14px;border:1px solid #ccc;background:#fff;color:#999;font-size:.66rem;cursor:pointer">🔧 Chế độ chủ web</button>
@@ -2486,8 +2486,12 @@ const PAYMENT_CONFIG = {
   // ── KÊNH NHẬN YÊU CẦU (chọn 1, dán key/endpoint của bạn) ──
   // Khuyên dùng Web3Forms (miễn phí 250 lượt/tháng). Lấy Access Key tại web3forms.com
   // Email nhận hiện đăng ký: thuyduong0307.neu@gmail.com (đổi tại trang web3forms/formspree, KHÔNG sửa ở đây)
-  web3formsKey     : '',             // Web3Forms (bị chặn subdomain free - dùng Formspree thay)
-  formspreeEndpoint: 'https://formspree.io/f/mvznjgqd',
+  web3formsKey     : '',
+  formspreeEndpoint: '',
+  // ── EmailJS (đang dùng) ──
+  emailjsPublicKey : 'dtljh2D2bgJX9h6Ro',
+  emailjsServiceId : 'service_xyebh4q',
+  emailjsTemplateId: 'template_htsmg0s',
   // Đính kèm ảnh chuyển khoản + file Word vào email? (CẦN gói TRẢ PHÍ của Web3Forms/Formspree)
   // Để false: gửi MIỄN PHÍ dạng text (JSON + lá số), bạn đối chiếu thanh toán bằng nội dung CK trong app ngân hàng.
   attachFiles  : false
@@ -2649,27 +2653,18 @@ async function submitPayment(kind){
 
   const c=PAYMENT_CONFIG
   const chuDe=kind==='couple'?'Hợp đôi (2 người)':(TOPIC_LABELS[window.__lastTopic]||kind)
-  const aiPrompt=buildAIPromptForOrder(kind)     // system prompt + JSON, dán thẳng cho AI
-  const huongDan='Cách xử lý: (1) Kiểm tra app ngân hàng có giao dịch nội dung "'+c.transferPrefix+' '+email+'" số tiền '+getAmount(kind)+'. '+
-    '(2) Copy toàn bộ phần "prompt_cho_ai" dán vào Claude để lấy bài luận. (3) Gửi bài luận về email khách: '+email+'.'
+  const aiPrompt=buildAIPromptForOrder(kind)
+  const laSoTxt=laSoToText(kind)
+  const huongDan='(1) Kiểm tra app ngân hàng: nội dung "'+c.transferPrefix+' '+email+'" số tiền '+getAmount(kind)+
+    '. (2) Dán prompt_cho_ai vào Claude. (3) Gửi về: '+email
 
-  // Chọn kênh gửi
-  let endpoint='', extra={}
-  if(c.web3formsKey){
-    endpoint='https://api.web3forms.com/submit'
-    extra.access_key=c.web3formsKey
-    extra.subject='[Tử Vi] Yêu cầu luận giải — '+chuDe
-    extra.from_name='Web Tử Vi'
-    extra.botcheck=''   // honeypot field — phải để rỗng
-  }
-  else if(c.formspreeEndpoint){ endpoint=c.formspreeEndpoint }
-
-  if(!endpoint){
+  // Không có EmailJS config → chế độ thử
+  if(!c.emailjsPublicKey||!c.emailjsServiceId||!c.emailjsTemplateId){
     window.__pendingOrder={kind,email}
     if(window.__ownerMode){
-      status.innerHTML='<div style="background:#fff8ec;border:1px solid #e8d0a0;border-radius:8px;padding:10px;font-size:.74rem;color:#7a5a20">Chế độ thử (chủ web): chưa cấu hình kênh nhận. Bấm nút dưới để tải gói (JSON cho AI + Word) rồi gửi tay.</div>'+ownerDownloadButtons()
+      status.innerHTML='<div style="background:#fff8ec;border:1px solid #e8d0a0;border-radius:8px;padding:10px;font-size:.74rem;color:#7a5a20">Chế độ thử: chưa cấu hình EmailJS. Bấm nút dưới để tải gói.</div>'+ownerDownloadButtons()
     } else {
-      status.innerHTML='<div style="background:#fff8ec;border:1px solid #e8d0a0;border-radius:8px;padding:10px;font-size:.74rem;color:#7a5a20">Hệ thống đang cập nhật, bạn vui lòng thử lại sau ít phút. Xin lỗi vì sự bất tiện ạ.</div>'
+      status.innerHTML='<div style="background:#fff8ec;border:1px solid #e8d0a0;border-radius:8px;padding:10px;font-size:.74rem;color:#7a5a20">Hệ thống đang cập nhật, bạn vui lòng thử lại sau ít phút.</div>'
     }
     return
   }
@@ -2677,34 +2672,27 @@ async function submitPayment(kind){
   btn.disabled=true; btn.textContent='⏳ Đang gửi...'
   status.innerHTML='<div style="color:#888;font-size:.76rem">Đang gửi yêu cầu...</div>'
   try{
-    const fd=new FormData()
-    Object.entries(extra).forEach(([k,v])=>fd.append(k,v))
-    fd.append('email_khach', email)
-    fd.append('chu_de', chuDe)
-    fd.append('gia', getAmount(kind))
-    fd.append('noi_dung_ck', c.transferPrefix+' '+email)
-    fd.append('huong_dan', huongDan)
-    fd.append('la_so_text', laSoToText(kind))
-    fd.append('prompt_cho_ai', aiPrompt)
-    if(c.attachFiles){
-      const wordDoc=buildWordDoc(kind)
-      if(wordDoc) fd.append('ban_word_la_so', wordDoc.blob, wordDoc.filename)
-      if(proof) fd.append('anh_chuyen_khoan', proof, proof.name)
+    // EmailJS giới hạn 50KB/template — cắt prompt nếu quá dài
+    const MAX=40000
+    const promptTrunc = aiPrompt.length>MAX ? aiPrompt.slice(0,MAX)+'\n...(truncated)' : aiPrompt
+    const templateParams={
+      email_khach : email,
+      chu_de      : chuDe,
+      gia         : getAmount(kind),
+      noi_dung_ck : c.transferPrefix+' '+email,
+      huong_dan   : huongDan,
+      la_so_text  : laSoTxt.slice(0,3000),   // tóm tắt lá số
+      prompt_cho_ai: promptTrunc              // JSON đầy đủ cho AI
     }
-    const r=await fetch(endpoint,{method:'POST',headers:{'Accept':'application/json'},body:fd})
-    const j=await r.json().catch(()=>null)
-    console.log('[TuVi] submit response:', r.status, j)
-    // Web3Forms trả HTTP 200 nhưng success:false khi key sai / domain chưa verify
-    if(!r.ok || (j && j.success===false)){
-      const reason = j?.message || ('HTTP '+r.status)
-      throw new Error(reason)
-    }
+    emailjs.init(c.emailjsPublicKey)
+    const resp=await emailjs.send(c.emailjsServiceId, c.emailjsTemplateId, templateParams)
+    console.log('[TuVi] EmailJS OK:', resp.status, resp.text)
     paymentSuccess(status)
   }catch(e){
-    console.error('[TuVi] submit error:', e)
+    console.error('[TuVi] EmailJS error:', e)
     window.__pendingOrder={kind,email}
     if(window.__ownerMode){
-      status.innerHTML='<div style="background:#fff6f6;border:1px solid #e8c0c0;border-radius:8px;padding:10px;font-size:.74rem;color:#a01818">⚠ Lỗi: <b>'+escapeHtml(e.message)+'</b><br><small>Xem Console (F12) để biết thêm chi tiết.</small></div>'+ownerDownloadButtons()
+      status.innerHTML='<div style="background:#fff6f6;border:1px solid #e8c0c0;border-radius:8px;padding:10px;font-size:.74rem;color:#a01818">⚠ Lỗi EmailJS: <b>'+escapeHtml(String(e?.text||e?.message||e))+'</b></div>'+ownerDownloadButtons()
     } else {
       status.innerHTML='<div style="background:#fff6f6;border:1px solid #e8c0c0;border-radius:8px;padding:10px;font-size:.74rem;color:#a01818">Gửi chưa thành công, bạn vui lòng thử lại sau giây lát. Nếu vẫn lỗi, hãy liên hệ trực tiếp giúp mình nhé.</div>'
     }
