@@ -2691,7 +2691,7 @@ async function submitPayment(kind){
       if(wordDoc) fd.append('ban_word_la_so', wordDoc.blob, wordDoc.filename)
       if(proof) fd.append('anh_chuyen_khoan', proof, proof.name)
     }
-    const r=await fetch(endpoint,{method:'POST',body:fd})
+    const r=await fetch(endpoint,{method:'POST',headers:{'Accept':'application/json'},body:fd})
     const j=await r.json().catch(()=>null)
     console.log('[TuVi] submit response:', r.status, j)
     // Web3Forms trả HTTP 200 nhưng success:false khi key sai / domain chưa verify
