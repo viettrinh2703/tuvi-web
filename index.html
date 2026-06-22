@@ -202,8 +202,9 @@ const ruleVariants = {
 
 
 // A. Theo Can năm (hhvn)
-const THIEN_KHOI_MAP = {'Giáp':12,'Ất':11,'Bính':10,'Đinh':8,'Mậu':6,'Kỷ':5,'Canh':1,'Tân':2,'Nhâm':3,'Quý':4}
-const THIEN_VIET_MAP = {'Giáp':6,'Ất':7,'Bính':8,'Đinh':10,'Mậu':12,'Kỷ':11,'Canh':5,'Tân':4,'Nhâm':2,'Quý':1}
+// Khôi/Việt theo khẩu quyết Bắc Phái: Giáp Mậu Canh Ngưu Dương(Sửu/Mùi); Ất Kỷ Thử Hầu(Tý/Thân); Bính Đinh Trư Kê(Hợi/Dậu); Nhâm Quý Xà Thố(Tỵ/Mão); Tân Mã Hổ(Ngọ/Dần)
+const THIEN_KHOI_MAP = {'Giáp':12,'Mậu':12,'Canh':12,'Ất':11,'Kỷ':11,'Bính':10,'Đinh':10,'Nhâm':4,'Quý':4,'Tân':5}
+const THIEN_VIET_MAP = {'Giáp':6,'Mậu':6,'Canh':6,'Ất':7,'Kỷ':7,'Bính':8,'Đinh':8,'Nhâm':2,'Quý':2,'Tân':1}
 const THIEN_QUAN_MAP = {'Giáp':6,'Ất':3,'Bính':4,'Đinh':1,'Mậu':2,'Kỷ':8,'Canh':10,'Tân':8,'Nhâm':9,'Quý':5}
 const THIEN_PHUC_MAP = {'Giáp':8,'Ất':7,'Bính':11,'Đinh':10,'Mậu':2,'Kỷ':1,'Canh':5,'Tân':4,'Nhâm':5,'Quý':4}
 const LUU_HA_MAP     = {'Giáp':8,'Ất':9,'Bính':6,'Đinh':3,'Mậu':4,'Kỷ':5,'Canh':11,'Tân':12,'Nhâm':1,'Quý':2}
@@ -542,8 +543,8 @@ function anSaoPhuCore(chart, ys, yb, lunarMonth, h, amDuong){
 
 // ══════════════════════════════════════════════════
 // [3C] AN SAO PHỤ EXTENDED — Bắc Phái chuẩn
-// Chỉ an 5 sao còn thiếu trong danh sách 17 phụ tinh:
-// Thiên Khôi, Thiên Việt, Thiên Hình, Thiên Diêu, Thiên Khốc
+// Chỉ an 4 sao còn thiếu trong danh sách 16 phụ tinh:
+// Thiên Khôi, Thiên Việt, Thiên Hình, Thiên Diêu
 // (12 sao còn lại đã an trong anSaoPhuCore)
 // ══════════════════════════════════════════════════
 function anSaoPhuExtended(chart, ys, yb, lunarMonth, lunarDay, h, menhIdx, thanIdx, refs, amDuong){
@@ -559,9 +560,6 @@ function anSaoPhuExtended(chart, ys, yb, lunarMonth, lunarDay, h, menhIdx, thanI
 
   // Thiên Diêu: khởi Mão(2) tháng 1, đếm thuận
   sub(moveForward(12, lunarMonth-1),'Thiên Diêu')
-
-  // Thiên Khốc: khởi Ngọ(5) là Ngọ, đếm nghịch đến chi năm
-  sub(normalize12(ybIdx-4),'Thiên Khốc')
 
   // Tứ Hóa: gắn kèm vào sao (dùng cho luận giải)
   const hoaMap=TU_HOA_MAP[ys]||{}
@@ -3685,8 +3683,9 @@ const PAYMENT_CONFIG = {
   accountHolder: 'NGUYEN THI THUY DUONG',
   transferPrefix: 'TUVI',            // Nội dung CK = TUVI <email khách>
   // ── Giá theo loại (VNĐ) ──
-  priceSingle  : 35000,              // Quan Lộc / Tài Bạch / Tình cảm / Điền Trạch / Tổng quan tháng
-  priceCouple  : 59000,              // Hợp đôi (2 người)
+  priceSingle  : 199000,             // Quan Lộc / Tài Bạch / Tình cảm-Hôn nhân / Con cái
+  priceVanHan  : 299000,             // Vận hạn tổng quan
+  priceCouple  : 249000,             // Hợp đôi (2 người)
   deliveryHours: 10,
   // ── KÊNH NHẬN YÊU CẦU (chọn 1, dán key/endpoint của bạn) ──
   // Khuyên dùng Web3Forms (miễn phí 250 lượt/tháng). Lấy Access Key tại web3forms.com
@@ -3703,7 +3702,11 @@ const PAYMENT_CONFIG = {
 }
 
 function formatVND(n){ return (n||0).toLocaleString('vi-VN')+'đ' }
-function getAmountRaw(kind){ return kind==='couple'?PAYMENT_CONFIG.priceCouple:PAYMENT_CONFIG.priceSingle }
+function getAmountRaw(kind){
+  if(kind==='couple') return PAYMENT_CONFIG.priceCouple
+  if(window.__lastTopic==='van_han') return PAYMENT_CONFIG.priceVanHan
+  return PAYMENT_CONFIG.priceSingle
+}
 function getAmount(kind){ return formatVND(getAmountRaw(kind)) }
 
 function showPaymentForm(kind, container){
