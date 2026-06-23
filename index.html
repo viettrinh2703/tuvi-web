@@ -75,8 +75,8 @@ select,input{width:100%;padding:7px 9px;border:1px solid #ccc;border-radius:5px;
   --txt:#efe6d6; --txt-dim:#a89576; --paper:#fffdf8;
 }
 body{background:linear-gradient(180deg,#161009,#0b0805);color:var(--txt)}
-.wrap{max-width:600px;margin:0 auto;padding:0 4px}
-.app-header{max-width:600px;margin:0 auto 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 6px 12px;border-bottom:1px solid #3a2f21;flex-wrap:wrap}
+.wrap{max-width:1080px;margin:0 auto;padding:0 4px}
+.app-header{max-width:1080px;margin:0 auto 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 6px 12px;border-bottom:1px solid #3a2f21;flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:10px}
 .brand .yy{width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 32% 30%,#2c2316,#16110b);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:1.15rem;color:var(--gold-2)}
 .brand .bt b{font-family:Georgia,serif;font-size:1.18rem;letter-spacing:.5px;color:var(--gold-2);display:block;line-height:1}
@@ -117,7 +117,7 @@ body{background:linear-gradient(180deg,#161009,#0b0805);color:var(--txt)}
 .kymon-soon{text-align:center}
 .kymon-soon .ic{font-size:2.6rem;margin-bottom:10px}
 .back-link{display:inline-block;margin-top:16px;font-size:.78rem;color:var(--thuy);background:none;border:none;cursor:pointer;font-family:inherit}
-.footer-note{max-width:600px;margin:24px auto 12px;padding:14px 14px 26px;border-top:1px solid #3a2f21;font-size:.66rem;color:#6b7488;line-height:1.75;text-align:center}
+.footer-note{max-width:1080px;margin:24px auto 12px;padding:14px 14px 26px;border-top:1px solid #3a2f21;font-size:.66rem;color:#6b7488;line-height:1.75;text-align:center}
 .main-btn{background:linear-gradient(135deg,var(--gold),#9c6f12);color:#1a1206}
 .main-btn:hover{background:linear-gradient(135deg,#e6c45a,#b8860b)}
 .main-btn:disabled{background:#2c2316;color:#6b7488;cursor:not-allowed}
@@ -133,6 +133,19 @@ body{background:linear-gradient(180deg,#161009,#0b0805);color:var(--txt)}
 .bl-title{font-family:Georgia,serif;font-size:.98rem;font-weight:700;color:var(--gold-2);margin-bottom:3px}
 .bl-date{font-size:.64rem;color:var(--txt-dim);margin-bottom:6px}
 .bl-ex{font-size:.76rem;color:#d8ccb6;line-height:1.6}
+
+/* full-width / responsive */
+html,body{overflow-x:hidden}
+.hero{margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);width:100vw;border-radius:0;border-left:none;border-right:none;height:min(70vh,520px)}
+.pkg-grid{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.choice-grid{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+#review-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}
+#review-list .rv{margin-bottom:0}
+#blog-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+#blog-list .bl-card{margin-bottom:0}
+#view-tuvi .card,#view-legal .card,.info-page,.kymon-soon{max-width:680px;margin-left:auto;margin-right:auto}
+.lang-btn{margin-left:8px;padding:5px 11px;border:1px solid var(--line);background:none;color:var(--gold-2);border-radius:8px;font-size:.68rem;font-weight:700;cursor:pointer;font-family:inherit}
+.lang-btn:hover{border-color:var(--gold)}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
@@ -142,10 +155,11 @@ body{background:linear-gradient(180deg,#161009,#0b0805);color:var(--txt)}
     <div class="bt"><b>Ziwei</b><span>Astrology</span></div>
   </div>
   <nav class="nav">
-    <button id="nav-home" class="on" onclick="showView('home')">Trang chủ</button>
-    <button id="nav-about" onclick="showView('about')">About Ziwei</button>
-    <button id="nav-danhmuc" onclick="showView('danhmuc')">Danh mục SP</button>
-    <button id="nav-blog" onclick="showView('blog')">Blog kiến thức</button>
+    <button id="nav-home" class="on" onclick="showView('home')" data-i18n="nav.home">Trang chủ</button>
+    <button id="nav-about" onclick="showView('about')" data-i18n="nav.about">About Ziwei</button>
+    <button id="nav-danhmuc" onclick="showView('danhmuc')" data-i18n="nav.danhmuc">Danh mục SP</button>
+    <button id="nav-blog" onclick="showView('blog')" data-i18n="nav.blog">Blog kiến thức</button>
+    <button id="lang-btn" class="lang-btn" onclick="toggleLang()">EN</button>
   </nav>
 </header>
 
@@ -157,19 +171,19 @@ body{background:linear-gradient(180deg,#161009,#0b0805);color:var(--txt)}
     <canvas id="nguHanhCanvas"></canvas>
     <div class="hero-cap">
       <h1>Ziwei — Astrology</h1>
-      <p>Tinh hoa luận giải Tử Vi</p>
+      <p data-i18n="hero.tag">Tinh hoa luận giải Tử Vi</p>
     </div>
   </section>
 
   <section class="sec">
-    <div class="sec-h">Sự khác biệt của Ziwei</div><div class="sec-u"></div>
-    <div class="sec-sub">Điều làm nên sự khác biệt trong cách Ziwei luận giải.</div>
-    <div class="panel"><span class="muted">(Nội dung sẽ được cập nhật.)</span></div>
+    <div class="sec-h" data-i18n="khacbiet.h">Sự khác biệt của Ziwei</div><div class="sec-u"></div>
+    <div class="sec-sub" data-i18n="khacbiet.sub">Điều làm nên sự khác biệt trong cách Ziwei luận giải.</div>
+    <div id="khacbiet-content"><div class="panel"><span class="muted">(Nội dung sẽ được cập nhật.)</span></div></div>
   </section>
 
   <section class="sec">
-    <div class="sec-h">Tổng quan các gói dịch vụ Tử Vi</div><div class="sec-u"></div>
-    <div class="sec-sub">Mỗi gói soi sâu một mảng của cuộc đời bạn.</div>
+    <div class="sec-h" data-i18n="goi.h">Tổng quan các gói dịch vụ Tử Vi</div><div class="sec-u"></div>
+    <div class="sec-sub" data-i18n="goi.sub">Mỗi gói soi sâu một mảng của cuộc đời bạn.</div>
     <div class="pkg-grid" id="pkg-grid">
       <div class="pkg"><div class="pn">Quan Lộc</div><div class="pp">199K</div></div>
       <div class="pkg"><div class="pn">Tài Bạch</div><div class="pp">199K</div></div>
@@ -178,12 +192,12 @@ body{background:linear-gradient(180deg,#161009,#0b0805);color:var(--txt)}
       <div class="pkg"><div class="pn">Vận Hạn Tổng Quan</div><div class="pp">299K</div></div>
       <div class="pkg"><div class="pn">Hợp Đôi (2 người)</div><div class="pp">249K</div></div>
     </div>
-    <button class="main-btn" style="margin-top:14px" onclick="showView('danhmuc')">Xem danh mục &amp; đặt luận giải →</button>
+    <button class="main-btn" style="margin-top:14px" onclick="showView('danhmuc')" data-i18n="goi.btn">Xem danh mục &amp; đặt luận giải →</button>
   </section>
 
   <section class="sec">
-    <div class="sec-h">Review từ khách hàng</div><div class="sec-u"></div>
-    <div class="sec-sub">Cảm nhận thực tế sau khi luận giải.</div>
+    <div class="sec-h" data-i18n="review.h">Review từ khách hàng</div><div class="sec-u"></div>
+    <div class="sec-sub" data-i18n="review.sub">Cảm nhận thực tế sau khi luận giải.</div>
     <div id="review-list"><div class="panel"><span class="muted">(Phần đánh giá sẽ được thêm sau.)</span></div></div>
   </section>
 </div>
@@ -211,7 +225,7 @@ body{background:linear-gradient(180deg,#161009,#0b0805);color:var(--txt)}
 <!-- ════ CỔNG PHÁP LÝ (Tử Vi) ════ -->
 <div id="view-legal" class="view">
   <div class="card" style="border:none;background:none;padding:0;margin-bottom:0">
-    <h2 style="color:var(--tho)">Điều khoản &amp; Pháp lý — Tử Vi</h2>
+    <h2 style="color:var(--tho)" data-i18n="legal.h">Điều khoản &amp; Pháp lý — Tử Vi</h2>
     <div class="legal-box" id="legal-content">
       <p style="color:#9a8a6a"><i>(Nội dung pháp lý đầy đủ sẽ được cập nhật.)</i></p>
       <h3>1. Tính chất dịch vụ</h3>
@@ -223,10 +237,10 @@ body{background:linear-gradient(180deg,#161009,#0b0805);color:var(--txt)}
     </div>
     <label class="agree-row">
       <input type="checkbox" id="legal-agree" onchange="updateLegalBtn()">
-      <span>Tôi đã đọc và đồng ý với các điều khoản &amp; chính sách nêu trên.</span>
+      <span data-i18n="legal.agree">Tôi đã đọc và đồng ý với các điều khoản &amp; chính sách nêu trên.</span>
     </label>
-    <button class="main-btn" id="legal-continue" disabled onclick="showView('tuvi')">Đồng ý &amp; tiếp tục →</button>
-    <button class="back-link" onclick="showView('home')">← Quay lại trang chủ</button>
+    <button class="main-btn" id="legal-continue" disabled onclick="showView('tuvi')" data-i18n="legal.continue">Đồng ý &amp; tiếp tục →</button>
+    <button class="back-link" onclick="showView('home')" data-i18n="back.home">← Quay lại trang chủ</button>
   </div>
 </div>
 
@@ -319,28 +333,40 @@ body{background:linear-gradient(180deg,#161009,#0b0805);color:var(--txt)}
 </div>
 </div><!-- /view-tuvi -->
 
-<!-- ════ KỲ MÔN ĐỘN GIÁP ════ -->
-<div id="view-kymon" class="view">
+<!-- ════ ĐANG XÂY DỰNG (dùng chung) ════ -->
+<div id="view-soon" class="view">
   <div class="kymon-soon">
     <div class="ic">🧭</div>
-    <div style="font-family:Georgia,serif;font-size:1.08rem;font-weight:700;margin-bottom:6px">Kỳ Môn Độn Giáp</div>
-    <div style="font-size:.84rem;color:#8a7a5a">Tính năng đang được triển khai.</div>
-    <button class="back-link" onclick="showView('home')">← Về trang chủ</button>
+    <div id="soon-name" style="font-family:Georgia,serif;font-size:1.1rem;font-weight:700;color:var(--gold-2);margin-bottom:6px">—</div>
+    <div style="font-size:.84rem;color:var(--txt-dim)" data-i18n="soon.text">Tính năng đang được triển khai.</div>
+    <button class="back-link" onclick="showView('danhmuc')" data-i18n="back.danhmuc">← Về danh mục</button>
   </div>
 </div>
 
 <!-- ════ DANH MỤC SP ════ -->
 <div id="view-danhmuc" class="view">
-  <div class="sec-h">Danh mục dịch vụ</div><div class="sec-u"></div>
-  <div class="sec-sub">Chọn hệ luận giải bạn muốn trải nghiệm.</div>
+  <div class="sec-h" data-i18n="danhmuc.h">Danh mục dịch vụ</div><div class="sec-u"></div>
+  <div class="sec-sub" data-i18n="danhmuc.sub">Chọn hệ luận giải bạn muốn trải nghiệm.</div>
   <div class="choice-grid">
     <div class="choice tuvi" onclick="chooseTuVi()">
       <div class="ic">🪷</div><div class="nm">Tử Vi</div>
-      <div class="ds">Lập lá số &amp; luận giải theo chủ đề</div>
+      <div class="ds" data-i18n="choice.tuvi.ds">Lập lá số &amp; luận giải theo chủ đề</div>
     </div>
-    <div class="choice kymon" onclick="showView('kymon')">
+    <div class="choice kymon" onclick="showSoon('Kỳ Môn Độn Giáp')">
       <div class="ic">🧭</div><div class="nm">Kỳ Môn Độn Giáp</div>
-      <div class="ds">Dự đoán theo thời &amp; phương</div>
+      <div class="ds" data-i18n="choice.soon">Đang xây dựng</div>
+    </div>
+    <div class="choice" style="border-top:4px solid var(--moc)" onclick="showSoon('Lục Hào')">
+      <div class="ic">🪙</div><div class="nm">Lục Hào</div>
+      <div class="ds" data-i18n="choice.soon">Đang xây dựng</div>
+    </div>
+    <div class="choice" style="border-top:4px solid var(--hoa)" onclick="showSoon('Đại Lục Nhâm')">
+      <div class="ic">🎴</div><div class="nm">Đại Lục Nhâm</div>
+      <div class="ds" data-i18n="choice.soon">Đang xây dựng</div>
+    </div>
+    <div class="choice" style="border-top:4px solid var(--kim)" onclick="showSoon('Thái Ất Thần Số')">
+      <div class="ic">🌌</div><div class="nm">Thái Ất Thần Số</div>
+      <div class="ds" data-i18n="choice.soon">Đang xây dựng</div>
     </div>
   </div>
 </div>
@@ -348,28 +374,28 @@ body{background:linear-gradient(180deg,#161009,#0b0805);color:var(--txt)}
 <!-- ════ ABOUT ZIWEI ════ -->
 <div id="view-about" class="view">
   <div class="info-page">
-    <div class="sec-h" style="text-align:left">About Ziwei</div>
+    <div class="sec-h" style="text-align:left" data-i18n="about.h">About Ziwei</div>
     <div id="about-content" style="font-size:.82rem;line-height:1.8;margin-top:12px">
       <p class="muted">(Nội dung giới thiệu sẽ được cập nhật.)</p>
     </div>
-    <button class="back-link" onclick="showView('home')">← Về trang chủ</button>
+    <button class="back-link" onclick="showView('home')" data-i18n="back.home">← Về trang chủ</button>
   </div>
 </div>
 
 <!-- ════ BLOG KIẾN THỨC ════ -->
 <div id="view-blog" class="view">
   <div class="info-page">
-    <div class="sec-h" style="text-align:left">Blog kiến thức</div>
+    <div class="sec-h" style="text-align:left" data-i18n="blog.h">Blog kiến thức</div>
     <div style="font-size:.82rem;line-height:1.8;margin-top:12px">
       <div id="blog-list"><p class="muted">(Các bài viết kiến thức Tử Vi sẽ được đăng tại đây.)</p></div>
     </div>
-    <button class="back-link" onclick="showView('home')">← Về trang chủ</button>
+    <button class="back-link" onclick="showView('home')" data-i18n="back.home">← Về trang chủ</button>
   </div>
 </div>
 
 </div><!-- /wrap -->
 
-<footer class="footer-note">
+<footer class="footer-note" data-i18n="footer.note">
   Thông tin luận giải chỉ mang tính tham khảo, phục vụ mục đích chiêm nghiệm và định hướng tinh thần; không thay thế cho tư vấn y tế, pháp lý hay tài chính chuyên môn. Người dùng tự chịu trách nhiệm với các quyết định của mình.
 </footer>
 <script>
@@ -1044,7 +1070,7 @@ function orderBirthInfo(kind){
 }
 function ownerDownloadButtons(){ return '' }
 // ───────── ĐIỀU HƯỚNG VIEW ─────────
-const NAV_OF={home:'nav-home',about:'nav-about',danhmuc:'nav-danhmuc',blog:'nav-blog',legal:'nav-danhmuc',tuvi:'nav-danhmuc',kymon:'nav-danhmuc'}
+const NAV_OF={home:'nav-home',about:'nav-about',danhmuc:'nav-danhmuc',blog:'nav-blog',legal:'nav-danhmuc',tuvi:'nav-danhmuc',soon:'nav-danhmuc'}
 function showView(name){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'))
   const el=document.getElementById('view-'+name); if(el) el.classList.add('active')
@@ -1052,12 +1078,48 @@ function showView(name){
   const nid=NAV_OF[name]; if(nid){ const nb=document.getElementById(nid); if(nb) nb.classList.add('on') }
   window.scrollTo({top:0,behavior:'smooth'})
 }
+function showSoon(name){ const n=document.getElementById('soon-name'); if(n) n.textContent=name||''; showView('soon') }
 function chooseTuVi(){ showView(window.__legalAgreed ? 'tuvi' : 'legal') }
 function updateLegalBtn(){
   const ck=document.getElementById('legal-agree')?.checked
   window.__legalAgreed=!!ck
   const b=document.getElementById('legal-continue'); if(b) b.disabled=!ck
 }
+// ───────── NGÔN NGỮ (VI / EN) — dịch phần giao diện tĩnh ─────────
+const I18N={
+  vi:{ 'nav.home':'Trang chủ','nav.about':'About Ziwei','nav.danhmuc':'Danh mục SP','nav.blog':'Blog kiến thức',
+    'hero.tag':'Tinh hoa luận giải Tử Vi',
+    'khacbiet.h':'Sự khác biệt của Ziwei','khacbiet.sub':'Điều làm nên sự khác biệt trong cách Ziwei luận giải.',
+    'goi.h':'Tổng quan các gói dịch vụ Tử Vi','goi.sub':'Mỗi gói soi sâu một mảng của cuộc đời bạn.','goi.btn':'Xem danh mục & đặt luận giải →',
+    'review.h':'Review từ khách hàng','review.sub':'Cảm nhận thực tế sau khi luận giải.',
+    'danhmuc.h':'Danh mục dịch vụ','danhmuc.sub':'Chọn hệ luận giải bạn muốn trải nghiệm.',
+    'choice.tuvi.ds':'Lập lá số & luận giải theo chủ đề','choice.soon':'Đang xây dựng',
+    'soon.text':'Tính năng đang được triển khai.',
+    'about.h':'About Ziwei','blog.h':'Blog kiến thức',
+    'legal.h':'Điều khoản & Pháp lý — Tử Vi','legal.agree':'Tôi đã đọc và đồng ý với các điều khoản & chính sách nêu trên.','legal.continue':'Đồng ý & tiếp tục →',
+    'back.home':'← Về trang chủ','back.danhmuc':'← Về danh mục',
+    'footer.note':'Thông tin luận giải chỉ mang tính tham khảo, phục vụ mục đích chiêm nghiệm và định hướng tinh thần; không thay thế cho tư vấn y tế, pháp lý hay tài chính chuyên môn. Người dùng tự chịu trách nhiệm với các quyết định của mình.' },
+  en:{ 'nav.home':'Home','nav.about':'About','nav.danhmuc':'Services','nav.blog':'Blog',
+    'hero.tag':'The art of Zi Wei astrology',
+    'khacbiet.h':'What makes Ziwei different','khacbiet.sub':'What sets Ziwei\u2019s approach apart.',
+    'goi.h':'Zi Wei reading packages','goi.sub':'Each package explores one area of your life.','goi.btn':'View services & order →',
+    'review.h':'Customer reviews','review.sub':'Real experiences after a reading.',
+    'danhmuc.h':'Services','danhmuc.sub':'Choose the system you\u2019d like to explore.',
+    'choice.tuvi.ds':'Chart casting & themed reading','choice.soon':'Coming soon',
+    'soon.text':'This feature is under development.',
+    'about.h':'About Ziwei','blog.h':'Blog',
+    'legal.h':'Terms & Policy — Zi Wei','legal.agree':'I have read and agree to the terms & policies above.','legal.continue':'Agree & continue →',
+    'back.home':'← Back to home','back.danhmuc':'← Back to services',
+    'footer.note':'Readings are for reference and reflection only; they do not replace professional medical, legal or financial advice. Users are responsible for their own decisions.' }
+}
+let LANG='vi'; try{ LANG=localStorage.getItem('ziwei_lang')||'vi' }catch(e){}
+function applyLang(){
+  const d=I18N[LANG]||I18N.vi
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ const v=d[el.getAttribute('data-i18n')]; if(v!=null) el.textContent=v })
+  document.documentElement.lang=LANG
+  const lb=document.getElementById('lang-btn'); if(lb) lb.textContent = LANG==='vi'?'EN':'VI'
+}
+function toggleLang(){ LANG = LANG==='vi'?'en':'vi'; try{localStorage.setItem('ziwei_lang',LANG)}catch(e){}; applyLang() }
 // ───────── NỘI DUNG TỪ GOOGLE SHEETS (sửa-từ-web, KHÔNG cần build lại) ─────────
 // Cách dùng: tạo 1 Google Sheet, mỗi loại 1 tab. File → Chia sẻ → Xuất bản lên web
 // → chọn tab → định dạng CSV → copy link → dán vào đúng dòng dưới đây (1 lần).
@@ -1066,7 +1128,8 @@ const SHEET = {
   dieuKhoanCsv: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9Kd4tIdrU_cRPbCLlpeyDsHmKV0XPjKrSjvOlLoopY8yb5szZzYn5Yvfkm4FgN4izRSgCMRctzP6K/pub?gid=1464868371&single=true&output=csv',  // Điều khoản: A=Tiêu đề, B=Nội dung
   reviewCsv:    'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9Kd4tIdrU_cRPbCLlpeyDsHmKV0XPjKrSjvOlLoopY8yb5szZzYn5Yvfkm4FgN4izRSgCMRctzP6K/pub?gid=816821229&single=true&output=csv',   // Review: A=Tên, B=Nội dung, C=Sao 1-5
   blogCsv:      'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9Kd4tIdrU_cRPbCLlpeyDsHmKV0XPjKrSjvOlLoopY8yb5szZzYn5Yvfkm4FgN4izRSgCMRctzP6K/pub?gid=921853939&single=true&output=csv',   // Blog: A=Tiêu đề, B=Mô tả, C=Ngày, D=Link, E=Ảnh
-  thongTinCsv:  'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9Kd4tIdrU_cRPbCLlpeyDsHmKV0XPjKrSjvOlLoopY8yb5szZzYn5Yvfkm4FgN4izRSgCMRctzP6K/pub?gid=1581204413&single=true&output=csv'   // Thông tin (About): A=Tiêu đề, B=Nội dung
+  thongTinCsv:  'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9Kd4tIdrU_cRPbCLlpeyDsHmKV0XPjKrSjvOlLoopY8yb5szZzYn5Yvfkm4FgN4izRSgCMRctzP6K/pub?gid=1581204413&single=true&output=csv',  // Thông tin (About): A=Tiêu đề, B=Nội dung
+  khacBietCsv:  'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9Kd4tIdrU_cRPbCLlpeyDsHmKV0XPjKrSjvOlLoopY8yb5szZzYn5Yvfkm4FgN4izRSgCMRctzP6K/pub?gid=2084789413&single=true&output=csv'   // Sự khác biệt: A=Tiêu đề, B=Nội dung
 }
 function _csv(text){ const rows=[]; let row=[],cur='',q=false
   for(let i=0;i<text.length;i++){ const c=text[i]
@@ -1094,11 +1157,12 @@ function _richRows(rows){ return rows.map(r=>{ const a=(r[0]||'').trim(), b=(r[1
   const t=a||b; return t?'<p>'+_esc(t)+'</p>':'' }).join('') }
 function renderLegal(rows){ if(!rows.length) return; const h=document.getElementById('legal-content'); if(h) h.innerHTML=_richRows(rows) }
 function renderAbout(rows){ if(!rows.length) return; const h=document.getElementById('about-content'); if(h) h.innerHTML=_richRows(rows) }
+function renderKhacBiet(rows){ if(!rows.length) return; const h=document.getElementById('khacbiet-content'); if(h) h.innerHTML='<div class="panel">'+_richRows(rows)+'</div>' }
 function loadContent(){
   const go=(name,u,fn)=>{ if(u && /^https?:\/\//.test(u)) _loadCsv(u).then(fn).catch(e=>console.warn('Sheet load fail ['+name+']:', e.message||e)) }
-  go('gia',SHEET.giaCsv, renderGia); go('dieuKhoan',SHEET.dieuKhoanCsv, renderLegal); go('review',SHEET.reviewCsv, renderReview); go('blog',SHEET.blogCsv, renderBlog); go('thongTin',SHEET.thongTinCsv, renderAbout)
+  go('gia',SHEET.giaCsv, renderGia); go('dieuKhoan',SHEET.dieuKhoanCsv, renderLegal); go('review',SHEET.reviewCsv, renderReview); go('blog',SHEET.blogCsv, renderBlog); go('thongTin',SHEET.thongTinCsv, renderAbout); go('khacBiet',SHEET.khacBietCsv, renderKhacBiet)
 }
-window.addEventListener('DOMContentLoaded', ()=>{ renderProfileForm(); renderTopicSelector(); showView('home'); loadContent() })
+window.addEventListener('DOMContentLoaded', ()=>{ renderProfileForm(); renderTopicSelector(); showView('home'); applyLang(); loadContent() })
 
 </script>
 </body>
