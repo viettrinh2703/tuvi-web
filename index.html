@@ -182,6 +182,33 @@ html,body{overflow-x:hidden}
   </section>
 
   <section class="sec">
+    <div class="sec-h" data-i18n="chonlua.h">Chọn lựa nào phù hợp cho bạn?</div><div class="sec-u"></div>
+    <div class="sec-sub" data-i18n="chonlua.sub">Mỗi hệ luận giải có thế mạnh riêng — xem hệ nào hợp với điều bạn đang tìm.</div>
+    <div id="chonlua-grid" class="choice-grid">
+      <div class="choice" style="border-top:4px solid var(--tho)">
+        <div class="ic">🪷</div><div class="nm">Tử Vi</div>
+        <div class="ds" id="chonlua-tuvi"><span class="muted">(Nội dung sẽ được cập nhật.)</span></div>
+      </div>
+      <div class="choice" style="border-top:4px solid var(--moc)">
+        <div class="ic">🪙</div><div class="nm">Lục Hào</div>
+        <div class="ds" id="chonlua-luchao"><span class="muted">(Nội dung sẽ được cập nhật.)</span></div>
+      </div>
+      <div class="choice" style="border-top:4px solid var(--thuy)">
+        <div class="ic">🧭</div><div class="nm">Kỳ Môn Độn Giáp</div>
+        <div class="ds" id="chonlua-kymon"><span class="muted">(Nội dung sẽ được cập nhật.)</span></div>
+      </div>
+      <div class="choice" style="border-top:4px solid var(--hoa)">
+        <div class="ic">🎴</div><div class="nm">Đại Lục Nhâm</div>
+        <div class="ds" id="chonlua-nham"><span class="muted">(Nội dung sẽ được cập nhật.)</span></div>
+      </div>
+      <div class="choice" style="border-top:4px solid var(--kim)">
+        <div class="ic">🌌</div><div class="nm">Thái Ất Thần Số</div>
+        <div class="ds" id="chonlua-thaiat"><span class="muted">(Nội dung sẽ được cập nhật.)</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
     <div class="sec-h" data-i18n="goi.h">Tổng quan các gói dịch vụ Tử Vi</div><div class="sec-u"></div>
     <div class="sec-sub" data-i18n="goi.sub">Mỗi gói soi sâu một mảng của cuộc đời bạn.</div>
     <div class="pkg-grid" id="pkg-grid">
@@ -193,6 +220,15 @@ html,body{overflow-x:hidden}
       <div class="pkg"><div class="pn">Hợp Đôi (2 người)</div><div class="pp">249K</div></div>
     </div>
     <button class="main-btn" style="margin-top:14px" onclick="showView('danhmuc')" data-i18n="goi.btn">Xem danh mục &amp; đặt luận giải →</button>
+  </section>
+
+  <section class="sec">
+    <div class="sec-h" data-i18n="goiLucHao.h">Xem Lục Hào</div><div class="sec-u"></div>
+    <div class="sec-sub" data-i18n="goiLucHao.sub">Tăng San Bốc Dịch — gieo quẻ luận đoán theo câu hỏi cụ thể.</div>
+    <div class="pkg-grid" id="pkg-luchao-grid">
+      <div class="pkg"><div class="pp">49K</div><div style="font-size:.64rem;color:var(--txt-dim);margin-top:4px">Một lần gieo quẻ &amp; luận giải theo câu hỏi.</div></div>
+    </div>
+    <button class="main-btn" style="margin-top:14px" onclick="chooseLucHao()" data-i18n="goiLucHao.btn">Gieo quẻ &amp; đặt luận giải →</button>
   </section>
 
   <section class="sec">
@@ -390,6 +426,7 @@ html,body{overflow-x:hidden}
     <!-- Cách gieo quẻ -->
     <div style="margin-top:16px;padding-top:14px;border-top:1px solid #eee">
       <label style="font-weight:600;color:#333">Cách gieo quẻ</label>
+      <div style="font-size:.7rem;color:#a86f1e;margin-top:4px;line-height:1.5">💡 Để chính xác nhất, bạn nên chọn <b>Tự gieo</b> — tự tay thành tâm gieo quẻ với câu hỏi của mình.</div>
       <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px">
         <label style="font-size:.8rem;color:#444;cursor:pointer;display:flex;align-items:flex-start;gap:8px">
           <input type="radio" name="lh-gieo" value="tu_gieo" onchange="lhOnGieoChange()" style="width:auto;margin-top:3px;flex:none">
@@ -605,7 +642,7 @@ const PAYMENT_CONFIG = {
   priceSingle  : 199000,             // Quan Lộc / Tài Bạch / Tình cảm-Hôn nhân / Con cái
   priceVanHan  : 299000,             // Vận hạn tổng quan
   priceCouple  : 249000,             // Hợp đôi (2 người)
-  priceLucHao  : 199000,             // Lục Hào — Tăng San Bốc Dịch
+  priceLucHao  : 49000,              // Lục Hào — Tăng San Bốc Dịch
   transferPrefixLucHao: 'LUCHAO',    // Nội dung CK Lục Hào = LUCHAO <email khách>
   deliveryHours: 10,
   // ── KÊNH NHẬN YÊU CẦU (chọn 1, dán key/endpoint của bạn) ──
@@ -1313,6 +1350,8 @@ const I18N={
     'hero.tag':'Tinh hoa luận giải Tử Vi',
     'khacbiet.h':'Sự khác biệt của Ziwei','khacbiet.sub':'Điều làm nên sự khác biệt trong cách Ziwei luận giải.',
     'goi.h':'Tổng quan các gói dịch vụ Tử Vi','goi.sub':'Mỗi gói soi sâu một mảng của cuộc đời bạn.','goi.btn':'Xem danh mục & đặt luận giải →',
+    'chonlua.h':'Chọn lựa nào phù hợp cho bạn?','chonlua.sub':'Mỗi hệ luận giải có thế mạnh riêng — xem hệ nào hợp với điều bạn đang tìm.',
+    'goiLucHao.h':'Xem Lục Hào','goiLucHao.sub':'Tăng San Bốc Dịch — gieo quẻ luận đoán theo câu hỏi cụ thể.','goiLucHao.btn':'Gieo quẻ & đặt luận giải →',
     'review.h':'Review từ khách hàng','review.sub':'Cảm nhận thực tế sau khi luận giải.',
     'danhmuc.h':'Danh mục dịch vụ','danhmuc.sub':'Chọn hệ luận giải bạn muốn trải nghiệm.',
     'choice.tuvi.ds':'Lập lá số & luận giải theo chủ đề','choice.soon':'Đang xây dựng','choice.luchao.ds':'Tăng San Bốc Dịch',
@@ -1326,6 +1365,8 @@ const I18N={
     'hero.tag':'The art of Zi Wei astrology',
     'khacbiet.h':'What makes Ziwei different','khacbiet.sub':'What sets Ziwei\u2019s approach apart.',
     'goi.h':'Zi Wei reading packages','goi.sub':'Each package explores one area of your life.','goi.btn':'View services & order →',
+    'chonlua.h':'Which one is right for you?','chonlua.sub':'Each system has its own strengths — see which fits what you\u2019re looking for.',
+    'goiLucHao.h':'Liu Yao Reading','goiLucHao.sub':'Tang San Bok Dich — cast a hexagram to answer a specific question.','goiLucHao.btn':'Cast & order a reading →',
     'review.h':'Customer reviews','review.sub':'Real experiences after a reading.',
     'danhmuc.h':'Services','danhmuc.sub':'Choose the system you\u2019d like to explore.',
     'choice.tuvi.ds':'Chart casting & themed reading','choice.soon':'Coming soon','choice.luchao.ds':'Tang San Bok Dich (Liu Yao)',
@@ -1353,7 +1394,9 @@ const SHEET = {
   reviewCsv:    'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9Kd4tIdrU_cRPbCLlpeyDsHmKV0XPjKrSjvOlLoopY8yb5szZzYn5Yvfkm4FgN4izRSgCMRctzP6K/pub?gid=816821229&single=true&output=csv',   // Review: A=Tên, B=Nội dung, C=Sao 1-5
   blogCsv:      'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9Kd4tIdrU_cRPbCLlpeyDsHmKV0XPjKrSjvOlLoopY8yb5szZzYn5Yvfkm4FgN4izRSgCMRctzP6K/pub?gid=921853939&single=true&output=csv',   // Blog: A=Tiêu đề, B=Mô tả, C=Ngày, D=Link, E=Ảnh
   thongTinCsv:  'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9Kd4tIdrU_cRPbCLlpeyDsHmKV0XPjKrSjvOlLoopY8yb5szZzYn5Yvfkm4FgN4izRSgCMRctzP6K/pub?gid=1581204413&single=true&output=csv',  // Thông tin (About): A=Tiêu đề, B=Nội dung
-  khacBietCsv:  'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9Kd4tIdrU_cRPbCLlpeyDsHmKV0XPjKrSjvOlLoopY8yb5szZzYn5Yvfkm4FgN4izRSgCMRctzP6K/pub?gid=2084789413&single=true&output=csv'   // Sự khác biệt: A=Tiêu đề, B=Nội dung
+  khacBietCsv:  'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9Kd4tIdrU_cRPbCLlpeyDsHmKV0XPjKrSjvOlLoopY8yb5szZzYn5Yvfkm4FgN4izRSgCMRctzP6K/pub?gid=2084789413&single=true&output=csv',   // Sự khác biệt: A=Tiêu đề, B=Nội dung
+  giaLucHaoCsv: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9Kd4tIdrU_cRPbCLlpeyDsHmKV0XPjKrSjvOlLoopY8yb5szZzYn5Yvfkm4FgN4izRSgCMRctzP6K/pub?gid=1792780648&single=true&output=csv',   // Gói Lục Hào (2 cột): A=Giá, B=Nội dung
+  chonLuaCsv:   'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9Kd4tIdrU_cRPbCLlpeyDsHmKV0XPjKrSjvOlLoopY8yb5szZzYn5Yvfkm4FgN4izRSgCMRctzP6K/pub?gid=1351319608&single=true&output=csv'    // Chọn lựa phù hợp: A=Tên hệ, B=Nội dung
 }
 function _csv(text){ const rows=[]; let row=[],cur='',q=false
   for(let i=0;i<text.length;i++){ const c=text[i]
@@ -1384,9 +1427,24 @@ function renderLegal(rows){ if(!rows.length) return; const html=_richRows(rows)
   const h2=document.getElementById('lh-legal-content'); if(h2) h2.innerHTML=html }
 function renderAbout(rows){ if(!rows.length) return; const h=document.getElementById('about-content'); if(h) h.innerHTML=_richRows(rows) }
 function renderKhacBiet(rows){ if(!rows.length) return; const h=document.getElementById('khacbiet-content'); if(h) h.innerHTML='<div class="panel">'+_richRows(rows)+'</div>' }
+// Gói Lục Hào: A=Giá, B=Nội dung (2 cột)
+function renderGiaLucHao(rows){ if(!rows.length) return; const h=document.getElementById('pkg-luchao-grid'); if(!h) return
+  h.innerHTML=rows.map(r=>'<div class="pkg"><div class="pp">'+_esc(r[0])+'</div>'+(r[1]?'<div style="font-size:.64rem;color:var(--txt-dim);margin-top:4px">'+_esc(r[1]).replace(/\n/g,'<br>')+'</div>':'')+'</div>').join('') }
+// Chọn lựa phù hợp: A=Tên hệ, B=Nội dung — khớp tên (bỏ dấu) vào đúng ô
+function _norm(s){ return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').toLowerCase().replace(/\s+/g,'') }
+const CHONLUA_MAP=[
+  {id:'chonlua-tuvi',   keys:['tuvi']},
+  {id:'chonlua-luchao', keys:['luchao','bocdich','tangsan']},
+  {id:'chonlua-kymon',  keys:['kymon','dongiap']},
+  {id:'chonlua-nham',   keys:['lucnham','dailucnham','nham']},
+  {id:'chonlua-thaiat', keys:['thaiat','thanso']}
+]
+function renderChonLua(rows){ if(!rows.length) return
+  rows.forEach(r=>{ const n=_norm(r[0]); const sys=CHONLUA_MAP.find(s=>s.keys.some(k=>n.includes(k))); if(!sys) return
+    const el=document.getElementById(sys.id); if(el) el.innerHTML=_esc(r[1]||'').replace(/\n/g,'<br>') }) }
 function loadContent(){
   const go=(name,u,fn)=>{ if(u && /^https?:\/\//.test(u)) _loadCsv(u).then(fn).catch(e=>console.warn('Sheet load fail ['+name+']:', e.message||e)) }
-  go('gia',SHEET.giaCsv, renderGia); go('dieuKhoan',SHEET.dieuKhoanCsv, renderLegal); go('review',SHEET.reviewCsv, renderReview); go('blog',SHEET.blogCsv, renderBlog); go('thongTin',SHEET.thongTinCsv, renderAbout); go('khacBiet',SHEET.khacBietCsv, renderKhacBiet)
+  go('gia',SHEET.giaCsv, renderGia); go('dieuKhoan',SHEET.dieuKhoanCsv, renderLegal); go('review',SHEET.reviewCsv, renderReview); go('blog',SHEET.blogCsv, renderBlog); go('thongTin',SHEET.thongTinCsv, renderAbout); go('khacBiet',SHEET.khacBietCsv, renderKhacBiet); go('giaLucHao',SHEET.giaLucHaoCsv, renderGiaLucHao); go('chonLua',SHEET.chonLuaCsv, renderChonLua)
 }
 function lhPrefillNow(){
   const el=document.getElementById('lh-datetime'); if(!el || el.value) return
