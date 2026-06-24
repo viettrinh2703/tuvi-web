@@ -143,7 +143,7 @@ html,body{overflow-x:hidden}
 #review-list .rv{margin-bottom:0}
 #blog-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
 #blog-list .bl-card{margin-bottom:0}
-#view-tuvi .card,#view-legal .card,.info-page,.kymon-soon{max-width:680px;margin-left:auto;margin-right:auto}
+#view-tuvi .card,#view-legal .card,#view-luchao .card,#view-lhlegal .card,.info-page,.kymon-soon{max-width:680px;margin-left:auto;margin-right:auto}
 .lang-btn{margin-left:8px;padding:5px 11px;border:1px solid var(--line);background:none;color:var(--gold-2);border-radius:8px;font-size:.68rem;font-weight:700;cursor:pointer;font-family:inherit}
 .lang-btn:hover{border-color:var(--gold)}
 </style>
@@ -333,6 +333,105 @@ html,body{overflow-x:hidden}
 </div>
 </div><!-- /view-tuvi -->
 
+<!-- ════ CỔNG PHÁP LÝ (Lục Hào) ════ -->
+<div id="view-lhlegal" class="view">
+  <div class="card" style="border:none;background:none;padding:0;margin-bottom:0">
+    <h2 style="color:var(--moc)" data-i18n="lhlegal.h">Điều khoản &amp; Pháp lý — Lục Hào</h2>
+    <div class="legal-box" id="lh-legal-content">
+      <p style="color:#9a8a6a"><i>(Nội dung pháp lý đầy đủ sẽ được cập nhật.)</i></p>
+      <h3>1. Tính chất dịch vụ</h3>
+      <p>Kết quả luận quẻ chỉ mang tính tham khảo, phục vụ chiêm nghiệm và định hướng tinh thần; không thay thế cho tư vấn y tế, pháp lý, tài chính hay bất kỳ quyết định quan trọng nào.</p>
+      <h3>2. Bảo mật thông tin</h3>
+      <p>Ngày giờ xem, câu hỏi và kết quả gieo quẻ của bạn chỉ được dùng để lập quẻ và luận giải, không chia sẻ cho bên thứ ba ngoài mục đích này.</p>
+      <h3>3. Thanh toán &amp; giao kết quả</h3>
+      <p>Kết quả được gửi qua email sau khi xác nhận thanh toán. Vui lòng kiểm tra cả hộp thư spam/quảng cáo.</p>
+    </div>
+    <label class="agree-row">
+      <input type="checkbox" id="lh-legal-agree" onchange="updateLhLegalBtn()">
+      <span data-i18n="legal.agree">Tôi đã đọc và đồng ý với các điều khoản &amp; chính sách nêu trên.</span>
+    </label>
+    <button class="main-btn" id="lh-legal-continue" disabled onclick="showView('luchao')" data-i18n="legal.continue">Đồng ý &amp; tiếp tục →</button>
+    <button class="back-link" onclick="showView('home')" data-i18n="back.home">← Quay lại trang chủ</button>
+  </div>
+</div>
+
+<!-- ════ LỤC HÀO (form) ════ -->
+<div id="view-luchao" class="view">
+  <div class="card">
+    <h2>Lục Hào — Tăng San Bốc Dịch</h2>
+
+    <!-- Ngày giờ xem (định dạng riêng của Lục Hào: có phút, GMT+7) -->
+    <label>Ngày giờ xem (thời điểm gieo quẻ · giờ địa phương GMT+7)</label>
+    <input type="datetime-local" id="lh-datetime" step="60"
+      style="width:100%;padding:9px 10px;border:1px solid #ccc;border-radius:5px;font-size:.9rem;box-sizing:border-box">
+    <div style="font-size:.68rem;color:#9a8a6a;margin-top:5px;line-height:1.5">⏱ Nhập đúng tới phút. Lưu ý: từ <b>23h</b> trở đi đã sang ngày Can Chi mới (luật Dạ Tý) — nhập đúng ngày/giờ thực tế bạn muốn xem.</div>
+
+    <!-- Câu hỏi quan tâm -->
+    <div style="margin-top:14px">
+      <label>Câu hỏi / điều bạn đang quan tâm</label>
+      <textarea id="lh-question" rows="3" placeholder='VD: "Tháng này công việc có chuyển biến tốt không?"'
+        style="width:100%;font-size:.85rem;padding:9px 10px;border:1px solid #ccc;border-radius:6px;box-sizing:border-box;line-height:1.5;resize:vertical"></textarea>
+    </div>
+
+    <!-- Loại việc xem (để chọn Dụng Thần) -->
+    <div style="margin-top:14px">
+      <label>Loại việc xem (giúp chọn Dụng Thần)</label>
+      <select id="lh-cat" style="width:100%;padding:9px 10px;border:1px solid #ccc;border-radius:5px;font-size:.85rem">
+        <option value="Thê Tài">Cầu tài · kinh doanh · đầu tư · mất của (Thê Tài)</option>
+        <option value="Thê Tài (nam xem vợ/bạn gái)">Hôn nhân — xem vợ/bạn gái, nam xem (Thê Tài)</option>
+        <option value="Quan Quỷ (nữ xem chồng/bạn trai)">Hôn nhân — xem chồng/bạn trai, nữ xem (Quan Quỷ)</option>
+        <option value="Quan Quỷ">Công danh · sự nghiệp · thi cử · kiện tụng (Quan Quỷ)</option>
+        <option value="Tử Tôn">Cầu con · bình an · thuốc thang (Tử Tôn)</option>
+        <option value="Phụ Mẫu">Nhà cửa · xe cộ · giấy tờ · học hành (Phụ Mẫu)</option>
+        <option value="Hào Thế">Bản thân · sức khỏe · xuất hành · vận chung (Hào Thế)</option>
+      </select>
+    </div>
+
+    <!-- Cách gieo quẻ -->
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid #eee">
+      <label style="font-weight:600;color:#333">Cách gieo quẻ</label>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px">
+        <label style="font-size:.8rem;color:#444;cursor:pointer;display:flex;align-items:flex-start;gap:8px">
+          <input type="radio" name="lh-gieo" value="tu_gieo" onchange="lhOnGieoChange()" style="width:auto;margin-top:3px;flex:none">
+          <span><b>1. Tự gieo</b> — bạn tự tung đồng xu và nhập kết quả 6 lần.</span>
+        </label>
+        <label style="font-size:.8rem;color:#444;cursor:pointer;display:flex;align-items:flex-start;gap:8px">
+          <input type="radio" name="lh-gieo" value="may" onchange="lhOnGieoChange()" style="width:auto;margin-top:3px;flex:none">
+          <span><b>2. Gieo bằng máy</b> — hệ thống gieo ngẫu nhiên giúp bạn.</span>
+        </label>
+        <label style="font-size:.8rem;color:#444;cursor:pointer;display:flex;align-items:flex-start;gap:8px">
+          <input type="radio" name="lh-gieo" value="thay" onchange="lhOnGieoChange()" style="width:auto;margin-top:3px;flex:none">
+          <span><b>3. Thầy luận giải gieo</b> — để thầy thành tâm gieo quẻ khi luận giải.</span>
+        </label>
+      </div>
+
+      <!-- Hướng dẫn + nhập kết quả khi TỰ GIEO -->
+      <div id="lh-tugieo-box" style="display:none;margin-top:12px;padding:12px 14px;background:#eef6f0;border:1px solid #cfe6d5;border-radius:8px">
+        <div style="font-size:.75rem;color:#2e6b46;line-height:1.65">
+          🪙 <b>Hướng dẫn tự gieo:</b> Dùng <b>3 đồng xu âm dương</b> hoặc 3 đồng tiền xu (1.000, 2.000…) bất kỳ, miễn có 2 mặt phân biệt, để gieo cùng một lúc.
+          Gieo <b>6 lần</b>, kết quả mỗi lần được nhập vào máy, đi <b>từ Hào 1</b> (đáy) lên Hào 6.
+          <br>Với mỗi lần gieo, nhập <b>số mặt Ngửa</b> (0–3): <i>0 = Lão Âm (động), 1 = Thiếu Dương, 2 = Thiếu Âm, 3 = Lão Dương (động).</i>
+        </div>
+        <div id="lh-throws" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px"></div>
+      </div>
+
+      <!-- Kết quả khi GIEO BẰNG MÁY -->
+      <div id="lh-may-box" style="display:none;margin-top:12px;padding:12px 14px;background:#eef6f0;border:1px solid #cfe6d5;border-radius:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+          <div style="font-size:.75rem;color:#2e6b46;font-weight:600">🎲 Máy đã thành tâm gieo giúp bạn (3 đồng xu × 6 lần)</div>
+          <button type="button" onclick="lhMachineCast()" style="padding:5px 11px;border-radius:6px;border:1px solid #2f7a4e;background:#fff;color:#2f7a4e;font-size:.7rem;font-weight:600;cursor:pointer">↻ Gieo lại</button>
+        </div>
+        <div id="lh-may-result" style="margin-top:10px"></div>
+        <div style="font-size:.66rem;color:#5a7a64;margin-top:8px;line-height:1.5">Kết quả này sẽ được gửi kèm cho thầy luận giải. <i>0 = Lão Âm (động), 1 = Thiếu Dương, 2 = Thiếu Âm, 3 = Lão Dương (động).</i></div>
+      </div>
+    </div>
+
+    <button class="main-btn" id="lh-pay-btn" onclick="lhPrepareAndPay()" style="background:linear-gradient(135deg,#2f7a4e,#1f5a38)">💳 Thanh toán &amp; nhận luận giải</button>
+    <button class="back-link" onclick="showView('danhmuc')" data-i18n="back.danhmuc">← Về danh mục</button>
+    <div id="lh-pay-area" style="margin-top:14px"></div>
+  </div>
+</div>
+
 <!-- ════ ĐANG XÂY DỰNG (dùng chung) ════ -->
 <div id="view-soon" class="view">
   <div class="kymon-soon">
@@ -356,9 +455,9 @@ html,body{overflow-x:hidden}
       <div class="ic">🧭</div><div class="nm">Kỳ Môn Độn Giáp</div>
       <div class="ds" data-i18n="choice.soon">Đang xây dựng</div>
     </div>
-    <div class="choice" style="border-top:4px solid var(--moc)" onclick="showSoon('Lục Hào')">
+    <div class="choice luchao" style="border-top:4px solid var(--moc)" onclick="chooseLucHao()">
       <div class="ic">🪙</div><div class="nm">Lục Hào</div>
-      <div class="ds" data-i18n="choice.soon">Đang xây dựng</div>
+      <div class="ds" data-i18n="choice.luchao.ds">Tăng San Bốc Dịch</div>
     </div>
     <div class="choice" style="border-top:4px solid var(--hoa)" onclick="showSoon('Đại Lục Nhâm')">
       <div class="ic">🎴</div><div class="nm">Đại Lục Nhâm</div>
@@ -506,6 +605,8 @@ const PAYMENT_CONFIG = {
   priceSingle  : 199000,             // Quan Lộc / Tài Bạch / Tình cảm-Hôn nhân / Con cái
   priceVanHan  : 299000,             // Vận hạn tổng quan
   priceCouple  : 249000,             // Hợp đôi (2 người)
+  priceLucHao  : 199000,             // Lục Hào — Tăng San Bốc Dịch
+  transferPrefixLucHao: 'LUCHAO',    // Nội dung CK Lục Hào = LUCHAO <email khách>
   deliveryHours: 10,
   // ── KÊNH NHẬN YÊU CẦU (chọn 1, dán key/endpoint của bạn) ──
   // Khuyên dùng Web3Forms (miễn phí 250 lượt/tháng). Lấy Access Key tại web3forms.com
@@ -529,8 +630,13 @@ function formatVND(n){ return (n||0).toLocaleString('vi-VN')+'đ' }
 
 function getAmountRaw(kind){
   if(kind==='couple') return PAYMENT_CONFIG.priceCouple
+  if(kind==='luchao') return PAYMENT_CONFIG.priceLucHao
   if(window.__lastTopic==='van_han') return PAYMENT_CONFIG.priceVanHan
   return PAYMENT_CONFIG.priceSingle
+}
+
+function transferPrefixOf(kind){
+  return kind==='luchao' ? (PAYMENT_CONFIG.transferPrefixLucHao||'LUCHAO') : PAYMENT_CONFIG.transferPrefix
 }
 
 function getAmount(kind){ return formatVND(getAmountRaw(kind)) }
@@ -858,7 +964,7 @@ function showPaymentForm(kind, container){
       <div style="margin-top:12px;background:#fff8ec;border:1px solid #e8d0a0;border-radius:8px;padding:10px 12px">
         <div style="font-size:.72rem;color:#7a5a20;margin-bottom:4px;font-weight:600">⚠ Nội dung chuyển khoản (rất quan trọng) — copy đúng:</div>
         <div style="display:flex;gap:8px;align-items:center">
-          <code id="pay-note" style="flex:1;background:#fff;border:1px solid #e0c890;border-radius:6px;padding:8px 10px;font-size:.8rem;color:#a83010;font-weight:700;word-break:break-all">${c.transferPrefix} (nhập email trước)</code>
+          <code id="pay-note" style="flex:1;background:#fff;border:1px solid #e0c890;border-radius:6px;padding:8px 10px;font-size:.8rem;color:#a83010;font-weight:700;word-break:break-all">${transferPrefixOf(kind)} (nhập email trước)</code>
           <button onclick="copyTransferNote()" style="padding:8px 12px;border-radius:6px;border:none;background:#c9913a;color:#fff;font-size:.72rem;font-weight:600;cursor:pointer;white-space:nowrap">📋 Copy</button>
         </div>
       </div>
@@ -883,10 +989,11 @@ function showPaymentForm(kind, container){
   container.scrollIntoView({behavior:'smooth',block:'start'})
 }
 
-function updateTransferNote(){
+function updateTransferNote(kind){
   const email=(document.getElementById('pay-email')?.value||'').trim()
   const note=document.getElementById('pay-note'); if(!note) return
-  note.textContent = email ? PAYMENT_CONFIG.transferPrefix+' '+email : PAYMENT_CONFIG.transferPrefix+' (nhập email trước)'
+  const pre=transferPrefixOf(kind)
+  note.textContent = email ? pre+' '+email : pre+' (nhập email trước)'
 }
 
 function copyTransferNote(){
@@ -963,7 +1070,8 @@ async function submitPayment(kind){
   if(!proof){ status.innerHTML='<div style="color:#c00;font-size:.76rem">Vui lòng tải lên ảnh đã chuyển khoản.</div>'; return }
 
   const c=PAYMENT_CONFIG
-  const chuDe=kind==='couple'?'Hợp đôi (2 người)':(TOPIC_LABELS[window.__lastTopic]||kind)
+  const chuDe=kind==='luchao'?'Tăng San Bốc Dịch':(kind==='couple'?'Hợp đôi (2 người)':(TOPIC_LABELS[window.__lastTopic]||kind))
+  const heKind=kind==='luchao'?'Lục Hào':'Tử Vi'
   // (email không kèm prompt/JSON nữa — chủ web tự nhập lại bên bản owner)
 
   // Không có EmailJS config → chế độ thử
@@ -982,27 +1090,32 @@ async function submitPayment(kind){
   try{
     // Email báo đơn cho CHỦ WEB: chỉ thông tin đầu vào dạng dễ đọc (KHÔNG kèm JSON/prompt).
     // Chủ web tự nhập lại bên bản owner rồi xuất JSON ở đó.
-    const khaoSatText = orderAnswersText(kind)
+    const isLH = (kind==='luchao')
+    const infoLabel = isLH ? 'NGÀY GIỜ XEM' : 'THÔNG TIN SINH'
+    const ksLabel   = isLH ? 'CHI TIẾT QUẺ' : 'LỰA CHỌN KHẢO SÁT'
+    const infoText  = isLH ? lhDateInfo()    : orderBirthInfo(kind)
+    const khaoSatText = isLH ? lhDetailInfo() : orderAnswersText(kind)
+    const noiDungCK = transferPrefixOf(kind)+' '+email
     const templateParams={
-      name        : 'Tử Vi — '+chuDe,
+      name        : heKind+' — '+chuDe,
       email       : email,
-      message     : '=== ĐƠN MỚI ===\n'+
+      message     : '=== ĐƠN MỚI ('+heKind+') ===\n'+
                     'Email khách: '+email+'\n'+
                     'Chủ đề: '+chuDe+'\n'+
                     'Giá: '+getAmount(kind)+'\n'+
-                    'Nội dung CK: '+c.transferPrefix+' '+email+'\n\n'+
-                    '=== THÔNG TIN SINH ===\n'+orderBirthInfo(kind)+'\n\n'+
-                    '=== LỰA CHỌN KHẢO SÁT ===\n'+khaoSatText,
-      chu_de      : chuDe,
+                    'Nội dung CK: '+noiDungCK+'\n\n'+
+                    '=== '+infoLabel+' ===\n'+infoText+'\n\n'+
+                    '=== '+ksLabel+' ===\n'+khaoSatText,
+      chu_de      : heKind+' — '+chuDe,
       email_khach : email,
       gia         : getAmount(kind),
-      noi_dung_ck : c.transferPrefix+' '+email,
-      ngay_gio_sinh: orderBirthInfo(kind),
+      noi_dung_ck : noiDungCK,
+      ngay_gio_sinh: infoText,
       khao_sat    : khaoSatText
     }
     emailjs.init(c.emailjsPublicKey)
     const resp=await emailjs.send(c.emailjsServiceId, c.emailjsTemplateId, templateParams)
-    console.log('[TuVi] EmailJS OK:', resp.status, resp.text)
+    console.log('['+heKind+'] EmailJS OK:', resp.status, resp.text)
     paymentSuccess(status)
   }catch(e){
     console.error('[TuVi] EmailJS error:', e)
@@ -1070,7 +1183,7 @@ function orderBirthInfo(kind){
 }
 function ownerDownloadButtons(){ return '' }
 // ───────── ĐIỀU HƯỚNG VIEW ─────────
-const NAV_OF={home:'nav-home',about:'nav-about',danhmuc:'nav-danhmuc',blog:'nav-blog',legal:'nav-danhmuc',tuvi:'nav-danhmuc',soon:'nav-danhmuc'}
+const NAV_OF={home:'nav-home',about:'nav-about',danhmuc:'nav-danhmuc',blog:'nav-blog',legal:'nav-danhmuc',tuvi:'nav-danhmuc',soon:'nav-danhmuc',lhlegal:'nav-danhmuc',luchao:'nav-danhmuc'}
 function showView(name){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'))
   const el=document.getElementById('view-'+name); if(el) el.classList.add('active')
@@ -1085,6 +1198,115 @@ function updateLegalBtn(){
   window.__legalAgreed=!!ck
   const b=document.getElementById('legal-continue'); if(b) b.disabled=!ck
 }
+
+// ══════════════════════════════════════════════════
+// LỤC HÀO — Tăng San Bốc Dịch (luồng riêng, không phụ thuộc tử vi)
+// ══════════════════════════════════════════════════
+function chooseLucHao(){ showView(window.__lhLegalAgreed ? 'luchao' : 'lhlegal') }
+function updateLhLegalBtn(){
+  const ck=document.getElementById('lh-legal-agree')?.checked
+  window.__lhLegalAgreed=!!ck
+  const b=document.getElementById('lh-legal-continue'); if(b) b.disabled=!ck
+}
+
+// Tạo 6 ô nhập kết quả gieo (Hào 1 → Hào 6)
+function renderLhThrows(){
+  const host=document.getElementById('lh-throws'); if(!host || host.dataset.ready) return
+  let html=''
+  for(let i=1;i<=6;i++){
+    html+=`<div style="text-align:center">
+      <div style="font-size:.66rem;color:#2e6b46;margin-bottom:3px">Hào ${i}</div>
+      <select id="lh-ngua${i}" style="width:100%;padding:7px 6px;border:1px solid #ccc;border-radius:5px;font-size:.8rem">
+        <option value="">—</option>
+        <option value="0">0 ngửa</option>
+        <option value="1">1 ngửa</option>
+        <option value="2">2 ngửa</option>
+        <option value="3">3 ngửa</option>
+      </select>
+    </div>`
+  }
+  host.innerHTML=html
+  host.dataset.ready='1'
+}
+
+function lhOnGieoChange(){
+  const v=document.querySelector('input[name="lh-gieo"]:checked')?.value
+  const tg=document.getElementById('lh-tugieo-box')
+  const my=document.getElementById('lh-may-box')
+  if(v==='tu_gieo'){ renderLhThrows(); if(tg) tg.style.display='block'; if(my) my.style.display='none' }
+  else if(v==='may'){ if(tg) tg.style.display='none'; if(my) my.style.display='block'; if(!window.__lhMachineThrows) lhMachineCast(); else lhRenderMay() }
+  else { if(tg) tg.style.display='none'; if(my) my.style.display='none' }
+}
+
+// Tung 3 đồng xu, đếm số mặt Ngửa (0–3), lặp 6 lần — đúng xác suất thật (1/8,3/8,3/8,1/8)
+function lhCast6(){
+  const arr=[]
+  for(let i=0;i<6;i++){ let n=0; for(let c=0;c<3;c++) n+=Math.random()<0.5?1:0; arr.push(n) }
+  return arr
+}
+const LH_NGUA_LABEL={0:'Lão Âm ✕ (động)',1:'Thiếu Dương ▬▬▬',2:'Thiếu Âm ▬ ▬',3:'Lão Dương ○ (động)'}
+function lhMachineCast(){ window.__lhMachineThrows=lhCast6(); lhRenderMay() }
+function lhRenderMay(){
+  const host=document.getElementById('lh-may-result'); if(!host) return
+  const t=window.__lhMachineThrows||[]
+  host.innerHTML='<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px">'+
+    t.map((n,i)=>`<div style="background:#fff;border:1px solid #cfe6d5;border-radius:6px;padding:6px 9px;font-size:.72rem;color:#2e6b46;display:flex;justify-content:space-between;gap:8px"><span>Hào ${i+1}</span><b>${n} ngửa · ${LH_NGUA_LABEL[n]}</b></div>`).join('')+
+    '</div>'
+}
+
+// "YYYY-MM-DDTHH:MM" → "HH:MM DD/MM/YYYY"
+function lhPrettyTime(v){
+  const m=/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(v||'')
+  if(!m) return ''
+  return `${m[4]}:${m[5]} ${m[3]}/${m[2]}/${m[1]}`
+}
+function lhGieoLabel(v){
+  return v==='tu_gieo' ? 'Tự gieo (khách nhập kết quả)'
+    : v==='may' ? 'Gieo bằng máy (hệ thống gieo ngẫu nhiên)'
+    : v==='thay' ? 'Thầy luận giải gieo' : '(chưa chọn)'
+}
+function lhDateInfo(){
+  const d=window.__lhData||{}
+  return 'Ngày giờ xem: '+(d.prettyTime||'(thiếu)')
+}
+function lhDetailInfo(){
+  const d=window.__lhData||{}
+  let s='Câu hỏi quan tâm: '+(d.question||'(không nhập)')+'\n'
+  s+='Loại việc (Dụng Thần): '+(d.cat||'-')+'\n'
+  s+='Cách gieo quẻ: '+lhGieoLabel(d.gieoMethod)+'\n'
+  if((d.gieoMethod==='tu_gieo'||d.gieoMethod==='may') && (d.throws||[]).length){
+    const nhan=d.gieoMethod==='may'?'Kết quả MÁY gieo':'Kết quả gieo'
+    s+=nhan+' — số mặt Ngửa (Hào 1 → Hào 6): '+d.throws.join(', ')
+  }
+  return s
+}
+
+function lhPrepareAndPay(){
+  const dt=(document.getElementById('lh-datetime')?.value||'').trim()
+  if(!dt || !lhPrettyTime(dt)){ alert('Vui lòng nhập ngày giờ xem (đủ ngày, giờ, phút).'); return }
+  const gieo=document.querySelector('input[name="lh-gieo"]:checked')?.value
+  if(!gieo){ alert('Vui lòng chọn cách gieo quẻ.'); return }
+  let throws=[]
+  if(gieo==='tu_gieo'){
+    for(let i=1;i<=6;i++){
+      const val=document.getElementById('lh-ngua'+i)?.value
+      if(val===''||val==null){ alert('Bạn chọn "Tự gieo": vui lòng nhập đủ kết quả 6 lần gieo (Hào 1 → Hào 6).'); return }
+      throws.push(parseInt(val))
+    }
+  } else if(gieo==='may'){
+    if(!window.__lhMachineThrows) lhMachineCast()
+    throws=window.__lhMachineThrows.slice()
+  }
+  window.__lhData={
+    datetime  : dt,
+    prettyTime: lhPrettyTime(dt),
+    question  : (document.getElementById('lh-question')?.value||'').trim(),
+    cat       : document.getElementById('lh-cat')?.value||'',
+    gieoMethod: gieo,
+    throws    : throws
+  }
+  showPaymentForm('luchao', document.getElementById('lh-pay-area'))
+}
 // ───────── NGÔN NGỮ (VI / EN) — dịch phần giao diện tĩnh ─────────
 const I18N={
   vi:{ 'nav.home':'Trang chủ','nav.about':'About Ziwei','nav.danhmuc':'Danh mục SP','nav.blog':'Blog kiến thức',
@@ -1093,7 +1315,8 @@ const I18N={
     'goi.h':'Tổng quan các gói dịch vụ Tử Vi','goi.sub':'Mỗi gói soi sâu một mảng của cuộc đời bạn.','goi.btn':'Xem danh mục & đặt luận giải →',
     'review.h':'Review từ khách hàng','review.sub':'Cảm nhận thực tế sau khi luận giải.',
     'danhmuc.h':'Danh mục dịch vụ','danhmuc.sub':'Chọn hệ luận giải bạn muốn trải nghiệm.',
-    'choice.tuvi.ds':'Lập lá số & luận giải theo chủ đề','choice.soon':'Đang xây dựng',
+    'choice.tuvi.ds':'Lập lá số & luận giải theo chủ đề','choice.soon':'Đang xây dựng','choice.luchao.ds':'Tăng San Bốc Dịch',
+    'lhlegal.h':'Điều khoản & Pháp lý — Lục Hào',
     'soon.text':'Tính năng đang được triển khai.',
     'about.h':'About Ziwei','blog.h':'Blog kiến thức',
     'legal.h':'Điều khoản & Pháp lý — Tử Vi','legal.agree':'Tôi đã đọc và đồng ý với các điều khoản & chính sách nêu trên.','legal.continue':'Đồng ý & tiếp tục →',
@@ -1105,7 +1328,8 @@ const I18N={
     'goi.h':'Zi Wei reading packages','goi.sub':'Each package explores one area of your life.','goi.btn':'View services & order →',
     'review.h':'Customer reviews','review.sub':'Real experiences after a reading.',
     'danhmuc.h':'Services','danhmuc.sub':'Choose the system you\u2019d like to explore.',
-    'choice.tuvi.ds':'Chart casting & themed reading','choice.soon':'Coming soon',
+    'choice.tuvi.ds':'Chart casting & themed reading','choice.soon':'Coming soon','choice.luchao.ds':'Tang San Bok Dich (Liu Yao)',
+    'lhlegal.h':'Terms & Policy — Liu Yao',
     'soon.text':'This feature is under development.',
     'about.h':'About Ziwei','blog.h':'Blog',
     'legal.h':'Terms & Policy — Zi Wei','legal.agree':'I have read and agree to the terms & policies above.','legal.continue':'Agree & continue →',
@@ -1155,14 +1379,21 @@ function renderBlog(rows){ if(!rows.length) return; const h=document.getElementB
 function _richRows(rows){ return rows.map(r=>{ const a=(r[0]||'').trim(), b=(r[1]||'').trim()
   if(a&&b) return '<h3>'+_esc(a)+'</h3><p>'+_esc(b)+'</p>'
   const t=a||b; return t?'<p>'+_esc(t)+'</p>':'' }).join('') }
-function renderLegal(rows){ if(!rows.length) return; const h=document.getElementById('legal-content'); if(h) h.innerHTML=_richRows(rows) }
+function renderLegal(rows){ if(!rows.length) return; const html=_richRows(rows)
+  const h=document.getElementById('legal-content'); if(h) h.innerHTML=html
+  const h2=document.getElementById('lh-legal-content'); if(h2) h2.innerHTML=html }
 function renderAbout(rows){ if(!rows.length) return; const h=document.getElementById('about-content'); if(h) h.innerHTML=_richRows(rows) }
 function renderKhacBiet(rows){ if(!rows.length) return; const h=document.getElementById('khacbiet-content'); if(h) h.innerHTML='<div class="panel">'+_richRows(rows)+'</div>' }
 function loadContent(){
   const go=(name,u,fn)=>{ if(u && /^https?:\/\//.test(u)) _loadCsv(u).then(fn).catch(e=>console.warn('Sheet load fail ['+name+']:', e.message||e)) }
   go('gia',SHEET.giaCsv, renderGia); go('dieuKhoan',SHEET.dieuKhoanCsv, renderLegal); go('review',SHEET.reviewCsv, renderReview); go('blog',SHEET.blogCsv, renderBlog); go('thongTin',SHEET.thongTinCsv, renderAbout); go('khacBiet',SHEET.khacBietCsv, renderKhacBiet)
 }
-window.addEventListener('DOMContentLoaded', ()=>{ renderProfileForm(); renderTopicSelector(); showView('home'); applyLang(); loadContent() })
+function lhPrefillNow(){
+  const el=document.getElementById('lh-datetime'); if(!el || el.value) return
+  const d=new Date(); const p=n=>String(n).padStart(2,'0')
+  el.value=`${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`
+}
+window.addEventListener('DOMContentLoaded', ()=>{ renderProfileForm(); renderTopicSelector(); showView('home'); applyLang(); loadContent(); lhPrefillNow() })
 
 </script>
 </body>
