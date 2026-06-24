@@ -208,6 +208,14 @@ html,body{overflow-x:hidden}
         <div class="ic">🌌</div><div class="nm">Thái Ất Thần Số</div>
         <div class="ds" id="chonlua-thaiat"><span class="muted">(Nội dung sẽ được cập nhật.)</span></div>
       </div>
+      <div class="choice" style="border-top:4px solid var(--hoa)">
+        <div class="ic">📈</div><div class="nm">Gói chuyên sâu cho nhà đầu tư</div>
+        <div class="ds" id="chonlua-nhadautu"><span class="muted">(Nội dung sẽ được cập nhật.)</span></div>
+      </div>
+      <div class="choice" style="border-top:4px solid var(--tho)">
+        <div class="ic">💼</div><div class="nm">Gói chuyên sâu cho doanh nhân</div>
+        <div class="ds" id="chonlua-doanhnhan"><span class="muted">(Nội dung sẽ được cập nhật.)</span></div>
+      </div>
     </div>
   </section>
 
@@ -238,7 +246,7 @@ html,body{overflow-x:hidden}
     <div class="sec-h" data-i18n="goiKyMon.h">Xem Kỳ Môn</div><div class="sec-u"></div>
     <div class="sec-sub" data-i18n="goiKyMon.sub">Kỳ Môn Độn Giáp — Phái Chiết Bổ · lập bàn luận đoán sự việc &amp; phương hướng.</div>
     <div class="pkg-grid" id="pkg-kymon-grid">
-      <div class="pkg"><div class="pn">Kỳ Môn</div><div class="pp">49K</div><div style="font-size:.64rem;color:var(--txt-dim);margin-top:4px">Lập bàn &amp; luận đoán theo câu hỏi.</div></div>
+      <div class="pkg"><div class="pn">Kỳ Môn</div><div class="pp">Từ 79K</div><div style="font-size:.64rem;color:var(--txt-dim);margin-top:4px">Lập bàn &amp; luận đoán theo câu hỏi.</div></div>
     </div>
     <button class="main-btn" style="margin-top:14px" onclick="chooseKyMon()" data-i18n="goiKyMon.btn">Lập bàn &amp; đặt luận giải →</button>
   </section>
@@ -597,6 +605,7 @@ html,body{overflow-x:hidden}
       </div>
     </div>
 
+    <div id="km-price-hint" style="margin-top:16px;text-align:center;font-size:.82rem;color:#1f4f6a;font-weight:600"></div>
     <button class="main-btn" id="km-pay-btn" onclick="kmPrepareAndPay()" style="background:linear-gradient(135deg,#2f6f8f,#1f4f6a)">💳 Thanh toán &amp; nhận luận giải</button>
     <button class="back-link" onclick="showView('danhmuc')" data-i18n="back.danhmuc">← Về danh mục</button>
     <div id="km-pay-area" style="margin-top:14px"></div>
@@ -777,7 +786,7 @@ const PAYMENT_CONFIG = {
   priceVanHan  : 299000,             // Vận hạn tổng quan
   priceCouple  : 249000,             // Hợp đôi (2 người)
   priceLucHao  : 49000,              // Lục Hào — Tăng San Bốc Dịch
-  priceKyMon   : 49000,              // Kỳ Môn Độn Giáp — Phái Chiết Bổ
+  priceKyMon   : { minh_su_viec:79000, minh_menh_ly:129000, doi_su_viec:99000, doi_menh_ly:159000 },  // Kỳ Môn theo: đối tượng × loại bàn
   transferPrefixLucHao: 'LUCHAO',    // Nội dung CK Lục Hào = LUCHAO <email khách>
   transferPrefixKyMon : 'KYMON',     // Nội dung CK Kỳ Môn = KYMON <email khách>
   deliveryHours: 10,
@@ -804,7 +813,7 @@ function formatVND(n){ return (n||0).toLocaleString('vi-VN')+'đ' }
 function getAmountRaw(kind){
   if(kind==='couple') return PAYMENT_CONFIG.priceCouple
   if(kind==='luchao') return PAYMENT_CONFIG.priceLucHao
-  if(kind==='kymon') return PAYMENT_CONFIG.priceKyMon
+  if(kind==='kymon'){ const d=window.__kmData||{}; const k=(d.who==='doi'?'doi':'minh')+'_'+(d.mode==='menh_ly'?'menh_ly':'su_viec'); const p=PAYMENT_CONFIG.priceKyMon; return (p&&p[k])||79000 }
   if(window.__lastTopic==='van_han') return PAYMENT_CONFIG.priceVanHan
   return PAYMENT_CONFIG.priceSingle
 }
@@ -1495,6 +1504,7 @@ function kmInitSelects(){
   const dEl=document.getElementById('km-date'), tEl=document.getElementById('km-time'), p=n=>String(n).padStart(2,'0'), now=new Date()
   if(dEl && !dEl.value) dEl.value=`${now.getFullYear()}-${p(now.getMonth()+1)}-${p(now.getDate())}`
   if(tEl && !tEl.value) tEl.value=`${p(now.getHours())}:${p(now.getMinutes())}`
+  kmUpdatePriceHint()
 }
 function chooseKyMon(){ kmInitSelects(); showView(window.__kmLegalAgreed ? 'kymon' : 'kmlegal') }
 function updateKmLegalBtn(){
@@ -1507,10 +1517,25 @@ function kmOnModeChange(){
   const t=document.getElementById('km-time-title'), h=document.getElementById('km-mode-hint')
   if(m==='menh_ly'){ if(t) t.textContent='Giờ sinh & nơi sinh'; if(h) h.innerHTML='Chế độ <b>Mệnh lý</b>: lập bàn trên <b>giờ sinh & nơi sinh</b>.' }
   else { if(t) t.textContent='Thời điểm hỏi & địa điểm'; if(h) h.innerHTML='Sự việc: lập bàn trên <b>giờ hỏi</b>. Mệnh lý: lập trên <b>giờ sinh</b>.' }
+  kmUpdatePriceHint()
 }
 function kmOnWhoChange(){
   const w=document.querySelector('input[name="km-who"]:checked')?.value
   const box=document.getElementById('km-partner-box'); if(box) box.style.display=(w==='doi')?'block':'none'
+  kmUpdatePriceHint()
+}
+function kmCurrentPrice(){
+  const w=document.querySelector('input[name="km-who"]:checked')?.value
+  const m=document.querySelector('input[name="km-mode"]:checked')?.value
+  const k=(w==='doi'?'doi':'minh')+'_'+(m==='menh_ly'?'menh_ly':'su_viec')
+  const p=PAYMENT_CONFIG.priceKyMon; return (p&&p[k])||79000
+}
+function kmUpdatePriceHint(){
+  const el=document.getElementById('km-price-hint'); if(!el) return
+  const w=document.querySelector('input[name="km-who"]:checked')?.value
+  const m=document.querySelector('input[name="km-mode"]:checked')?.value
+  const tenGoi=(w==='doi'?'Mình + đối tác':'Cá nhân')+' · '+(m==='menh_ly'?'Mệnh lý':'Sự việc')
+  el.textContent='Gói: '+tenGoi+' — '+formatVND(kmCurrentPrice())
 }
 function kmOnCityChange(){
   const i=+document.getElementById('km-city').value, c=KM_CITIES[i]
@@ -1668,7 +1693,9 @@ const CHONLUA_MAP=[
   {id:'chonlua-luchao', keys:['luchao','bocdich','tangsan']},
   {id:'chonlua-kymon',  keys:['kymon','dongiap']},
   {id:'chonlua-nham',   keys:['lucnham','dailucnham','nham']},
-  {id:'chonlua-thaiat', keys:['thaiat','thanso']}
+  {id:'chonlua-thaiat', keys:['thaiat','thanso']},
+  {id:'chonlua-nhadautu', keys:['nhadautu','dautu','daututu']},
+  {id:'chonlua-doanhnhan', keys:['doanhnhan','kinhdoanh','nguoikinhdoanh']}
 ]
 function renderChonLua(rows){ if(!rows.length) return
   rows.forEach(r=>{ const n=_norm(r[0]); const sys=CHONLUA_MAP.find(s=>s.keys.some(k=>n.includes(k))); if(!sys) return
