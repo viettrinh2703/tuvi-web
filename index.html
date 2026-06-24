@@ -109,6 +109,9 @@ body{background:linear-gradient(180deg,#161009,#0b0805);color:var(--txt)}
 .choice .ds{font-size:.68rem;color:var(--txt-dim);line-height:1.5}
 .choice.tuvi{border-top:4px solid var(--tho)}
 .choice.kymon{border-top:4px solid var(--thuy)}
+.km-seg{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;border:1px solid #ccc;border-radius:7px;padding:8px 6px;font-size:.8rem;color:#444;cursor:pointer;background:#fff;user-select:none}
+.km-seg input{width:auto;margin:0;flex:none}
+.km-seg:has(input:checked){border-color:var(--thuy);background:#eaf3f7;color:#1f4f6a;font-weight:600}
 .legal-box{background:var(--paper);border:1px solid #d9cdb0;border-radius:12px;padding:16px;max-height:46vh;overflow-y:auto;font-size:.77rem;line-height:1.75;color:#4a4030}
 .legal-box h3{font-size:.82rem;color:#241a12;margin:12px 0 4px}
 .agree-row{display:flex;align-items:flex-start;gap:9px;margin:15px 2px;font-size:.8rem;color:var(--txt);cursor:pointer}
@@ -229,6 +232,15 @@ html,body{overflow-x:hidden}
       <div class="pkg"><div class="pp">49K</div><div style="font-size:.64rem;color:var(--txt-dim);margin-top:4px">Một lần gieo quẻ &amp; luận giải theo câu hỏi.</div></div>
     </div>
     <button class="main-btn" style="margin-top:14px" onclick="chooseLucHao()" data-i18n="goiLucHao.btn">Gieo quẻ &amp; đặt luận giải →</button>
+  </section>
+
+  <section class="sec">
+    <div class="sec-h" data-i18n="goiKyMon.h">Xem Kỳ Môn</div><div class="sec-u"></div>
+    <div class="sec-sub" data-i18n="goiKyMon.sub">Kỳ Môn Độn Giáp — Phái Chiết Bổ · lập bàn luận đoán sự việc &amp; phương hướng.</div>
+    <div class="pkg-grid" id="pkg-kymon-grid">
+      <div class="pkg"><div class="pn">Kỳ Môn</div><div class="pp">49K</div><div style="font-size:.64rem;color:var(--txt-dim);margin-top:4px">Lập bàn &amp; luận đoán theo câu hỏi.</div></div>
+    </div>
+    <button class="main-btn" style="margin-top:14px" onclick="chooseKyMon()" data-i18n="goiKyMon.btn">Lập bàn &amp; đặt luận giải →</button>
   </section>
 
   <section class="sec">
@@ -469,6 +481,128 @@ html,body{overflow-x:hidden}
   </div>
 </div>
 
+<!-- ════ CỔNG PHÁP LÝ (Kỳ Môn) ════ -->
+<div id="view-kmlegal" class="view">
+  <div class="card" style="border:none;background:none;padding:0;margin-bottom:0">
+    <h2 style="color:var(--thuy)" data-i18n="kmlegal.h">Điều khoản &amp; Pháp lý — Kỳ Môn Độn Giáp</h2>
+    <div class="legal-box" id="km-legal-content">
+      <p style="color:#9a8a6a"><i>(Nội dung pháp lý đầy đủ sẽ được cập nhật.)</i></p>
+      <h3>1. Tính chất dịch vụ</h3>
+      <p>Kết quả luận đoán chỉ mang tính tham khảo, phục vụ chiêm nghiệm và định hướng tinh thần; không thay thế cho tư vấn y tế, pháp lý, tài chính hay bất kỳ quyết định quan trọng nào.</p>
+      <h3>2. Bảo mật thông tin</h3>
+      <p>Thời điểm, địa điểm, câu hỏi và thông tin bạn cung cấp chỉ được dùng để lập bàn và luận đoán, không chia sẻ cho bên thứ ba ngoài mục đích này.</p>
+      <h3>3. Thanh toán &amp; giao kết quả</h3>
+      <p>Kết quả được gửi qua email sau khi xác nhận thanh toán. Vui lòng kiểm tra cả hộp thư spam/quảng cáo.</p>
+    </div>
+    <label class="agree-row">
+      <input type="checkbox" id="km-legal-agree" onchange="updateKmLegalBtn()">
+      <span data-i18n="legal.agree">Tôi đã đọc và đồng ý với các điều khoản &amp; chính sách nêu trên.</span>
+    </label>
+    <button class="main-btn" id="km-legal-continue" disabled onclick="showView('kymon')" data-i18n="legal.continue">Đồng ý &amp; tiếp tục →</button>
+    <button class="back-link" onclick="showView('home')" data-i18n="back.home">← Quay lại trang chủ</button>
+  </div>
+</div>
+
+<!-- ════ KỲ MÔN ĐỘN GIÁP (form) ════ -->
+<div id="view-kymon" class="view">
+  <div class="card">
+    <h2>Kỳ Môn Độn Giáp — Phái Chiết Bổ</h2>
+
+    <!-- Loại bàn -->
+    <label style="font-weight:600;color:#333">Loại bàn</label>
+    <div style="display:flex;gap:8px;margin-top:6px">
+      <label class="km-seg"><input type="radio" name="km-mode" value="su_viec" checked onchange="kmOnModeChange()"><span>Xem sự việc</span></label>
+      <label class="km-seg"><input type="radio" name="km-mode" value="menh_ly" onchange="kmOnModeChange()"><span>Xem mệnh lý</span></label>
+    </div>
+    <div id="km-mode-hint" style="font-size:.68rem;color:#9a8a6a;margin-top:5px;line-height:1.5">Sự việc: lập bàn trên <b>giờ hỏi</b>. Mệnh lý: lập trên <b>giờ sinh</b>.</div>
+
+    <!-- Đối tượng -->
+    <div style="margin-top:14px">
+      <label style="font-weight:600;color:#333">Đối tượng</label>
+      <div style="display:flex;gap:8px;margin-top:6px">
+        <label class="km-seg"><input type="radio" name="km-who" value="minh" checked onchange="kmOnWhoChange()"><span>Một mình</span></label>
+        <label class="km-seg"><input type="radio" name="km-who" value="doi" onchange="kmOnWhoChange()"><span>Mình + đối tác</span></label>
+      </div>
+    </div>
+
+    <!-- Thời điểm & địa điểm -->
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid #eee">
+      <label style="font-weight:600;color:#333" id="km-time-title">Thời điểm hỏi &amp; địa điểm</label>
+      <div style="margin-top:8px">
+        <label>Địa điểm</label>
+        <select id="km-city" onchange="kmOnCityChange()" style="width:100%;padding:9px 10px;border:1px solid #ccc;border-radius:5px;font-size:.85rem"></select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+        <div><label>Ngày</label><input type="date" id="km-date" style="width:100%;padding:8px 10px;border:1px solid #ccc;border-radius:5px;font-size:.85rem;box-sizing:border-box"></div>
+        <div><label>Giờ</label><input type="time" id="km-time" style="width:100%;padding:8px 10px;border:1px solid #ccc;border-radius:5px;font-size:.85rem;box-sizing:border-box"></div>
+      </div>
+      <div id="km-coord-box" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+        <div><label>Kinh độ (Đông +)</label><input type="number" id="km-lon" step="0.01" value="105.85" style="width:100%;padding:8px 10px;border:1px solid #ccc;border-radius:5px;font-size:.85rem;box-sizing:border-box"></div>
+        <div><label>Múi giờ (GMT+)</label><input type="number" id="km-tz" step="0.5" value="7" style="width:100%;padding:8px 10px;border:1px solid #ccc;border-radius:5px;font-size:.85rem;box-sizing:border-box"></div>
+      </div>
+    </div>
+
+    <!-- Người hỏi -->
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid #eee">
+      <label style="font-weight:600;color:#333">Người hỏi</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;align-items:end">
+        <div>
+          <label>Giới tính</label>
+          <div style="display:flex;gap:8px">
+            <label class="km-seg"><input type="radio" name="km-sex" value="nam" checked><span>Nam</span></label>
+            <label class="km-seg"><input type="radio" name="km-sex" value="nu"><span>Nữ</span></label>
+          </div>
+        </div>
+        <div><label>Ngày sinh (cho Niên Mệnh)</label><input type="date" id="km-birth" style="width:100%;padding:8px 10px;border:1px solid #ccc;border-radius:5px;font-size:.85rem;box-sizing:border-box"></div>
+      </div>
+      <div style="font-size:.68rem;color:#9a8a6a;margin-top:5px">Niên Mệnh giúp bàn bám đúng người — nên có, không bắt buộc.</div>
+    </div>
+
+    <!-- Đối tác (ẩn) -->
+    <div id="km-partner-box" style="display:none;margin-top:16px;padding-top:14px;border-top:1px solid #eee">
+      <label style="font-weight:600;color:#333">Đối tác / đối tượng thứ hai</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;align-items:end">
+        <div>
+          <label>Giới tính</label>
+          <div style="display:flex;gap:8px">
+            <label class="km-seg"><input type="radio" name="km-sex2" value="nam" checked><span>Nam</span></label>
+            <label class="km-seg"><input type="radio" name="km-sex2" value="nu"><span>Nữ</span></label>
+          </div>
+        </div>
+        <div><label>Ngày sinh đối tác</label><input type="date" id="km-birth2" style="width:100%;padding:8px 10px;border:1px solid #ccc;border-radius:5px;font-size:.85rem;box-sizing:border-box"></div>
+      </div>
+    </div>
+
+    <!-- Việc cần luận -->
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid #eee">
+      <label style="font-weight:600;color:#333">Việc cần luận</label>
+      <div style="margin-top:8px">
+        <label>Lĩnh vực</label>
+        <select id="km-viec" onchange="kmOnViecChange()" style="width:100%;padding:9px 10px;border:1px solid #ccc;border-radius:5px;font-size:.85rem"></select>
+      </div>
+      <div id="km-dir-field" style="display:none;margin-top:10px">
+        <label>Tọa hướng nhà / hướng đang xét</label>
+        <select id="km-toahuong" style="width:100%;padding:9px 10px;border:1px solid #ccc;border-radius:5px;font-size:.85rem">
+          <option value="">— chọn —</option><option>Bắc</option><option>Đông Bắc</option><option>Đông</option><option>Đông Nam</option><option>Nam</option><option>Tây Nam</option><option>Tây</option><option>Tây Bắc</option>
+        </select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:10px;align-items:end">
+        <div><label>Báo số (con số bật ra trong đầu)</label><input type="number" id="km-baoso" placeholder="vd: 7" style="width:100%;padding:8px 10px;border:1px solid #ccc;border-radius:5px;font-size:.85rem;box-sizing:border-box"></div>
+        <button type="button" onclick="kmRandomNum()" style="padding:9px 12px;border-radius:6px;border:1px solid var(--thuy);background:#fff;color:var(--thuy);font-size:.74rem;font-weight:600;cursor:pointer;white-space:nowrap">Bốc ngẫu nhiên</button>
+      </div>
+      <div style="margin-top:10px">
+        <label>Câu hỏi</label>
+        <textarea id="km-question" rows="3" placeholder='VD: "Quý này mở chi nhánh hướng Đông Nam có lợi không?"'
+          style="width:100%;font-size:.85rem;padding:9px 10px;border:1px solid #ccc;border-radius:6px;box-sizing:border-box;line-height:1.5;resize:vertical"></textarea>
+      </div>
+    </div>
+
+    <button class="main-btn" id="km-pay-btn" onclick="kmPrepareAndPay()" style="background:linear-gradient(135deg,#2f6f8f,#1f4f6a)">💳 Thanh toán &amp; nhận luận giải</button>
+    <button class="back-link" onclick="showView('danhmuc')" data-i18n="back.danhmuc">← Về danh mục</button>
+    <div id="km-pay-area" style="margin-top:14px"></div>
+  </div>
+</div>
+
 <!-- ════ ĐANG XÂY DỰNG (dùng chung) ════ -->
 <div id="view-soon" class="view">
   <div class="kymon-soon">
@@ -488,9 +622,9 @@ html,body{overflow-x:hidden}
       <div class="ic">🪷</div><div class="nm">Tử Vi</div>
       <div class="ds" data-i18n="choice.tuvi.ds">Lập lá số &amp; luận giải theo chủ đề</div>
     </div>
-    <div class="choice kymon" onclick="showSoon('Kỳ Môn Độn Giáp')">
+    <div class="choice kymon" onclick="chooseKyMon()">
       <div class="ic">🧭</div><div class="nm">Kỳ Môn Độn Giáp</div>
-      <div class="ds" data-i18n="choice.soon">Đang xây dựng</div>
+      <div class="ds" data-i18n="choice.kymon.ds">Phái Chiết Bổ</div>
     </div>
     <div class="choice luchao" style="border-top:4px solid var(--moc)" onclick="chooseLucHao()">
       <div class="ic">🪙</div><div class="nm">Lục Hào</div>
@@ -643,7 +777,9 @@ const PAYMENT_CONFIG = {
   priceVanHan  : 299000,             // Vận hạn tổng quan
   priceCouple  : 249000,             // Hợp đôi (2 người)
   priceLucHao  : 49000,              // Lục Hào — Tăng San Bốc Dịch
+  priceKyMon   : 49000,              // Kỳ Môn Độn Giáp — Phái Chiết Bổ
   transferPrefixLucHao: 'LUCHAO',    // Nội dung CK Lục Hào = LUCHAO <email khách>
+  transferPrefixKyMon : 'KYMON',     // Nội dung CK Kỳ Môn = KYMON <email khách>
   deliveryHours: 10,
   // ── KÊNH NHẬN YÊU CẦU (chọn 1, dán key/endpoint của bạn) ──
   // Khuyên dùng Web3Forms (miễn phí 250 lượt/tháng). Lấy Access Key tại web3forms.com
@@ -668,12 +804,15 @@ function formatVND(n){ return (n||0).toLocaleString('vi-VN')+'đ' }
 function getAmountRaw(kind){
   if(kind==='couple') return PAYMENT_CONFIG.priceCouple
   if(kind==='luchao') return PAYMENT_CONFIG.priceLucHao
+  if(kind==='kymon') return PAYMENT_CONFIG.priceKyMon
   if(window.__lastTopic==='van_han') return PAYMENT_CONFIG.priceVanHan
   return PAYMENT_CONFIG.priceSingle
 }
 
 function transferPrefixOf(kind){
-  return kind==='luchao' ? (PAYMENT_CONFIG.transferPrefixLucHao||'LUCHAO') : PAYMENT_CONFIG.transferPrefix
+  if(kind==='luchao') return PAYMENT_CONFIG.transferPrefixLucHao||'LUCHAO'
+  if(kind==='kymon')  return PAYMENT_CONFIG.transferPrefixKyMon||'KYMON'
+  return PAYMENT_CONFIG.transferPrefix
 }
 
 function getAmount(kind){ return formatVND(getAmountRaw(kind)) }
@@ -1107,8 +1246,8 @@ async function submitPayment(kind){
   if(!proof){ status.innerHTML='<div style="color:#c00;font-size:.76rem">Vui lòng tải lên ảnh đã chuyển khoản.</div>'; return }
 
   const c=PAYMENT_CONFIG
-  const chuDe=kind==='luchao'?'Tăng San Bốc Dịch':(kind==='couple'?'Hợp đôi (2 người)':(TOPIC_LABELS[window.__lastTopic]||kind))
-  const heKind=kind==='luchao'?'Lục Hào':'Tử Vi'
+  const chuDe=kind==='luchao'?'Tăng San Bốc Dịch':(kind==='kymon'?'Phái Chiết Bổ':(kind==='couple'?'Hợp đôi (2 người)':(TOPIC_LABELS[window.__lastTopic]||kind)))
+  const heKind=kind==='luchao'?'Lục Hào':(kind==='kymon'?'Kỳ Môn Độn Giáp':'Tử Vi')
   // (email không kèm prompt/JSON nữa — chủ web tự nhập lại bên bản owner)
 
   // Không có EmailJS config → chế độ thử
@@ -1127,11 +1266,11 @@ async function submitPayment(kind){
   try{
     // Email báo đơn cho CHỦ WEB: chỉ thông tin đầu vào dạng dễ đọc (KHÔNG kèm JSON/prompt).
     // Chủ web tự nhập lại bên bản owner rồi xuất JSON ở đó.
-    const isLH = (kind==='luchao')
-    const infoLabel = isLH ? 'NGÀY GIỜ XEM' : 'THÔNG TIN SINH'
-    const ksLabel   = isLH ? 'CHI TIẾT QUẺ' : 'LỰA CHỌN KHẢO SÁT'
-    const infoText  = isLH ? lhDateInfo()    : orderBirthInfo(kind)
-    const khaoSatText = isLH ? lhDetailInfo() : orderAnswersText(kind)
+    const isLH = (kind==='luchao'), isKM = (kind==='kymon')
+    const infoLabel = isLH ? 'NGÀY GIỜ XEM' : (isKM ? 'THỜI ĐIỂM & ĐỊA ĐIỂM' : 'THÔNG TIN SINH')
+    const ksLabel   = isLH ? 'CHI TIẾT QUẺ' : (isKM ? 'CHI TIẾT LẬP BÀN' : 'LỰA CHỌN KHẢO SÁT')
+    const infoText  = isLH ? lhDateInfo() : (isKM ? kmDateInfo() : orderBirthInfo(kind))
+    const khaoSatText = isLH ? lhDetailInfo() : (isKM ? kmDetailInfo() : orderAnswersText(kind))
     const noiDungCK = transferPrefixOf(kind)+' '+email
     const templateParams={
       name        : heKind+' — '+chuDe,
@@ -1220,7 +1359,7 @@ function orderBirthInfo(kind){
 }
 function ownerDownloadButtons(){ return '' }
 // ───────── ĐIỀU HƯỚNG VIEW ─────────
-const NAV_OF={home:'nav-home',about:'nav-about',danhmuc:'nav-danhmuc',blog:'nav-blog',legal:'nav-danhmuc',tuvi:'nav-danhmuc',soon:'nav-danhmuc',lhlegal:'nav-danhmuc',luchao:'nav-danhmuc'}
+const NAV_OF={home:'nav-home',about:'nav-about',danhmuc:'nav-danhmuc',blog:'nav-blog',legal:'nav-danhmuc',tuvi:'nav-danhmuc',soon:'nav-danhmuc',lhlegal:'nav-danhmuc',luchao:'nav-danhmuc',kmlegal:'nav-danhmuc',kymon:'nav-danhmuc'}
 function showView(name){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'))
   const el=document.getElementById('view-'+name); if(el) el.classList.add('active')
@@ -1344,6 +1483,89 @@ function lhPrepareAndPay(){
   }
   showPaymentForm('luchao', document.getElementById('lh-pay-area'))
 }
+
+// ══════════════════════════════════════════════════
+// KỲ MÔN ĐỘN GIÁP — Phái Chiết Bổ (luồng riêng)
+// ══════════════════════════════════════════════════
+const KM_CITIES=[["Hà Nội",105.85,7],["TP. Hồ Chí Minh",106.70,7],["Đà Nẵng",108.22,7],["Hải Phòng",106.69,7],["Cần Thơ",105.78,7],["Huế",107.58,7],["Nha Trang",109.19,7],["Buôn Ma Thuột",108.05,7],["Vinh",105.69,7],["Đà Lạt",108.45,7],["— Tùy chỉnh —",null,null]]
+const KM_VIEC=[["cau_tai","Cầu tài · Kinh doanh"],["hop_tac","Hợp tác · Đàm phán"],["su_nghiep","Sự nghiệp · Công việc"],["hon_nhan","Hôn nhân · Tình cảm"],["hoc_hanh","Học hành · Thi cử"],["kien_tung","Kiện tụng · Tranh chấp"],["suc_khoe","Sức khỏe · Bệnh tật"],["xuat_hanh","Xuất hành · Di chuyển"],["phong_thuy","Phong thủy · Phương vị"],["khac","Khác · Quyết định chung"]]
+function kmInitSelects(){
+  const cs=document.getElementById('km-city'); if(cs && !cs.dataset.ready){ cs.innerHTML=KM_CITIES.map((c,i)=>'<option value="'+i+'">'+c[0]+'</option>').join(''); cs.dataset.ready='1' }
+  const vs=document.getElementById('km-viec'); if(vs && !vs.dataset.ready){ vs.innerHTML=KM_VIEC.map(v=>'<option value="'+v[0]+'">'+v[1]+'</option>').join(''); vs.dataset.ready='1' }
+  const dEl=document.getElementById('km-date'), tEl=document.getElementById('km-time'), p=n=>String(n).padStart(2,'0'), now=new Date()
+  if(dEl && !dEl.value) dEl.value=`${now.getFullYear()}-${p(now.getMonth()+1)}-${p(now.getDate())}`
+  if(tEl && !tEl.value) tEl.value=`${p(now.getHours())}:${p(now.getMinutes())}`
+}
+function chooseKyMon(){ kmInitSelects(); showView(window.__kmLegalAgreed ? 'kymon' : 'kmlegal') }
+function updateKmLegalBtn(){
+  const ck=document.getElementById('km-legal-agree')?.checked
+  window.__kmLegalAgreed=!!ck
+  const b=document.getElementById('km-legal-continue'); if(b) b.disabled=!ck
+}
+function kmOnModeChange(){
+  const m=document.querySelector('input[name="km-mode"]:checked')?.value
+  const t=document.getElementById('km-time-title'), h=document.getElementById('km-mode-hint')
+  if(m==='menh_ly'){ if(t) t.textContent='Giờ sinh & nơi sinh'; if(h) h.innerHTML='Chế độ <b>Mệnh lý</b>: lập bàn trên <b>giờ sinh & nơi sinh</b>.' }
+  else { if(t) t.textContent='Thời điểm hỏi & địa điểm'; if(h) h.innerHTML='Sự việc: lập bàn trên <b>giờ hỏi</b>. Mệnh lý: lập trên <b>giờ sinh</b>.' }
+}
+function kmOnWhoChange(){
+  const w=document.querySelector('input[name="km-who"]:checked')?.value
+  const box=document.getElementById('km-partner-box'); if(box) box.style.display=(w==='doi')?'block':'none'
+}
+function kmOnCityChange(){
+  const i=+document.getElementById('km-city').value, c=KM_CITIES[i]
+  if(c && c[1]!=null){ document.getElementById('km-lon').value=c[1]; document.getElementById('km-tz').value=c[2] }
+}
+function kmOnViecChange(){
+  const v=document.getElementById('km-viec').value
+  const f=document.getElementById('km-dir-field'); if(f) f.style.display=(v==='phong_thuy')?'block':'none'
+}
+function kmRandomNum(){ document.getElementById('km-baoso').value=Math.floor(Math.random()*9)+1 }
+function kmViecLabel(k){ const f=KM_VIEC.find(v=>v[0]===k); return f?f[1]:(k||'-') }
+function kmModeLabel(m){ return m==='menh_ly'?'Xem mệnh lý (giờ sinh)':'Xem sự việc (giờ hỏi)' }
+function _kmPretty(dt,tm){ if(!dt) return '(thiếu)'; const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(dt); const ds=m?`${m[3]}/${m[2]}/${m[1]}`:dt; return (tm?tm+' ':'')+ds }
+function kmDateInfo(){
+  const d=window.__kmData||{}
+  let s='Loại bàn: '+kmModeLabel(d.mode)+'\n'
+  s+=(d.mode==='menh_ly'?'Giờ sinh & nơi sinh: ':'Thời điểm hỏi: ')+_kmPretty(d.date,d.time)+'\n'
+  s+='Địa điểm: '+(d.city||'-')+' (kinh độ '+(d.lon||'-')+', GMT+'+(d.tz||'-')+')'
+  return s
+}
+function kmDetailInfo(){
+  const d=window.__kmData||{}
+  let s='Đối tượng: '+(d.who==='doi'?'Mình + đối tác':'Một mình')+'\n'
+  s+='Người hỏi: '+(d.sex==='nu'?'Nữ':'Nam')+(d.birth?(' · ngày sinh '+_kmPretty(d.birth,'')):' · (chưa nhập ngày sinh)')+'\n'
+  if(d.who==='doi') s+='Đối tác: '+(d.sex2==='nu'?'Nữ':'Nam')+(d.birth2?(' · ngày sinh '+_kmPretty(d.birth2,'')):' · (chưa nhập ngày sinh)')+'\n'
+  s+='Lĩnh vực: '+kmViecLabel(d.viec)+'\n'
+  if(d.viec==='phong_thuy') s+='Tọa hướng: '+(d.toahuong||'(chưa chọn)')+'\n'
+  if(d.baoso) s+='Báo số: '+d.baoso+'\n'
+  s+='Câu hỏi: '+(d.question||'(không nhập)')
+  return s
+}
+function kmPrepareAndPay(){
+  const mode=document.querySelector('input[name="km-mode"]:checked')?.value||'su_viec'
+  const date=(document.getElementById('km-date')?.value||'').trim()
+  const time=(document.getElementById('km-time')?.value||'').trim()
+  if(!date){ alert('Vui lòng nhập '+(mode==='menh_ly'?'ngày sinh':'ngày hỏi')+'.'); return }
+  if(!time){ alert('Vui lòng nhập giờ (đủ giờ:phút) để lập bàn chính xác.'); return }
+  const ci=+(document.getElementById('km-city')?.value||0)
+  window.__kmData={
+    mode, date, time,
+    city: (KM_CITIES[ci]&&KM_CITIES[ci][0])||'',
+    lon : document.getElementById('km-lon')?.value||'',
+    tz  : document.getElementById('km-tz')?.value||'',
+    who : document.querySelector('input[name="km-who"]:checked')?.value||'minh',
+    sex : document.querySelector('input[name="km-sex"]:checked')?.value||'nam',
+    birth: (document.getElementById('km-birth')?.value||'').trim(),
+    sex2: document.querySelector('input[name="km-sex2"]:checked')?.value||'nam',
+    birth2: (document.getElementById('km-birth2')?.value||'').trim(),
+    viec: document.getElementById('km-viec')?.value||'',
+    toahuong: document.getElementById('km-toahuong')?.value||'',
+    baoso: (document.getElementById('km-baoso')?.value||'').trim(),
+    question: (document.getElementById('km-question')?.value||'').trim()
+  }
+  showPaymentForm('kymon', document.getElementById('km-pay-area'))
+}
 // ───────── NGÔN NGỮ (VI / EN) — dịch phần giao diện tĩnh ─────────
 const I18N={
   vi:{ 'nav.home':'Trang chủ','nav.about':'About Ziwei','nav.danhmuc':'Danh mục SP','nav.blog':'Blog kiến thức',
@@ -1352,10 +1574,12 @@ const I18N={
     'goi.h':'Tổng quan các gói dịch vụ Tử Vi','goi.sub':'Mỗi gói soi sâu một mảng của cuộc đời bạn.','goi.btn':'Xem danh mục & đặt luận giải →',
     'chonlua.h':'Chọn lựa nào phù hợp cho bạn?','chonlua.sub':'Mỗi hệ luận giải có thế mạnh riêng — xem hệ nào hợp với điều bạn đang tìm.',
     'goiLucHao.h':'Xem Lục Hào','goiLucHao.sub':'Tăng San Bốc Dịch — gieo quẻ luận đoán theo câu hỏi cụ thể.','goiLucHao.btn':'Gieo quẻ & đặt luận giải →',
+    'goiKyMon.h':'Xem Kỳ Môn','goiKyMon.sub':'Kỳ Môn Độn Giáp — Phái Chiết Bổ · lập bàn luận đoán sự việc & phương hướng.','goiKyMon.btn':'Lập bàn & đặt luận giải →',
     'review.h':'Review từ khách hàng','review.sub':'Cảm nhận thực tế sau khi luận giải.',
     'danhmuc.h':'Danh mục dịch vụ','danhmuc.sub':'Chọn hệ luận giải bạn muốn trải nghiệm.',
     'choice.tuvi.ds':'Lập lá số & luận giải theo chủ đề','choice.soon':'Đang xây dựng','choice.luchao.ds':'Tăng San Bốc Dịch',
     'lhlegal.h':'Điều khoản & Pháp lý — Lục Hào',
+    'choice.kymon.ds':'Phái Chiết Bổ','kmlegal.h':'Điều khoản & Pháp lý — Kỳ Môn Độn Giáp',
     'soon.text':'Tính năng đang được triển khai.',
     'about.h':'About Ziwei','blog.h':'Blog kiến thức',
     'legal.h':'Điều khoản & Pháp lý — Tử Vi','legal.agree':'Tôi đã đọc và đồng ý với các điều khoản & chính sách nêu trên.','legal.continue':'Đồng ý & tiếp tục →',
@@ -1367,10 +1591,12 @@ const I18N={
     'goi.h':'Zi Wei reading packages','goi.sub':'Each package explores one area of your life.','goi.btn':'View services & order →',
     'chonlua.h':'Which one is right for you?','chonlua.sub':'Each system has its own strengths — see which fits what you\u2019re looking for.',
     'goiLucHao.h':'Liu Yao Reading','goiLucHao.sub':'Tang San Bok Dich — cast a hexagram to answer a specific question.','goiLucHao.btn':'Cast & order a reading →',
+    'goiKyMon.h':'Qi Men Reading','goiKyMon.sub':'Qi Men Dun Jia — Zhe Bu School · chart casting for events & directions.','goiKyMon.btn':'Cast a chart & order →',
     'review.h':'Customer reviews','review.sub':'Real experiences after a reading.',
     'danhmuc.h':'Services','danhmuc.sub':'Choose the system you\u2019d like to explore.',
     'choice.tuvi.ds':'Chart casting & themed reading','choice.soon':'Coming soon','choice.luchao.ds':'Tang San Bok Dich (Liu Yao)',
     'lhlegal.h':'Terms & Policy — Liu Yao',
+    'choice.kymon.ds':'Zhe Bu School','kmlegal.h':'Terms & Policy — Qi Men Dun Jia',
     'soon.text':'This feature is under development.',
     'about.h':'About Ziwei','blog.h':'Blog',
     'legal.h':'Terms & Policy — Zi Wei','legal.agree':'I have read and agree to the terms & policies above.','legal.continue':'Agree & continue →',
@@ -1396,6 +1622,7 @@ const SHEET = {
   thongTinCsv:  'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9Kd4tIdrU_cRPbCLlpeyDsHmKV0XPjKrSjvOlLoopY8yb5szZzYn5Yvfkm4FgN4izRSgCMRctzP6K/pub?gid=1581204413&single=true&output=csv',  // Thông tin (About): A=Tiêu đề, B=Nội dung
   khacBietCsv:  'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9Kd4tIdrU_cRPbCLlpeyDsHmKV0XPjKrSjvOlLoopY8yb5szZzYn5Yvfkm4FgN4izRSgCMRctzP6K/pub?gid=2084789413&single=true&output=csv',   // Sự khác biệt: A=Tiêu đề, B=Nội dung
   giaLucHaoCsv: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9Kd4tIdrU_cRPbCLlpeyDsHmKV0XPjKrSjvOlLoopY8yb5szZzYn5Yvfkm4FgN4izRSgCMRctzP6K/pub?gid=1792780648&single=true&output=csv',   // Gói Lục Hào (2 cột): A=Giá, B=Nội dung
+  giaKyMonCsv:  'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9Kd4tIdrU_cRPbCLlpeyDsHmKV0XPjKrSjvOlLoopY8yb5szZzYn5Yvfkm4FgN4izRSgCMRctzP6K/pub?gid=1155710927&single=true&output=csv',   // Gói Kỳ Môn (3 cột): A=Tên gói, B=Giá, C=Nội dung
   chonLuaCsv:   'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9Kd4tIdrU_cRPbCLlpeyDsHmKV0XPjKrSjvOlLoopY8yb5szZzYn5Yvfkm4FgN4izRSgCMRctzP6K/pub?gid=1351319608&single=true&output=csv'    // Chọn lựa phù hợp: A=Tên hệ, B=Nội dung
 }
 function _csv(text){ const rows=[]; let row=[],cur='',q=false
@@ -1424,12 +1651,16 @@ function _richRows(rows){ return rows.map(r=>{ const a=(r[0]||'').trim(), b=(r[1
   const t=a||b; return t?'<p>'+_esc(t)+'</p>':'' }).join('') }
 function renderLegal(rows){ if(!rows.length) return; const html=_richRows(rows)
   const h=document.getElementById('legal-content'); if(h) h.innerHTML=html
-  const h2=document.getElementById('lh-legal-content'); if(h2) h2.innerHTML=html }
+  const h2=document.getElementById('lh-legal-content'); if(h2) h2.innerHTML=html
+  const h3=document.getElementById('km-legal-content'); if(h3) h3.innerHTML=html }
 function renderAbout(rows){ if(!rows.length) return; const h=document.getElementById('about-content'); if(h) h.innerHTML=_richRows(rows) }
 function renderKhacBiet(rows){ if(!rows.length) return; const h=document.getElementById('khacbiet-content'); if(h) h.innerHTML='<div class="panel">'+_richRows(rows)+'</div>' }
 // Gói Lục Hào: A=Giá, B=Nội dung (2 cột)
 function renderGiaLucHao(rows){ if(!rows.length) return; const h=document.getElementById('pkg-luchao-grid'); if(!h) return
   h.innerHTML=rows.map(r=>'<div class="pkg"><div class="pp">'+_esc(r[0])+'</div>'+(r[1]?'<div style="font-size:.64rem;color:var(--txt-dim);margin-top:4px">'+_esc(r[1]).replace(/\n/g,'<br>')+'</div>':'')+'</div>').join('') }
+// Gói Kỳ Môn: A=Tên gói, B=Giá, C=Nội dung (3 cột)
+function renderGiaKyMon(rows){ if(!rows.length) return; const h=document.getElementById('pkg-kymon-grid'); if(!h) return
+  h.innerHTML=rows.map(r=>'<div class="pkg"><div class="pn">'+_esc(r[0])+'</div><div class="pp">'+_esc(r[1])+'</div>'+(r[2]?'<div style="font-size:.64rem;color:var(--txt-dim);margin-top:4px">'+_esc(r[2]).replace(/\n/g,'<br>')+'</div>':'')+'</div>').join('') }
 // Chọn lựa phù hợp: A=Tên hệ, B=Nội dung — khớp tên (bỏ dấu) vào đúng ô
 function _norm(s){ return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').toLowerCase().replace(/\s+/g,'') }
 const CHONLUA_MAP=[
@@ -1444,7 +1675,7 @@ function renderChonLua(rows){ if(!rows.length) return
     const el=document.getElementById(sys.id); if(el) el.innerHTML=_esc(r[1]||'').replace(/\n/g,'<br>') }) }
 function loadContent(){
   const go=(name,u,fn)=>{ if(u && /^https?:\/\//.test(u)) _loadCsv(u).then(fn).catch(e=>console.warn('Sheet load fail ['+name+']:', e.message||e)) }
-  go('gia',SHEET.giaCsv, renderGia); go('dieuKhoan',SHEET.dieuKhoanCsv, renderLegal); go('review',SHEET.reviewCsv, renderReview); go('blog',SHEET.blogCsv, renderBlog); go('thongTin',SHEET.thongTinCsv, renderAbout); go('khacBiet',SHEET.khacBietCsv, renderKhacBiet); go('giaLucHao',SHEET.giaLucHaoCsv, renderGiaLucHao); go('chonLua',SHEET.chonLuaCsv, renderChonLua)
+  go('gia',SHEET.giaCsv, renderGia); go('dieuKhoan',SHEET.dieuKhoanCsv, renderLegal); go('review',SHEET.reviewCsv, renderReview); go('blog',SHEET.blogCsv, renderBlog); go('thongTin',SHEET.thongTinCsv, renderAbout); go('khacBiet',SHEET.khacBietCsv, renderKhacBiet); go('giaLucHao',SHEET.giaLucHaoCsv, renderGiaLucHao); go('giaKyMon',SHEET.giaKyMonCsv, renderGiaKyMon); go('chonLua',SHEET.chonLuaCsv, renderChonLua)
 }
 function lhPrefillNow(){
   const el=document.getElementById('lh-datetime'); if(!el || el.value) return
