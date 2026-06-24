@@ -104,6 +104,8 @@ body{background:linear-gradient(180deg,#161009,#0b0805);color:var(--txt)}
 .choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .choice{border-radius:16px;padding:24px 14px;cursor:pointer;border:1px solid var(--line);background:var(--panel);transition:.15s;text-align:center;color:var(--txt)}
 .choice:hover{transform:translateY(-2px);border-color:var(--gold);box-shadow:0 8px 22px rgba(0,0,0,.45)}
+.choice.no-link{cursor:default}
+.choice.no-link:hover{transform:none;border-color:var(--line);box-shadow:none}
 .choice .ic{font-size:2rem;margin-bottom:10px}
 .choice .nm{font-family:Georgia,serif;font-size:1.05rem;font-weight:700;margin-bottom:5px;color:var(--gold-2)}
 .choice .ds{font-size:.68rem;color:var(--txt-dim);line-height:1.5}
@@ -174,7 +176,7 @@ html,body{overflow-x:hidden}
     <canvas id="nguHanhCanvas"></canvas>
     <div class="hero-cap">
       <h1>Ziwei — Astrology</h1>
-      <p data-i18n="hero.tag">Tinh hoa luận giải Tử Vi</p>
+      <p data-i18n="hero.tag">Tinh hoa luận giải</p>
     </div>
   </section>
 
@@ -188,38 +190,38 @@ html,body{overflow-x:hidden}
     <div class="sec-h" data-i18n="chonlua.h">Chọn lựa nào phù hợp cho bạn?</div><div class="sec-u"></div>
     <div class="sec-sub" data-i18n="chonlua.sub">Mỗi hệ luận giải có thế mạnh riêng — xem hệ nào hợp với điều bạn đang tìm.</div>
     <div id="chonlua-grid" class="choice-grid">
-      <div class="choice" style="border-top:4px solid var(--tho)">
+      <div class="choice" style="border-top:4px solid var(--tho)" onclick="scrollToSec('sec-goi-tuvi')">
         <div class="ic">🪷</div><div class="nm">Tử Vi</div>
         <div class="ds" id="chonlua-tuvi"><span class="muted">(Nội dung sẽ được cập nhật.)</span></div>
       </div>
-      <div class="choice" style="border-top:4px solid var(--moc)">
+      <div class="choice" style="border-top:4px solid var(--moc)" onclick="scrollToSec('sec-goi-luchao')">
         <div class="ic">🪙</div><div class="nm">Lục Hào</div>
         <div class="ds" id="chonlua-luchao"><span class="muted">(Nội dung sẽ được cập nhật.)</span></div>
       </div>
-      <div class="choice" style="border-top:4px solid var(--thuy)">
+      <div class="choice" style="border-top:4px solid var(--thuy)" onclick="scrollToSec('sec-goi-kymon')">
         <div class="ic">🧭</div><div class="nm">Kỳ Môn Độn Giáp</div>
         <div class="ds" id="chonlua-kymon"><span class="muted">(Nội dung sẽ được cập nhật.)</span></div>
       </div>
-      <div class="choice" style="border-top:4px solid var(--hoa)">
+      <div class="choice no-link" style="border-top:4px solid var(--hoa)">
         <div class="ic">🎴</div><div class="nm">Đại Lục Nhâm</div>
         <div class="ds" id="chonlua-nham"><span class="muted">(Nội dung sẽ được cập nhật.)</span></div>
       </div>
-      <div class="choice" style="border-top:4px solid var(--kim)">
+      <div class="choice no-link" style="border-top:4px solid var(--kim)">
         <div class="ic">🌌</div><div class="nm">Thái Ất Thần Số</div>
         <div class="ds" id="chonlua-thaiat"><span class="muted">(Nội dung sẽ được cập nhật.)</span></div>
       </div>
-      <div class="choice" style="border-top:4px solid var(--hoa)">
+      <div class="choice no-link" style="border-top:4px solid var(--hoa)">
         <div class="ic">📈</div><div class="nm">Gói chuyên sâu cho nhà đầu tư</div>
         <div class="ds" id="chonlua-nhadautu"><span class="muted">(Nội dung sẽ được cập nhật.)</span></div>
       </div>
-      <div class="choice" style="border-top:4px solid var(--tho)">
+      <div class="choice no-link" style="border-top:4px solid var(--tho)">
         <div class="ic">💼</div><div class="nm">Gói chuyên sâu cho doanh nhân</div>
         <div class="ds" id="chonlua-doanhnhan"><span class="muted">(Nội dung sẽ được cập nhật.)</span></div>
       </div>
     </div>
   </section>
 
-  <section class="sec">
+  <section class="sec" id="sec-goi-tuvi">
     <div class="sec-h" data-i18n="goi.h">Tổng quan các gói dịch vụ Tử Vi</div><div class="sec-u"></div>
     <div class="sec-sub" data-i18n="goi.sub">Mỗi gói soi sâu một mảng của cuộc đời bạn.</div>
     <div class="pkg-grid" id="pkg-grid">
@@ -233,7 +235,7 @@ html,body{overflow-x:hidden}
     <button class="main-btn" style="margin-top:14px" onclick="showView('danhmuc')" data-i18n="goi.btn">Xem danh mục &amp; đặt luận giải →</button>
   </section>
 
-  <section class="sec">
+  <section class="sec" id="sec-goi-luchao">
     <div class="sec-h" data-i18n="goiLucHao.h">Xem Lục Hào</div><div class="sec-u"></div>
     <div class="sec-sub" data-i18n="goiLucHao.sub">Tăng San Bốc Dịch — gieo quẻ luận đoán theo câu hỏi cụ thể.</div>
     <div class="pkg-grid" id="pkg-luchao-grid">
@@ -242,7 +244,7 @@ html,body{overflow-x:hidden}
     <button class="main-btn" style="margin-top:14px" onclick="chooseLucHao()" data-i18n="goiLucHao.btn">Gieo quẻ &amp; đặt luận giải →</button>
   </section>
 
-  <section class="sec">
+  <section class="sec" id="sec-goi-kymon">
     <div class="sec-h" data-i18n="goiKyMon.h">Xem Kỳ Môn</div><div class="sec-u"></div>
     <div class="sec-sub" data-i18n="goiKyMon.sub">Kỳ Môn Độn Giáp — Phái Chiết Bổ · lập bàn luận đoán sự việc &amp; phương hướng.</div>
     <div class="pkg-grid" id="pkg-kymon-grid">
@@ -645,6 +647,14 @@ html,body{overflow-x:hidden}
     </div>
     <div class="choice" style="border-top:4px solid var(--kim)" onclick="showSoon('Thái Ất Thần Số')">
       <div class="ic">🌌</div><div class="nm">Thái Ất Thần Số</div>
+      <div class="ds" data-i18n="choice.soon">Đang xây dựng</div>
+    </div>
+    <div class="choice" style="border-top:4px solid var(--hoa)" onclick="showSoon('Gói chuyên sâu cho nhà đầu tư')">
+      <div class="ic">📈</div><div class="nm">Gói chuyên sâu cho nhà đầu tư</div>
+      <div class="ds" data-i18n="choice.soon">Đang xây dựng</div>
+    </div>
+    <div class="choice" style="border-top:4px solid var(--tho)" onclick="showSoon('Gói chuyên sâu cho doanh nhân')">
+      <div class="ic">💼</div><div class="nm">Gói chuyên sâu cho doanh nhân</div>
       <div class="ds" data-i18n="choice.soon">Đang xây dựng</div>
     </div>
   </div>
@@ -1377,6 +1387,7 @@ function showView(name){
   window.scrollTo({top:0,behavior:'smooth'})
 }
 function showSoon(name){ const n=document.getElementById('soon-name'); if(n) n.textContent=name||''; showView('soon') }
+function scrollToSec(id){ showView('home'); requestAnimationFrame(()=>{ const el=document.getElementById(id); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}) }) }
 function chooseTuVi(){ showView(window.__legalAgreed ? 'tuvi' : 'legal') }
 function updateLegalBtn(){
   const ck=document.getElementById('legal-agree')?.checked
@@ -1594,7 +1605,7 @@ function kmPrepareAndPay(){
 // ───────── NGÔN NGỮ (VI / EN) — dịch phần giao diện tĩnh ─────────
 const I18N={
   vi:{ 'nav.home':'Trang chủ','nav.about':'About Ziwei','nav.danhmuc':'Danh mục SP','nav.blog':'Blog kiến thức',
-    'hero.tag':'Tinh hoa luận giải Tử Vi',
+    'hero.tag':'Tinh hoa luận giải',
     'khacbiet.h':'Sự khác biệt của Ziwei','khacbiet.sub':'Điều làm nên sự khác biệt trong cách Ziwei luận giải.',
     'goi.h':'Tổng quan các gói dịch vụ Tử Vi','goi.sub':'Mỗi gói soi sâu một mảng của cuộc đời bạn.','goi.btn':'Xem danh mục & đặt luận giải →',
     'chonlua.h':'Chọn lựa nào phù hợp cho bạn?','chonlua.sub':'Mỗi hệ luận giải có thế mạnh riêng — xem hệ nào hợp với điều bạn đang tìm.',
@@ -1611,7 +1622,7 @@ const I18N={
     'back.home':'← Về trang chủ','back.danhmuc':'← Về danh mục',
     'footer.note':'Thông tin luận giải chỉ mang tính tham khảo, phục vụ mục đích chiêm nghiệm và định hướng tinh thần; không thay thế cho tư vấn y tế, pháp lý hay tài chính chuyên môn. Người dùng tự chịu trách nhiệm với các quyết định của mình.' },
   en:{ 'nav.home':'Home','nav.about':'About','nav.danhmuc':'Services','nav.blog':'Blog',
-    'hero.tag':'The art of Zi Wei astrology',
+    'hero.tag':'The art of interpretation',
     'khacbiet.h':'What makes Ziwei different','khacbiet.sub':'What sets Ziwei\u2019s approach apart.',
     'goi.h':'Zi Wei reading packages','goi.sub':'Each package explores one area of your life.','goi.btn':'View services & order →',
     'chonlua.h':'Which one is right for you?','chonlua.sub':'Each system has its own strengths — see which fits what you\u2019re looking for.',
