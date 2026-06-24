@@ -138,6 +138,13 @@ body{background:linear-gradient(180deg,#161009,#0b0805);color:var(--txt)}
 .bl-title{font-family:Georgia,serif;font-size:.98rem;font-weight:700;color:var(--gold-2);margin-bottom:3px}
 .bl-date{font-size:.64rem;color:var(--txt-dim);margin-bottom:6px}
 .bl-ex{font-size:.76rem;color:#d8ccb6;line-height:1.6}
+.bl-ex.clamp{max-height:7.6em;overflow:hidden;position:relative}
+.bl-ex.clamp::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2.6em;background:linear-gradient(transparent,var(--panel))}
+.bl-ex.open{max-height:none}
+.bl-ex.open::after{display:none}
+.bl-more{margin-top:8px;font-size:.72rem;color:var(--gold-2);background:none;border:none;cursor:pointer;font-family:inherit;font-weight:700;padding:0}
+.bl-src{display:inline-block;margin-top:8px;font-size:.72rem;color:var(--thuy);text-decoration:none}
+.bl-ex strong{color:#f0e6d0}
 
 /* full-width / responsive */
 html,body{overflow-x:hidden}
@@ -164,6 +171,7 @@ html,body{overflow-x:hidden}
     <button id="nav-about" onclick="showView('about')" data-i18n="nav.about">About Ziwei</button>
     <button id="nav-danhmuc" onclick="showView('danhmuc')" data-i18n="nav.danhmuc">Danh mục SP</button>
     <button id="nav-blog" onclick="showView('blog')" data-i18n="nav.blog">Blog kiến thức</button>
+    <button id="nav-hoptac" onclick="showView('hoptac')" data-i18n="nav.hoptac">Hợp tác</button>
     <button id="lang-btn" class="lang-btn" onclick="toggleLang()">EN</button>
   </nav>
 </header>
@@ -666,6 +674,17 @@ html,body{overflow-x:hidden}
     <div class="sec-h" style="text-align:left" data-i18n="about.h">About Ziwei</div>
     <div id="about-content" style="font-size:.82rem;line-height:1.8;margin-top:12px">
       <p class="muted">(Nội dung giới thiệu sẽ được cập nhật.)</p>
+    </div>
+    <button class="back-link" onclick="showView('home')" data-i18n="back.home">← Về trang chủ</button>
+  </div>
+</div>
+
+<!-- ════ HỢP TÁC ════ -->
+<div id="view-hoptac" class="view">
+  <div class="info-page">
+    <div class="sec-h" style="text-align:left" data-i18n="hoptac.h">Hợp tác</div>
+    <div id="hoptac-content" style="font-size:.82rem;line-height:1.8;margin-top:12px">
+      <p class="muted">(Nội dung hợp tác sẽ được cập nhật.)</p>
     </div>
     <button class="back-link" onclick="showView('home')" data-i18n="back.home">← Về trang chủ</button>
   </div>
@@ -1378,7 +1397,7 @@ function orderBirthInfo(kind){
 }
 function ownerDownloadButtons(){ return '' }
 // ───────── ĐIỀU HƯỚNG VIEW ─────────
-const NAV_OF={home:'nav-home',about:'nav-about',danhmuc:'nav-danhmuc',blog:'nav-blog',legal:'nav-danhmuc',tuvi:'nav-danhmuc',soon:'nav-danhmuc',lhlegal:'nav-danhmuc',luchao:'nav-danhmuc',kmlegal:'nav-danhmuc',kymon:'nav-danhmuc'}
+const NAV_OF={home:'nav-home',about:'nav-about',danhmuc:'nav-danhmuc',blog:'nav-blog',hoptac:'nav-hoptac',legal:'nav-danhmuc',tuvi:'nav-danhmuc',soon:'nav-danhmuc',lhlegal:'nav-danhmuc',luchao:'nav-danhmuc',kmlegal:'nav-danhmuc',kymon:'nav-danhmuc'}
 function showView(name){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'))
   const el=document.getElementById('view-'+name); if(el) el.classList.add('active')
@@ -1604,7 +1623,7 @@ function kmPrepareAndPay(){
 }
 // ───────── NGÔN NGỮ (VI / EN) — dịch phần giao diện tĩnh ─────────
 const I18N={
-  vi:{ 'nav.home':'Trang chủ','nav.about':'About Ziwei','nav.danhmuc':'Danh mục SP','nav.blog':'Blog kiến thức',
+  vi:{ 'nav.home':'Trang chủ','nav.about':'About Ziwei','nav.danhmuc':'Danh mục SP','nav.blog':'Blog kiến thức','nav.hoptac':'Hợp tác','hoptac.h':'Hợp tác',
     'hero.tag':'Tinh hoa luận giải',
     'khacbiet.h':'Sự khác biệt của Ziwei','khacbiet.sub':'Điều làm nên sự khác biệt trong cách Ziwei luận giải.',
     'goi.h':'Tổng quan các gói dịch vụ Tử Vi','goi.sub':'Mỗi gói soi sâu một mảng của cuộc đời bạn.','goi.btn':'Xem danh mục & đặt luận giải →',
@@ -1621,7 +1640,7 @@ const I18N={
     'legal.h':'Điều khoản & Pháp lý — Tử Vi','legal.agree':'Tôi đã đọc và đồng ý với các điều khoản & chính sách nêu trên.','legal.continue':'Đồng ý & tiếp tục →',
     'back.home':'← Về trang chủ','back.danhmuc':'← Về danh mục',
     'footer.note':'Thông tin luận giải chỉ mang tính tham khảo, phục vụ mục đích chiêm nghiệm và định hướng tinh thần; không thay thế cho tư vấn y tế, pháp lý hay tài chính chuyên môn. Người dùng tự chịu trách nhiệm với các quyết định của mình.' },
-  en:{ 'nav.home':'Home','nav.about':'About','nav.danhmuc':'Services','nav.blog':'Blog',
+  en:{ 'nav.home':'Home','nav.about':'About','nav.danhmuc':'Services','nav.blog':'Blog','nav.hoptac':'Partnership','hoptac.h':'Partnership',
     'hero.tag':'The art of interpretation',
     'khacbiet.h':'What makes Ziwei different','khacbiet.sub':'What sets Ziwei\u2019s approach apart.',
     'goi.h':'Zi Wei reading packages','goi.sub':'Each package explores one area of your life.','goi.btn':'View services & order →',
@@ -1657,6 +1676,7 @@ const SHEET = {
   blogCsv:      'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9Kd4tIdrU_cRPbCLlpeyDsHmKV0XPjKrSjvOlLoopY8yb5szZzYn5Yvfkm4FgN4izRSgCMRctzP6K/pub?gid=921853939&single=true&output=csv',   // Blog: A=Tiêu đề, B=Mô tả, C=Ngày, D=Link, E=Ảnh
   thongTinCsv:  'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9Kd4tIdrU_cRPbCLlpeyDsHmKV0XPjKrSjvOlLoopY8yb5szZzYn5Yvfkm4FgN4izRSgCMRctzP6K/pub?gid=1581204413&single=true&output=csv',  // Thông tin (About): A=Tiêu đề, B=Nội dung
   khacBietCsv:  'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9Kd4tIdrU_cRPbCLlpeyDsHmKV0XPjKrSjvOlLoopY8yb5szZzYn5Yvfkm4FgN4izRSgCMRctzP6K/pub?gid=2084789413&single=true&output=csv',   // Sự khác biệt: A=Tiêu đề, B=Nội dung
+  hoptacCsv:    'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9Kd4tIdrU_cRPbCLlpeyDsHmKV0XPjKrSjvOlLoopY8yb5szZzYn5Yvfkm4FgN4izRSgCMRctzP6K/pub?gid=827608746&single=true&output=csv',    // Hợp tác: A=Tiêu đề, B=Nội dung
   giaLucHaoCsv: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9Kd4tIdrU_cRPbCLlpeyDsHmKV0XPjKrSjvOlLoopY8yb5szZzYn5Yvfkm4FgN4izRSgCMRctzP6K/pub?gid=1792780648&single=true&output=csv',   // Gói Lục Hào (2 cột): A=Giá, B=Nội dung
   giaKyMonCsv:  'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9Kd4tIdrU_cRPbCLlpeyDsHmKV0XPjKrSjvOlLoopY8yb5szZzYn5Yvfkm4FgN4izRSgCMRctzP6K/pub?gid=1155710927&single=true&output=csv',   // Gói Kỳ Môn (3 cột): A=Tên gói, B=Giá, C=Nội dung
   chonLuaCsv:   'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9Kd4tIdrU_cRPbCLlpeyDsHmKV0XPjKrSjvOlLoopY8yb5szZzYn5Yvfkm4FgN4izRSgCMRctzP6K/pub?gid=1351319608&single=true&output=csv'    // Chọn lựa phù hợp: A=Tên hệ, B=Nội dung
@@ -1673,18 +1693,48 @@ function _csv(text){ const rows=[]; let row=[],cur='',q=false
 async function _loadCsv(url){ const r=await fetch(url); const t=await r.text()
   return _csv(t).slice(1).filter(r=>r.some(c=>(c||'').trim())) }
 const _esc=s=>String(s==null?'':s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))
+// Định dạng nhẹ từ text Google Sheet: **đậm**, *nghiêng*, xuống dòng (Alt+Enter) → <br>
+function _fmt(s){
+  let t=_esc(s==null?'':String(s))
+  t=t.replace(/\*\*([^*]+?)\*\*/g,'<strong>$1</strong>')   // **đậm**
+  t=t.replace(/__([^_]+?)__/g,'<strong>$1</strong>')        // __đậm__
+  t=t.replace(/(^|[^*])\*([^*\n]+?)\*(?!\*)/g,'$1<em>$2</em>') // *nghiêng*
+  t=t.replace(/\r\n|\r/g,'\n')
+  t=t.replace(/\n{2,}/g,'<br><br>').replace(/\n/g,'<br>')    // xuống dòng / cách đoạn
+  return t
+}
+// Chuẩn hoá link ảnh: chuyển link Google Drive sang dạng hiển thị trực tiếp
+function _imgUrl(u){
+  u=(u||'').trim(); if(!u) return ''
+  const m=u.match(/drive\.google\.com\/file\/d\/([^/]+)/)||u.match(/drive\.google\.com\/open\?id=([^&]+)/)||u.match(/[?&]id=([^&]+)/)
+  if(m) return 'https://drive.google.com/thumbnail?id='+m[1]+'&sz=w1200'
+  return u
+}
 function renderGia(rows){ if(!rows.length) return; const h=document.getElementById('pkg-grid'); if(!h) return
-  h.innerHTML=rows.map(r=>'<div class="pkg"><div class="pn">'+_esc(r[0])+'</div><div class="pp">'+_esc(r[1])+'</div>'+(r[2]?'<div style="font-size:.64rem;color:var(--txt-dim);margin-top:4px">'+_esc(r[2])+'</div>':'')+'</div>').join('') }
+  h.innerHTML=rows.map(r=>'<div class="pkg"><div class="pn">'+_esc(r[0])+'</div><div class="pp">'+_esc(r[1])+'</div>'+(r[2]?'<div style="font-size:.64rem;color:var(--txt-dim);margin-top:4px">'+_fmt(r[2])+'</div>':'')+'</div>').join('') }
 function renderReview(rows){ if(!rows.length) return; const h=document.getElementById('review-list'); if(!h) return
   h.innerHTML=rows.map(r=>{ const n=Math.max(0,Math.min(5,parseInt(r[2]||'5')||5)); const st='★'.repeat(n)+'☆'.repeat(5-n)
-    return '<div class="rv"><div class="rv-top"><span class="rv-name">'+_esc(r[0])+'</span><span class="rv-stars">'+st+'</span></div><div class="rv-body">'+_esc(r[1])+'</div></div>' }).join('') }
+    return '<div class="rv"><div class="rv-top"><span class="rv-name">'+_esc(r[0])+'</span><span class="rv-stars">'+st+'</span></div><div class="rv-body">'+_fmt(r[1])+'</div></div>' }).join('') }
 function renderBlog(rows){ if(!rows.length) return; const h=document.getElementById('blog-list'); if(!h) return
-  h.innerHTML=rows.map(r=>{ const link=(r[3]||'').trim()
-    const inner=(r[4]?'<div class="bl-img" style="background-image:url(\''+_esc(r[4])+'\')"></div>':'')+'<div class="bl-body"><div class="bl-title">'+_esc(r[0])+'</div>'+(r[2]?'<div class="bl-date">'+_esc(r[2])+'</div>':'')+'<div class="bl-ex">'+_esc(r[1])+'</div></div>'
-    return link?'<a class="bl-card" href="'+_esc(link)+'" target="_blank" rel="noopener">'+inner+'</a>':'<div class="bl-card">'+inner+'</div>' }).join('') }
+  h.innerHTML=rows.map((r,i)=>{
+    const title=_esc(r[0]||'')
+    const date=r[2]?'<div class="bl-date">'+_esc(r[2])+'</div>':''
+    const img=_imgUrl(r[4])
+    const imgHtml=img?'<div class="bl-img" style="background-image:url(\''+_esc(img)+'\')"></div>':''
+    const bodyRaw=(r[1]||'')
+    const long=bodyRaw.length>280
+    const bodyHtml='<div class="bl-ex'+(long?' clamp':'')+'" id="blx'+i+'">'+_fmt(bodyRaw)+'</div>'
+    const moreBtn=long?'<button class="bl-more" onclick="blogToggle('+i+',this)">Đọc tiếp ▾</button>':''
+    const src=(r[3]||'').trim()
+    const srcHtml=src?'<div><a class="bl-src" href="'+_esc(src)+'" target="_blank" rel="noopener">Xem nguồn →</a></div>':''
+    return '<div class="bl-card">'+imgHtml+'<div class="bl-body"><div class="bl-title">'+title+'</div>'+date+bodyHtml+moreBtn+srcHtml+'</div></div>'
+  }).join('') }
+function blogToggle(i,btn){ const el=document.getElementById('blx'+i); if(!el) return
+  const open=el.classList.toggle('open'); btn.textContent=open?'Thu gọn ▴':'Đọc tiếp ▾' }
 function _richRows(rows){ return rows.map(r=>{ const a=(r[0]||'').trim(), b=(r[1]||'').trim()
-  if(a&&b) return '<h3>'+_esc(a)+'</h3><p>'+_esc(b)+'</p>'
-  const t=a||b; return t?'<p>'+_esc(t)+'</p>':'' }).join('') }
+  if(a&&b) return '<h3>'+_esc(a)+'</h3><p>'+_fmt(b)+'</p>'
+  const t=a||b; return t?'<p>'+_fmt(t)+'</p>':'' }).join('') }
+function renderHopTac(rows){ if(!rows.length) return; const h=document.getElementById('hoptac-content'); if(h) h.innerHTML=_richRows(rows) }
 function renderLegal(rows){ if(!rows.length) return; const html=_richRows(rows)
   const h=document.getElementById('legal-content'); if(h) h.innerHTML=html
   const h2=document.getElementById('lh-legal-content'); if(h2) h2.innerHTML=html
@@ -1693,10 +1743,10 @@ function renderAbout(rows){ if(!rows.length) return; const h=document.getElement
 function renderKhacBiet(rows){ if(!rows.length) return; const h=document.getElementById('khacbiet-content'); if(h) h.innerHTML='<div class="panel">'+_richRows(rows)+'</div>' }
 // Gói Lục Hào: A=Giá, B=Nội dung (2 cột)
 function renderGiaLucHao(rows){ if(!rows.length) return; const h=document.getElementById('pkg-luchao-grid'); if(!h) return
-  h.innerHTML=rows.map(r=>'<div class="pkg"><div class="pp">'+_esc(r[0])+'</div>'+(r[1]?'<div style="font-size:.64rem;color:var(--txt-dim);margin-top:4px">'+_esc(r[1]).replace(/\n/g,'<br>')+'</div>':'')+'</div>').join('') }
+  h.innerHTML=rows.map(r=>'<div class="pkg"><div class="pp">'+_esc(r[0])+'</div>'+(r[1]?'<div style="font-size:.64rem;color:var(--txt-dim);margin-top:4px">'+_fmt(r[1])+'</div>':'')+'</div>').join('') }
 // Gói Kỳ Môn: A=Tên gói, B=Giá, C=Nội dung (3 cột)
 function renderGiaKyMon(rows){ if(!rows.length) return; const h=document.getElementById('pkg-kymon-grid'); if(!h) return
-  h.innerHTML=rows.map(r=>'<div class="pkg"><div class="pn">'+_esc(r[0])+'</div><div class="pp">'+_esc(r[1])+'</div>'+(r[2]?'<div style="font-size:.64rem;color:var(--txt-dim);margin-top:4px">'+_esc(r[2]).replace(/\n/g,'<br>')+'</div>':'')+'</div>').join('') }
+  h.innerHTML=rows.map(r=>'<div class="pkg"><div class="pn">'+_esc(r[0])+'</div><div class="pp">'+_esc(r[1])+'</div>'+(r[2]?'<div style="font-size:.64rem;color:var(--txt-dim);margin-top:4px">'+_fmt(r[2])+'</div>':'')+'</div>').join('') }
 // Chọn lựa phù hợp: A=Tên hệ, B=Nội dung — khớp tên (bỏ dấu) vào đúng ô
 function _norm(s){ return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').toLowerCase().replace(/\s+/g,'') }
 const CHONLUA_MAP=[
@@ -1710,10 +1760,10 @@ const CHONLUA_MAP=[
 ]
 function renderChonLua(rows){ if(!rows.length) return
   rows.forEach(r=>{ const n=_norm(r[0]); const sys=CHONLUA_MAP.find(s=>s.keys.some(k=>n.includes(k))); if(!sys) return
-    const el=document.getElementById(sys.id); if(el) el.innerHTML=_esc(r[1]||'').replace(/\n/g,'<br>') }) }
+    const el=document.getElementById(sys.id); if(el) el.innerHTML=_fmt(r[1]||'') }) }
 function loadContent(){
   const go=(name,u,fn)=>{ if(u && /^https?:\/\//.test(u)) _loadCsv(u).then(fn).catch(e=>console.warn('Sheet load fail ['+name+']:', e.message||e)) }
-  go('gia',SHEET.giaCsv, renderGia); go('dieuKhoan',SHEET.dieuKhoanCsv, renderLegal); go('review',SHEET.reviewCsv, renderReview); go('blog',SHEET.blogCsv, renderBlog); go('thongTin',SHEET.thongTinCsv, renderAbout); go('khacBiet',SHEET.khacBietCsv, renderKhacBiet); go('giaLucHao',SHEET.giaLucHaoCsv, renderGiaLucHao); go('giaKyMon',SHEET.giaKyMonCsv, renderGiaKyMon); go('chonLua',SHEET.chonLuaCsv, renderChonLua)
+  go('gia',SHEET.giaCsv, renderGia); go('dieuKhoan',SHEET.dieuKhoanCsv, renderLegal); go('review',SHEET.reviewCsv, renderReview); go('blog',SHEET.blogCsv, renderBlog); go('thongTin',SHEET.thongTinCsv, renderAbout); go('khacBiet',SHEET.khacBietCsv, renderKhacBiet); go('hoptac',SHEET.hoptacCsv, renderHopTac); go('giaLucHao',SHEET.giaLucHaoCsv, renderGiaLucHao); go('giaKyMon',SHEET.giaKyMonCsv, renderGiaKyMon); go('chonLua',SHEET.chonLuaCsv, renderChonLua)
 }
 function lhPrefillNow(){
   const el=document.getElementById('lh-datetime'); if(!el || el.value) return
